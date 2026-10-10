@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "fitness-pro-a3331"
+  },
+  "targets": {
+    "fitness-pro-a3331": {
+      "hosting": {
+        "fitnesss": [
+          "fitnesss"
+        ]
+      }
+    }
+  }
+}

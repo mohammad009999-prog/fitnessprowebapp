@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Pro</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent: #ff9800;
+            --danger: #f44336;
+            --text-main: #ffffff;
+            --text-muted: #b0b0b0;
+            --border: #333333;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        h1 {
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+        /* Top Utility Controls Header */
+        .top-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 8px;
+        }
+        .top-btn {
+            background: var(--card-bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .top-btn:hover {
+            background: var(--accent);
+            color: #000;
+        }
+        /* Top Navigation Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        /* Sub-navigation Tabs */
+        .sub-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+        .sub-tab-btn {
+            background: #222;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: 0.2s;
+            text-transform: capitalize;
+        }
+        .sub-tab-btn.active {
+            background: #333;
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+        /* Sections */
+        .section-content {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-content.active {
+            display: block;
+        }
+        .sub-section-content {
+            display: none;
+        }
+        .sub-section-content.active {
+            display: block;
+        }
+        /* Search & Filters */
+        .search-box {
+            width: 100%;
+            max-width: 600px;
+            padding: 12px;
+            margin: 0 auto 20px auto;
+            display: block;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .category-header {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 5px;
+            margin: 30px 0 15px 0;
+            text-transform: capitalize;
+        }
+        /* Forms & Inputs */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        input, textarea, select {
+            flex: 1;
+            padding: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        button.action-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            align-self: flex-start;
+            margin-top: 10px;
+            display: none;
+        }
+        body.admin-mode .delete-btn {
+            display: inline-block;
+        }
+        .admin-only {
+            display: none;
+        }
+        body.admin-mode .admin-only {
+            display: block;
+        }
+        .delete-btn:hover {
+            opacity: 0.8;
+        }
+        .add-panel {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
+        }
+        .add-panel h3 {
+            margin-top: 0;
+            color: #4caf50;
+        }
+        /* Grid & Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .card h3 {
+            margin: 0 0 5px 0;
+            color: var(--accent);
+        }
+        .badge {
+            display: inline-block;
+            background: #2a2a2a;
+            color: #4caf50;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .card p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0;
+            line-height: 1.4;
+        }
+        .prop-item {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+        .prop-item b {
+            color: var(--text-main);
+            text-transform: capitalize;
+        }
+        .instructions-list {
+            padding-left: 18px;
+            margin: 5px 0 0 0;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .instructions-list li {
+            margin-bottom: 4px;
+        }
+        .img-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #252525;
+            display: block;
+        }
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-top: 40px;
+            grid-column: 1/-1;
+        }
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        .modal h2 { margin-top: 0; color: var(--accent); text-align: center; }
+        .modal input { width: 100%; margin-bottom: 12px; }
+        .modal button { width: 100%; margin-top: 5px; }
+        .close-modal {
+            background: none; border: none; color: var(--text-muted); float: right; cursor: pointer; font-size: 18px;
+        }
+    </style>
+
+    <!-- Firebase v10 SDK Scripts & Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            GoogleAuthProvider, 
+            signInWithPopup, 
+            RecaptchaVerifier, 
+            signInWithPhoneNumber, 
+            onAuthStateChanged, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAilAXYxno9aywWxqy7ji52Dq-xvneKf5U",
+            authDomain: "fitness-pro-a3331.firebaseapp.com",
+            projectId: "fitness-pro-a3331",
+            storageBucket: "fitness-pro-a3331.firebasestorage.app",
+            messagingSenderId: "491662957413",
+            appId: "1:491662957413:web:ed6ecc474e87e8a33edf8c",
+            measurementId: "G-7FE17P0BKB"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        window.firebaseAuth = auth;
+
+        onAuthStateChanged(auth, (user) => {
+            const authBtn = document.getElementById('authBtn');
+            if (user) {
+                authBtn.innerText = user.displayName || user.email || user.phoneNumber || "Connected User";
+                authBtn.onclick = () => {
+                    if(confirm("Do you want to log out of Fitness Pro?")) {
+                        signOut(auth).then(() => {
+                            alert("Signed out successfully.");
+                            authBtn.innerText = "Sign In";
+                            authBtn.onclick = window.openAuthModal;
+                        });
+                    }
+                };
+            } else {
+                authBtn.innerText = "Sign In";
+                authBtn.onclick = window.openAuthModal;
+            }
+        });
+
+        window.handleFirebaseEmailAuth = async (isSignUp) => {
+            const email = document.getElementById('userEmail').value;
+            const password = document.getElementById('userPassword').value;
+            if(!email || !password) return alert("Please enter both email and password.");
+
+            try {
+                if(isSignUp) {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    alert("Account created and signed in successfully!");
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    alert("Logged in successfully!");
+                }
+                window.closeAuthModal();
+            } catch (error) {
+                alert("Firebase Auth Error: " + error.message);
+            }
+        };
+
+        window.handleFirebaseGoogleAuth = async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+                alert("Signed in with Google successfully!");
+                window.closeAuthModal();
+            } catch (error) {
+                alert("Google Sign-In Error: " + error.message);
+            }
+        };
+
+        window.setupRecaptcha = () => {
+            if(!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'invisible'
+                });
+            }
+        };
+
+        window.handleFirebasePhoneAuth = async () => {
+            const phoneNumber = document.getElementById('userPhone').value;
+            if(!phoneNumber) return alert("Please enter a valid phone number with country code (e.g. +1234567890)");
+            
+            window.setupRecaptcha();
+            const appVerifier = window.recaptchaVerifier;
+
+            try {
+                const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+                window.confirmationResult = confirmationResult;
+                document.getElementById('phoneCodeSection').style.display = 'block';
+                alert("SMS Verification code sent to your phone!");
+            } catch(error) {
+                alert("Phone Auth Error: " + error.message);
+            }
+        };
+
+        window.verifyPhoneCode = async () => {
+            const code = document.getElementById('userPhoneCode').value;
+            if(!code) return alert("Enter the SMS code.");
+
+            try {
+                await window.confirmationResult.confirm(code);
+                alert("Phone number verified successfully!");
+                window.closeAuthModal();
+            } catch(error) {
+                alert("Invalid verification code: " + error.message);
+            }
+        };
+    </script>
+</head>
+<body id="bodyRoot">
+
+    <header>
+        <div class="top-controls">
+            <button class="top-btn" onclick="toggleAdminMode()" id="adminModeBtn">Mode: User</button>
+            <button class="top-btn" onclick="openAuthModal()" id="authBtn">Sign In</button>
+            <button class="top-btn" onclick="toggleLanguage()" id="langBtn">فارسی / EN</button>
+        </div>
+        <h1 id="uiTitle">Fitness Pro</h1>
+        <p id="uiSub">Exercise Library, Encyclopedia & Video Hub</p>
+    </header>
+
+    <!-- Main Navigation Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('exercises')" id="tabEx">Exercises</button>
+        <button class="tab-btn" onclick="switchTab('encyclopedia')" id="tabEnc">Encyclopedia</button>
+        <button class="tab-btn" onclick="switchTab('videos')" id="tabVid">Videos & GIFs</button>
+    </div>
+
+    <!-- 1. EXERCISES SECTION -->
+    <div id="exercises" class="section-content active">
+        <input type="text" id="searchBox" class="search-box" placeholder="Search exercises..." onkeyup="filterExercises()">
+        
+        <!-- Exercise Sub-categories Navigation -->
+        <div class="sub-tabs" id="exSubTabs">
+            <button class="sub-tab-btn active" onclick="switchExSubTab('all', event)" id="exSubAll">All</button>
+            <button class="sub-tab-btn" onclick="switchExSubTab('chest', event)" id="exSubChest">Chest</button>
+            <button class="sub-tab-btn" onclick="switchExSubTab('abdominals', event)" id="exSubAbs">Abs</button>
+            <button class="sub-tab-btn" onclick="switchExSubTab('quadriceps', event)" id="exSubLegs">Legs</button>
+            <button class="sub-tab-btn" onclick="switchExSubTab('biceps', event)" id="exSubArms">Arms</button>
+            <button class="sub-tab-btn" onclick="switchExSubTab('lats', event)" id="exSubBack">Back</button>
+            <button class="sub-tab-btn" onclick="switchExSubTab('shoulders', event)" id="exSubShoulders">Shoulders</button>
+        </div>
+
+        <!-- Admin Direct File Uploader Panel -->
+        <div class="add-panel admin-only">
+            <h3>Admin: Upload Custom Exercise or Data File (.json)</h3>
+            <div class="controls">
+                <input type="file" id="jsonUploadInput" accept=".json" onchange="handleFileUpload(event)">
+            </div>
+        </div>
+
+        <div id="exerciseContainer">
+            <div class="loading">Loading categorized exercises...</div>
+        </div>
+    </div>
+
+    <!-- 2. ENCYCLOPEDIA SECTION -->
+    <div id="encyclopedia" class="section-content">
+        <div class="sub-tabs">
+            <button class="sub-tab-btn active" onclick="switchSubTab('sub_yoga', event)" id="subTabYoga">Yoga & Calisthenics</button>
+            <button class="sub-tab-btn" onclick="switchSubTab('sub_diseases', event)" id="subTabDis">Diseases & Injuries</button>
+            <button class="sub-tab-btn" onclick="switchSubTab('sub_nutrition', event)" id="subTabNut">Nutrition & Food</button>
+            <button class="sub-tab-btn" onclick="switchSubTab('sub_supplements', event)" id="subTabSup">Supplements & Authenticity</button>
+            <button class="sub-tab-btn" onclick="switchSubTab('sub_pharmacology', event)" id="subTabPharm">Steroids & Pharmacology</button>
+            <button class="sub-tab-btn" onclick="switchSubTab('sub_legends', event)" id="subTabLeg">Legends & Bodybuilders</button>
+            <button class="sub-tab-btn" onclick="switchSubTab('sub_gyms', event)" id="subTabGym">Gyms & Systems</button>
+        </div>
+
+        <div id="sub_yoga" class="sub-section-content active">
+            <div id="grid_yoga" class="grid"><div class="loading">Loading Yoga & Calisthenics...</div></div>
+        </div>
+        <div id="sub_diseases" class="sub-section-content">
+            <div id="grid_diseases" class="grid"><div class="loading">Loading Diseases & Injuries...</div></div>
+        </div>
+        <div id="sub_nutrition" class="sub-section-content">
+            <div id="grid_nutrition" class="grid"><div class="loading">Loading Nutrition & Foods...</div></div>
+        </div>
+        <div id="sub_supplements" class="sub-section-content">
+            <div id="grid_supplements" class="grid"><div class="loading">Loading Supplements & Authenticity...</div></div>
+        </div>
+        <div id="sub_pharmacology" class="sub-section-content">
+            <div id="grid_pharmacology" class="grid"><div class="loading">Loading Steroids & Pharmacology...</div></div>
+        </div>
+        <div id="sub_legends" class="sub-section-content">
+            <div id="grid_legends" class="grid"><div class="loading">Loading Legends & Bodybuilders...</div></div>
+        </div>
+        <div id="sub_gyms" class="sub-section-content">
+            <div id="grid_gyms" class="grid"><div class="loading">Loading Gyms & Training Systems...</div></div>
+        </div>
+    </div>
+
+    <!-- 3. VIDEOS & GIFs SECTION -->
+    <div id="videos" class="section-content">
+        <div class="add-panel admin-only">
+            <h3 id="vidPanelTitle">Add Video or GIF</h3>
+            <div class="controls">
+                <input type="text" id="vidTitle" placeholder="Title">
+                <input type="text" id="vidUrl" placeholder="Video Link">
+                <input type="text" id="vidGif" placeholder="GIF Image Link">
+            </div>
+            <button class="action-btn" onclick="addVideo()" id="addVidBtn">Add Video/GIF</button>
+        </div>
+        <div id="videoGrid" class="grid"></div>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-modal" onclick="closeAuthModal()">&times;</button>
+            <h2 id="authTitle">Sign In</h2>
+            <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                <button class="sub-tab-btn active" id="authEmailTab" onclick="switchAuthMode('email')">Email</button>
+                <button class="sub-tab-btn" id="authPhoneTab" onclick="switchAuthMode('phone')">Phone</button>
+                <button class="sub-tab-btn" id="authGoogleTab" onclick="switchAuthMode('google')">Google</button>
+            </div>
+            
+            <div id="authEmailSection">
+                <input type="email" id="userEmail" placeholder="Enter your email...">
+                <input type="password" id="userPassword" placeholder="Enter password...">
+                <button class="action-btn" onclick="window.handleFirebaseEmailAuth(false)">Sign In with Email</button>
+                <button class="action-btn" style="background:#008cba; margin-top:8px;" onclick="window.handleFirebaseEmailAuth(true)">Register New Account</button>
+            </div>
+            
+            <div id="authPhoneSection" style="display:none;">
+                <input type="tel" id="userPhone" placeholder="Phone (+11234567890)">
+                <div id="recaptcha-container"></div>
+                <button class="action-btn" onclick="window.handleFirebasePhoneAuth()">Send SMS Code</button>
+                <div id="phoneCodeSection" style="display:none; margin-top:10px;">
+                    <input type="text" id="userPhoneCode" placeholder="Enter 6-digit SMS code">
+                    <button class="action-btn" onclick="window.verifyPhoneCode()">Verify SMS Code</button>
+                </div>
+            </div>
+            
+            <div id="authGoogleSection" style="display:none; text-align: center;">
+                <p style="color:var(--text-muted); font-size: 14px;">Connect securely using your Google account profile.</p>
+                <button class="action-btn" onclick="window.handleFirebaseGoogleAuth()">Sign in with Google (Gmail)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allExercises = [];
+        let currentExSubCategory = 'all';
+        let currentLang = 'en';
+        let isAdmin = false;
+        const EX_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/free-exercise-db/main/';
+        const DB_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/fitness_pro_database/main/';
+
+        let dbData = {
+            yoga: [],
+            diseases: [],
+            nutrition: [],
+            supplements: [],
+            pharmacology: [],
+            legends: [],
+            gyms: [],
+            videos: [
+                { title: "Squat Form Demo", title_fa: "آموزش فرم اسکوات", url: "https://youtube.com", gif: "" }
+            ]
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function switchSubTab(subId, evt) {
+            document.querySelectorAll('.sub-section-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#encyclopedia .sub-tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(subId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function switchExSubTab(category, evt) {
+            currentExSubCategory = category;
+            document.querySelectorAll('#exSubTabs .sub-tab-btn').forEach(el => el.classList.remove('active'));
+            evt.currentTarget.classList.add('active');
+            displayExercises(allExercises);
+        }
+
+        function toggleAdminMode() {
+            isAdmin = !isAdmin;
+            const body = document.getElementById('bodyRoot');
+            const btn = document.getElementById('adminModeBtn');
+            if(isAdmin) {
+                body.classList.add('admin-mode');
+                btn.innerText = "Mode: Admin";
+                btn.style.borderColor = "#4caf50";
+                btn.style.color = "#4caf50";
+            } else {
+                body.classList.remove('admin-mode');
+                btn.innerText = "Mode: User";
+                btn.style.borderColor = "var(--accent)";
+                btn.style.color = "var(--accent)";
+            }
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').style.display = 'flex';
+        }
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+        window.openAuthModal = openAuthModal;
+        window.closeAuthModal = closeAuthModal;
+
+        function switchAuthMode(mode) {
+            document.getElementById('authEmailSection').style.display = mode === 'email' ? 'block' : 'none';
+            document.getElementById('authPhoneSection').style.display = mode === 'phone' ? 'block' : 'none';
+            document.getElementById('authGoogleSection').style.display = mode === 'google' ? 'block' : 'none';
+            
+            document.getElementById('authEmailTab').classList.toggle('active', mode === 'email');
+            document.getElementById('authPhoneTab').classList.toggle('active', mode === 'phone');
+            document.getElementById('authGoogleTab').classList.toggle('active', mode === 'google');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if(Array.isArray(parsed)) {
+                        allExercises.push(...parsed);
+                    } else {
+                        allExercises.push(parsed);
+                    }
+                    displayExercises(allExercises);
+                    alert("File successfully loaded and added to exercise repository!");
+                } catch(err) {
+                    alert("Invalid JSON file format.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'fa' : 'en';
+            const root = document.getElementById('htmlRoot');
+            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+            root.setAttribute('lang', currentLang);
+            
+            document.getElementById('uiTitle').innerText = currentLang === 'fa' ? 'فیتنس پرو' : 'Fitness Pro';
+            document.getElementById('uiSub').innerText = currentLang === 'fa' ? 'مرجع تمرینات، دایره المعارف و ویدیوها' : 'Exercise Library, Encyclopedia & Video Hub';
+            document.getElementById('tabEx').innerText = currentLang === 'fa' ? 'تمرینات' : 'Exercises';
+            document.getElementById('tabEnc').innerText = currentLang === 'fa' ? 'دایره المعارف' : 'Encyclopedia';
+            document.getElementById('tabVid').innerText = currentLang === 'fa' ? 'ویدیوها' : 'Videos & GIFs';
+            
+            document.getElementById('exSubAll').innerText = currentLang === 'fa' ? 'همه' : 'All';
+            document.getElementById('exSubChest').innerText = currentLang === 'fa' ? 'سینه' : 'Chest';
+            document.getElementById('exSubAbs').innerText = currentLang === 'fa' ? 'شکم' : 'Abs';
+            document.getElementById('exSubLegs').innerText = currentLang === 'fa' ? 'پاها' : 'Legs';
+            document.getElementById('exSubArms').innerText = currentLang === 'fa' ? 'بازوها' : 'Arms';
+            document.getElementById('exSubBack').innerText = currentLang === 'fa' ? 'پشت' : 'Back';
+            document.getElementById('exSubShoulders').innerText = currentLang === 'fa' ? 'سرشانه' : 'Shoulders';
+
+            document.getElementById('subTabYoga').innerText = currentLang === 'fa' ? 'یوگا و کالستینیکس' : 'Yoga & Calisthenics';
+            document.getElementById('subTabDis').innerText = currentLang === 'fa' ? 'بیماری‌ها و آسیب‌ها' : 'Diseases & Injuries';
+            document.getElementById('subTabNut').innerText = currentLang === 'fa' ? 'تغذیه و غذا' : 'Nutrition & Food';
+            document.getElementById('subTabSup').innerText = currentLang === 'fa' ? 'مکمل‌ها و اصالت' : 'Supplements & Authenticity';
+            document.getElementById('subTabPharm').innerText = currentLang === 'fa' ? 'استروئید و داروسازی' : 'Steroids & Pharmacology';
+            document.getElementById('subTabLeg').innerText = currentLang === 'fa' ? 'اسطوره‌ها و بدن‌سازان' : 'Legends & Bodybuilders';
+            document.getElementById('subTabGym').innerText = currentLang === 'fa' ? 'باشگاه‌ها و سیستم‌ها' : 'Gyms & Systems';
+            document.getElementById('searchBox').placeholder = currentLang === 'fa' ? 'جستجوی تمرینات...' : 'Search exercises...';
+            
+            displayExercises(allExercises);
+            renderAllSubGrids();
+            renderVideos();
+        }
+
+        async function loadDatabases() {
+            try {
+                const resEx = await fetch(EX_BASE + 'dist/exercises.json');
+                allExercises = await resEx.json();
+                displayExercises(allExercises);
+
+                async function fetchFilesInto(fileList, targetArrayKey) {
+                    for (let file of fileList) {
+                        try {
+                            const r = await fetch(DB_BASE + file);
+                            const d = await r.json();
+                            if(Array.isArray(d)) dbData[targetArrayKey].push(...d);
+                            else dbData[targetArrayKey].push(d);
+                        } catch(e) {}
+                    }
+                }
+
+                await fetchFilesInto(['yoga.json', 'calisthenics.json', 'scientific_data.json'], 'yoga');
+                await fetchFilesInto(['diseases.json', 'injuries.json'], 'diseases');
+                await fetchFilesInto(['food_database.json'], 'nutrition');
+                await fetchFilesInto(['supplements.json', 'supplement_authenticity.json'], 'supplements');
+                await fetchFilesInto(['steroids.json', 'steroids_side_effects.json', 'steroid_authenticity.json', 'substances.json'], 'pharmacology');
+                await fetchFilesInto(['bodybuilders.json', 'legends.json', 'olympia_legends.json', 'legendary_trainers.json'], 'legends');
+                await fetchFilesInto(['gyms.json', 'shiraz_gyms.json', 'training_systems.json', 'contest_data.json', 'body_types.json'], 'gyms');
+
+                renderAllSubGrids();
+            } catch (error) {
+                console.error("Error loading online databases:", error);
+            }
+            renderVideos();
+        }
+
+        function renderAllSubGrids() {
+            renderGenericGrid('grid_yoga', dbData.yoga, 'yoga');
+            renderGenericGrid('grid_diseases', dbData.diseases, 'diseases');
+            renderGenericGrid('grid_nutrition', dbData.nutrition, 'nutrition');
+            renderGenericGrid('grid_supplements', dbData.supplements, 'supplements');
+            renderGenericGrid('grid_pharmacology', dbData.pharmacology, 'pharmacology');
+            renderGenericGrid('grid_legends', dbData.legends, 'legends');
+            renderGenericGrid('grid_gyms', dbData.gyms, 'gyms');
+        }
+
+        async function fetchWikiImage(queryTerm, imgElementId) {
+            if (!queryTerm) return;
+            const imgEl = document.getElementById(imgElementId);
+            if (!imgEl) return;
+
+            try {
+                let res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(queryTerm)}&prop=pageimages&format=json&pithumbsize=400&origin=*`);
+                let data = await res.json();
+                let pages = data.query.pages;
+                let pageId = Object.keys(pages)[0];
+                
+                if (pages[pageId] && pages[pageId].thumbnail && pages[pageId].thumbnail.source) {
+                    imgEl.src = pages[pageId].thumbnail.source;
+                    return;
+                }
+
+                let searchRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(queryTerm)}&format=json&origin=*`);
+                let searchData = await searchRes.json();
+                if (searchData.query && searchData.query.search.length > 0) {
+                    let bestTitle = searchData.query.search[0].title;
+                    let res2 = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(bestTitle)}&prop=pageimages&format=json&pithumbsize=400&origin=*`);
+                    let data2 = await res2.json();
+                    let pages2 = data2.query.pages;
+                    let pageId2 = Object.keys(pages2)[0];
+                    if (pages2[pageId2] && pages2[pageId2].thumbnail && pages2[pageId2].thumbnail.source) {
+                        imgEl.src = pages2[pageId2].thumbnail.source;
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function displayExercises(exercises) {
+            const container = document.getElementById('exerciseContainer');
+            
+            let filteredExercises = exercises;
+            if (currentExSubCategory !== 'all') {
+                filteredExercises = exercises.filter(ex => {
+                    const category = (ex.category || '').toLowerCase();
+                    const primaryMuscles = ex.primaryMuscles ? ex.primaryMuscles.map(m => m.toLowerCase()) : [];
+                    const secondaryMuscles = ex.secondaryMuscles ? ex.secondaryMuscles.map(m => m.toLowerCase()) : [];
+                    
+                    return category.includes(currentExSubCategory) || 
+                           primaryMuscles.includes(currentExSubCategory) || 
+                           secondaryMuscles.includes(currentExSubCategory);
+                });
+            }
+
+            if (filteredExercises.length === 0) {
+                container.innerHTML = '<p style="text-align:center;">No matching exercises found for this category.</p>';
+                return;
+            }
+
+            const categories = {};
+            filteredExercises.forEach((ex, idx) => {
+                const cat = ex.category || 'general';
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push({ ...ex, originalIndex: idx });
+            });
+
+            let html = '';
+            for (const [catName, catExercises] of Object.entries(categories)) {
+                html += `<h2 class="category-header">${catName}</h2><div class="grid">`;
+                
+                html += catExercises.map(ex => {
+                    const name = (currentLang === 'fa' && ex.name_fa) ? ex.name_fa : ex.name;
+                    const muscles = (currentLang === 'fa' && ex.primaryMuscles_fa) ? ex.primaryMuscles_fa.join(', ') : (ex.primaryMuscles ? ex.primaryMuscles.join(', ') : 'N/A');
+                    const rawInstructions = (currentLang === 'fa' && ex.instructions_fa) ? ex.instructions_fa : ex.instructions;
+                    const instructions = rawInstructions ? rawInstructions.map(step => `<li>${step}</li>`).join('') : '';
+                    
+                    const imagesHtml = ex.images && ex.images.length > 0 
+                        ? `<div class="img-container">${ex.images.map(img => `<img src="${EX_BASE}exercises/${img}" alt="${ex.name}" onerror="this.style.display='none'">`).join('')}</div>` 
+                        : '';
+
+                    return `
+                        <div class="card">
+                            <div>
+                                <h3>${name}</h3>
+                                <div>
+                                    <span class="badge">${ex.level || 'N/A'}</span>
+                                    <span class="badge" style="background:#1a2b3c; color:#64b5f6;">${muscles}</span>
+                                </div>
+                            </div>
+                            <p><b>${currentLang === 'fa' ? 'تجهیزات' : 'Equipment'}:</b> ${ex.equipment || 'N/A'}</p>
+                            <div>
+                                <p><b>${currentLang === 'fa' ? 'آموزش' : 'Instructions'}:</b></p>
+                                <ul class="instructions-list">${instructions}</ul>
+                            </div>
+                            ${imagesHtml}
+                            <button class="delete-btn" onclick="deleteExercise(${ex.originalIndex})">Delete</button>
+                        </div>
+                    `;
+                }).join('');
+
+                html += `</div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function renderGenericGrid(containerId, dataArray, categoryKey) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (!dataArray || dataArray.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No records found.</p>';
+                return;
+            }
+
+            container.innerHTML = dataArray.map((item, idx) => {
+                const titleEn = item.food_name || item.name || item.title || item.substance || item.gym_name || item.exercise_name || item.bodybuilder || item.legend_name || '';
+                const titleFa = item.food_name_fa || item.name_fa || item.title_fa || item.substance_fa || item.gym_name_fa || '';
+                const title = (currentLang === 'fa' && titleFa) ? titleFa : (titleEn || `Record #${idx + 1}`);
+                
+                let imageUrl = item.image || item.image_url || item.photo || item.visual_id || item['Visual Id'] || item.gif;
+                const uniqueImgId = `wiki_img_${categoryKey}_${idx}`;
+
+                if (!imageUrl) {
+                    imageUrl = `https://placehold.co/400x160/1e1e1e/ff9800?text=${encodeURIComponent(titleEn || title)}`;
+                    const cleanSearchTerm = (titleEn || title).replace(/\s*\([^)]*\)/g, '').trim();
+                    if (cleanSearchTerm) {
+                        setTimeout(() => fetchWikiImage(cleanSearchTerm, uniqueImgId), 80 + (idx * 40));
+                    }
+                }
+
+                let detailsHtml = '';
+                for (const [key, value] of Object.entries(item)) {
+                    if (['food_name', 'food_name_fa', 'name', 'name_fa', 'title', 'title_fa', 'substance', 'gym_name', 'exercise_name', 'bodybuilder', 'legend_name', 'image', 'image_url', 'photo', 'visual_id', 'Visual Id', 'gif'].includes(key)) continue;
+                    
+                    if (value !== null && value !== undefined && value !== '') {
+                        let displayVal = typeof value === 'object' ? JSON.stringify(value, null, 2) : value;
+                        detailsHtml += `<div class="prop-item"><b>${key.replace(/_/g, ' ')}:</b> ${displayVal}</div>`;
+                    }
+                }
+
+                return `
+                    <div class="card">
+                        <h3>${title}</h3>
+                        <img id="${uniqueImgId}" src="${imageUrl}" alt="${title}" loading="lazy" onerror="this.src='https://placehold.co/400x160/1e1e1e/ff9800?text=${encodeURIComponent(title)}'">
+                        <div style="margin-top:5px; display:flex; flex-direction:column; gap:4px;">
+                            ${detailsHtml || '<p style="color:var(--text-muted)">No additional details.</p>'}
+                        </div>
+                        <button class="delete-btn" onclick="deleteGenericItem('${categoryKey}', ${idx})">Delete</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteExercise(index) {
+            if(!isAdmin) return alert("Admin access required.");
+            if(confirm("Are you sure you want to delete this exercise?")) {
+                allExercises.splice(index, 1);
+                displayExercises(allExercises);
+            }
+        }
+
+        function deleteGenericItem(categoryKey, index) {
+            if(!isAdmin) return alert("Admin access required.");
+            if(confirm("Are you sure you want to delete this item?")) {
+                dbData[categoryKey].splice(index, 1);
+                renderGenericGrid(`grid_${categoryKey}`, dbData[categoryKey], categoryKey);
+            }
+        }
+
+        function filterExercises() {
+            const query = document.getElementById('searchBox').value.toLowerCase();
+            const filtered = allExercises.filter(ex => {
+                const nameMatch = ex.name && ex.name.toLowerCase().includes(query);
+                const nameFaMatch = ex.name_fa && ex.name_fa.toLowerCase().includes(query);
+                const categoryMatch = ex.category && ex.category.toLowerCase().includes(query);
+                const muscleMatch = ex.primaryMuscles && ex.primaryMuscles.some(m => m.toLowerCase().includes(query));
+                return nameMatch || nameFaMatch || categoryMatch || muscleMatch;
+            });
+            displayExercises(filtered);
+        }
+
+        function renderVideos() {
+            const grid = document.getElementById('videoGrid');
+            grid.innerHTML = dbData.videos.map((vid, idx) => `
+                <div class="card">
+                    <h3>${currentLang === 'fa' && vid.title_fa ? vid.title_fa : vid.title}</h3>
+                    ${vid.gif ? `<img src="${vid.gif}" alt="${vid.title}" style="width:100%; height:160px; object-fit:cover;">` : ''}
+                    <p style="margin-top:10px;"><a href="${vid.url}" target="_blank" style="color:var(--accent);">${currentLang === 'fa' ? 'تماشای ویدیو' : 'Watch Video Link'}</a></p>
+                    <button class="delete-btn" onclick="dbData.videos.splice(${idx},1); renderVideos();">Delete</button>
+                </div>
+            `).join('');
+        }
+
+    function addVideo() {
+            if(!isAdmin) return alert("Admin access required.");
+            const title = document.getElementById('vidTitle').value;
+            const url = document.getElementById('vidUrl').value;
+            const gif = document.getElementById('vidGif').value;
+            if(!title) return alert('Please enter a title.');
+            dbData.videos.push({ title, url, gif });
+            document.getElementById('vidTitle').value = '';
+            document.getElementById('vidUrl').value = '';
+            document.getElementById('vidGif').value = '';
+            renderVideos();
+        }
+
+        loadDatabases();
+    </script>
+</body>
+</html>
