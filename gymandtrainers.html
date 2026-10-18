@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en" id="htmlRoot" dir="ltr">
 <head>
@@ -568,4 +569,576 @@
         loadGymsFromGitHub();
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Pro - Shiraz & Tehran Gym Directory Hub</title>
+    <!-- html2canvas for saving comparison images -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-elevated: #111111;
+            --accent: #34d399;
+            --accent-orange: #ff5722;
+            --warning: #fbbf24;
+            --danger: #ff3b30;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border: #222222;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        h1 {
+            color: var(--accent);
+            margin-bottom: 5px;
+            font-size: 22px;
+        }
+        .top-controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .top-btn {
+            background: #1e1e24;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .top-btn:hover {
+            background: var(--accent);
+            color: #000;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .nav-tab-btn {
+            flex: 1;
+            min-width: 220px;
+            padding: 12px;
+            background: #1c1c1e;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+        }
+        .nav-tab-btn.active {
+            background: var(--accent-orange);
+            color: #ffffff;
+            border-color: var(--accent-orange);
+        }
+        .panel {
+            background: var(--card-elevated);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: none;
+        }
+        .panel.active {
+            display: block;
+        }
+        .panel h2 {
+            color: var(--accent);
+            margin-top: 0;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 8px;
+            font-size: 18px;
+        }
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .card-item {
+            background: #1a1a1c;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .card-item img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #252525;
+            margin-bottom: 6px;
+        }
+        .card-item h3 {
+            margin: 0 0 4px 0;
+            color: var(--accent-orange);
+            font-size: 16px;
+        }
+        .input-group {
+            background: #1a1a1c;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .input-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+        input, select, textarea {
+            padding: 10px;
+            background: #222225;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+            font-size: 13px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .action-btn {
+            background: var(--accent);
+            color: #000000;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+        .badge {
+            display: inline-block;
+            background: #2c2c35;
+            color: #34d399;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .compare-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        /* Floating Support Button */
+        .float-support {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25d366;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            z-index: 999;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        @media(max-width: 768px) {
+            .compare-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating WhatsApp Support Widget -->
+    <a href="https://wa.me/989176001268" target="_blank" class="float-support">
+        💬 WhatsApp Support / پشتیبانی واتساپ
+    </a>
+
+    <header>
+        <div class="top-controls">
+            <a href="index.html" class="top-btn">← Back / بازگشت</a>
+        </div>
+        <h1>FITNESS PRO - SHIRAZ & TEHRAN GYM DIRECTORY</h1>
+        <p style="color: var(--text-muted); font-size: 13px;">Complete Verified Gym Directory & Side-by-Side Comparison Hub / دایرکتوری کامل باشگاه‌های ورزشی</p>
+    </header>
+
+    <div class="container">
+
+        <!-- Top Navigation Switcher -->
+        <div class="nav-tabs">
+            <button class="nav-tab-btn active" onclick="switchMainTab('gyms')">🏋️ Gym Directory / دایرکتوری باشگاه‌ها (<span id="gymCount">0</span>)</button>
+            <button class="nav-tab-btn" onclick="switchMainTab('addGym')">➕ Add Your Gym / ثبت باشگاه</button>
+            <button class="nav-tab-btn" onclick="switchMainTab('compare')">⚖️ Gym Comparison / مقایسه باشگاه‌ها</button>
+        </div>
+
+        <!-- TAB 1: GYMS DIRECTORY -->
+        <div class="panel active" id="tabGymsPanel">
+            <h2>Complete Directory of Gyms (دایرکتوری جامع باشگاه‌ها)</h2>
+            <p style="font-size:13px; color:var(--text-muted);">Loaded live from your GitHub JSON repository with detailed attributes, phone numbers, and Instagram pages.</p>
+
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-bottom: 15px;">
+                <div class="input-group">
+                    <label>Filter by City / انتخاب شهر</label>
+                    <select id="cityFilter" onchange="filterGyms()">
+                        <option value="all">All Cities / همه شهرها</option>
+                        <option value="شیراز">Shiraz / شیراز</option>
+                        <option value="تهران">Tehran / تهران</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Filter by Area / منطقه</label>
+                    <select id="areaFilter" onchange="filterGyms()">
+                        <option value="all">All Areas / تمام مناطق</option>
+                        <option value="پاسداران">پاسداران</option>
+                        <option value="قصردشت">قصردشت</option>
+                        <option value="فرهنگ‌شهر">فرهنگ‌شهر</option>
+                        <option value="تاچارا">تاچارا</option>
+                        <option value="معالی‌آباد">معالی‌آباد</option>
+                        <option value="ستارخان">ستارخان</option>
+                        <option value="گلستان">گلستان</option>
+                        <option value="صدرا">صدرا</option>
+                        <option value="زند">زند</option>
+                        <option value="ارم">ارم</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Filter by Amenity / امکانات ویژه</label>
+                    <select id="amenityFilter" onchange="filterGyms()">
+                        <option value="all">All Amenities / همه امکانات</option>
+                        <option value="pool">Swimming Pool / استخر و سونا</option>
+                        <option value="crossfit">CrossFit / کراس‌فیت و وزنه آزاد</option>
+                        <option value="vip">VIP Lockers / کمد اختصاصی VIP</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-cards" id="gymsCardsContainer">
+                <p style="color: var(--text-muted); text-align: center; grid-column: 1/-1;">Loading gyms from GitHub JSON repository...</p>
+            </div>
+        </div>
+
+        <!-- TAB 2: ADD YOUR GYM -->
+        <div class="panel" id="tabAddGymPanel">
+            <h2>Add Your Gym to the Directory (ثبت رایگان باشگاه در دایرکتوری)</h2>
+            <p style="font-size:13px; color:var(--text-muted);">Are you a gym owner? Add your club details and contact info to make it visible to athletes.</p>
+
+            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
+                <div class="input-group">
+                    <label>Gym Name / نام باشگاه</label>
+                    <input type="text" id="newGymName" placeholder="e.g. باشگاه بدنسازی اکسیژن">
+                </div>
+                <div class="input-group">
+                    <label>City / شهر</label>
+                    <select id="newGymCity">
+                        <option value="شیراز">شیراز (Shiraz)</option>
+                        <option value="تهران">تهران (Tehran)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Area / منطقه یا محله</label>
+                    <input type="text" id="newGymArea" placeholder="e.g. فرهنگ‌شهر / پاسداران">
+                </div>
+                <div class="input-group">
+                    <label>Exact Address / آدرس دقیق</label>
+                    <input type="text" id="newGymAddress" placeholder="e.g. خیابان اصلی، پلاک ۱۲">
+                </div>
+                <div class="input-group">
+                    <label>Phone Number / شماره تماس</label>
+                    <input type="text" id="newGymPhone" placeholder="071-38234455">
+                </div>
+                <div class="input-group">
+                    <label>Instagram Page / صفحه اینستاگرام</label>
+                    <input type="text" id="newGymInstagram" placeholder="@gym_username">
+                </div>
+                <div class="input-group">
+                    <label>Monthly Fee / شهریه ماهانه</label>
+                    <input type="text" id="newGymPrice" placeholder="e.g. ۲,۵۰۰,۰۰۰ تومان">
+                </div>
+                <div class="input-group">
+                    <label>Equipment Brand / برند تجهیزات</label>
+                    <input type="text" id="newGymEquipment" placeholder="e.g. Technogym / Matrix">
+                </div>
+                <div class="input-group">
+                    <label>Shift / سانس‌ها</label>
+                    <select id="newGymShift">
+                        <option value="آقایان / بانوان">آقایان / بانوان (شیفتی)</option>
+                        <option value="آقایان">فقط آقایان</option>
+                        <option value="بانوان">فقط بانوان</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Amenity Category / امکانات ویژه</label>
+                    <select id="newGymAmenity">
+                        <option value="vip">VIP & Modern (مدرن و کمد اختصاصی)</option>
+                        <option value="crossfit">CrossFit & Functional (کراس‌فیت و وزنه آزاد)</option>
+                        <option value="pool">Pool & Spa (دارای استخر و سونا)</option>
+                    </select>
+                </div>
+                <div class="input-group" style="grid-column: span 2;">
+                    <label>Description & Features / توضیحات و امکانات</label>
+                    <textarea id="newGymOptions" rows="2" placeholder="e.g. دستگاه‌های هوازی پیشرفته، بوفه رژیمی، پارکینگ اختصاصی"></textarea>
+                </div>
+            </div>
+
+            <button class="action-btn" style="background:var(--accent); color:#000; margin-top:15px;" onclick="addNewGymToList()">🚀 Publish Gym to Directory / انتشار باشگاه</button>
+        </div>
+
+        <!-- TAB 3: SIDE-BY-SIDE GYM COMPARISON -->
+        <div class="panel" id="tabComparePanel">
+            <h2>Side-by-Side Gym Comparison Matrix (مقایسه تخصصی باشگاه‌ها)</h2>
+            <p style="font-size:13px; color:var(--text-muted);">Select any two clubs from your loaded database to evaluate pricing, equipment, and contact info side-by-side.</p>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                <div class="input-group">
+                    <label>Select Gym A / باشگاه اول</label>
+                    <select id="compareGym1" onchange="updateComparison()"></select>
+                </div>
+                <div class="input-group">
+                    <label>Select Gym B / باشگاه دوم</label>
+                    <select id="compareGym2" onchange="updateComparison()"></select>
+                </div>
+            </div>
+
+            <div id="compareResultArea" class="compare-container"></div>
+            <button class="action-btn" id="btnSaveCompare" style="background:#008cba; color:#fff; display:none; margin-top:15px;" onclick="saveCardAsImage('compareResultArea', 'Gym_Comparison.png')">Save Comparison as Image / ذخیره مقایسه به صورت عکس</button>
+        </div>
+
+    </div>
+
+    <script>
+        let gymsData = [];
+        const GITHUB_JSON_URL = 'https://raw.githubusercontent.com/mohammad009999-prog/fitness_pro_database/main/shiraz_gyms_100.json';
+
+        // Fetch JSON from GitHub repository on page load
+        async function loadGymsFromGitHub() {
+            try {
+                const response = await fetch(GITHUB_JSON_URL);
+                if (!response.ok) throw new Error('Failed to fetch JSON from GitHub');
+                const data = await response.json();
+                gymsData = data.gyms || [];
+                
+                document.getElementById('gymCount').innerText = gymsData.length;
+                renderGyms(gymsData);
+                initComparisonSelectors();
+            } catch (error) {
+                console.error("Error loading GitHub JSON:", error);
+                document.getElementById('gymsCardsContainer').innerHTML = `
+                    <p style="color: var(--danger); text-align: center; grid-column: 1/-1;">
+                        ⚠️ Error loading gyms JSON from GitHub repository. Please check your raw file link or internet connection.
+                    </p>`;
+            }
+        }
+
+        function renderGyms(filteredList) {
+            const container = document.getElementById('gymsCardsContainer');
+            container.innerHTML = "";
+            
+            if (filteredList.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted); text-align: center; grid-column: 1/-1;">No gyms found matching your filter.</p>`;
+                return;
+            }
+
+            filteredList.forEach(g => {
+                const card = document.createElement('div');
+                card.className = 'card-item';
+                const defaultImg = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80";
+                card.innerHTML = `
+                    <img src="${g.image || defaultImg}" alt="${g.name}" onerror="this.src='${defaultImg}'">
+                    <h3>${g.name}</h3>
+                    <p style="font-size:12px; color:var(--text-muted); margin:0;">📍 [${g.city || 'شیراز'}] ${g.address} (${g.area})</p>
+                    <p style="font-size:13px; margin:4px 0;"><b>📞 Phone:</b> <a href="tel:${g.phone}" style="color:var(--accent); text-decoration:none;">${g.phone || 'N/A'}</a></p>
+                    <p style="font-size:13px; margin:2px 0;"><b>📸 Instagram:</b> <a href="https://instagram.com/${(g.instagram || '').replace('@','')}" target="_blank" style="color:#ff5722; text-decoration:none;">${g.instagram || 'N/A'}</a></p>
+                    <p style="font-size:12px; margin:2px 0; color:#34d399;"><b>Shift / سانس:</b> ${g.shift || 'آقایان / بانوان'}</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:6px;">
+                        <span class="badge">${g.price || 'تماس بگیرید'}</span>
+                        <button style="background:var(--accent); border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="alert('${g.name}\\nPhone: ${g.phone || N/A}\\nInstagram: ${g.instagram || N/A}\\nEquipment: ${g.equipment || N/A}')">Details</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterGyms() {
+            const city = document.getElementById('cityFilter').value;
+            const area = document.getElementById('areaFilter').value;
+            const amenity = document.getElementById('amenityFilter').value;
+
+            let result = gymsData;
+            if (city !== 'all') result = result.filter(g => (g.city || 'شیراز') === city);
+            if (area !== 'all') result = result.filter(g => g.area === area);
+            if (amenity !== 'all') result = result.filter(g => g.amenity === amenity);
+            
+            renderGyms(result);
+        }
+
+        // --- Add New Gym Locally ---
+        function addNewGymToList() {
+            const name = document.getElementById('newGymName').value;
+            const city = document.getElementById('newGymCity').value;
+            const area = document.getElementById('newGymArea').value;
+            const address = document.getElementById('newGymAddress').value;
+            const phone = document.getElementById('newGymPhone').value;
+            const instagram = document.getElementById('newGymInstagram').value;
+            const price = document.getElementById('newGymPrice').value;
+            const equipment = document.getElementById('newGymEquipment').value;
+            const shift = document.getElementById('newGymShift').value;
+            const amenity = document.getElementById('newGymAmenity').value;
+            const options = document.getElementById('newGymOptions').value;
+
+            if (!name || !address || !price) {
+                alert("Please fill in at least the gym name, address, and monthly fee.");
+                return;
+            }
+
+            const newGymObj = {
+                id: gymsData.length + 1,
+                city: city,
+                name: name,
+                area: area || city,
+                address: address,
+                phone: phone || "N/A",
+                instagram: instagram || "N/A",
+                price: price,
+                equipment: equipment || "Standard",
+                shift: shift,
+                amenity: amenity,
+                options: options || "تجهیزات کامل بدنسازی",
+                image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80"
+            };
+
+            gymsData.unshift(newGymObj);
+            document.getElementById('gymCount').innerText = gymsData.length;
+            renderGyms(gymsData);
+            initComparisonSelectors();
+
+            alert("✅ Your gym has been successfully added to the directory!");
+            switchMainTab('gyms');
+
+            // Reset form fields
+            document.getElementById('newGymName').value = '';
+            document.getElementById('newGymArea').value = '';
+            document.getElementById('newGymAddress').value = '';
+            document.getElementById('newGymPhone').value = '';
+            document.getElementById('newGymInstagram').value = '';
+            document.getElementById('newGymPrice').value = '';
+            document.getElementById('newGymEquipment').value = '';
+            document.getElementById('newGymOptions').value = '';
+        }
+
+        // --- Side-by-Side Comparison Logic ---
+        function initComparisonSelectors() {
+            const sel1 = document.getElementById('compareGym1');
+            const sel2 = document.getElementById('compareGym2');
+            if(!sel1 || !sel2) return;
+            
+            sel1.innerHTML = "";
+            sel2.innerHTML = "";
+
+            gymsData.forEach((g, idx) => {
+                sel1.innerHTML += `<option value="${g.id}">[${g.city || 'شیراز'}] ${g.name} (${g.area})</option>`;
+                sel2.innerHTML += `<option value="${g.id}" ${idx === 1 ? 'selected' : ''}>[${g.city || 'شیراز'}] ${g.name} (${g.area})</option>`;
+            });
+            updateComparison();
+        }
+
+        function updateComparison() {
+            const id1 = parseInt(document.getElementById('compareGym1').value);
+            const id2 = parseInt(document.getElementById('compareGym2').value);
+            const gym1 = gymsData.find(g => g.id === id1);
+            const gym2 = gymsData.find(g => g.id === id2);
+            const area = document.getElementById('compareResultArea');
+
+            if (!gym1 || !gym2) return;
+
+            area.innerHTML = `
+                <div class="card-item" style="background:#1e1e24;">
+                    <h3 style="color:var(--accent);">${gym1.name}</h3>
+                    <p style="font-size:12px; color:var(--text-muted);">📍 [${gym1.city || 'شیراز'}] ${gym1.address}</p>
+                    <p style="font-size:13px; color:var(--accent);">📞 ${gym1.phone || 'N/A'} | 📸 ${gym1.instagram || 'N/A'}</p>
+                    <hr style="border-color:var(--border);">
+                    <p style="font-size:13px;"><b>Price / شهریه:</b> <span style="color:#34d399;">${gym1.price}</span></p>
+                    <p style="font-size:13px;"><b>Equipment / تجهیزات:</b> ${gym1.equipment || 'Standard'}</p>
+                    <p style="font-size:13px;"><b>Shifts / سانس‌ها:</b> ${gym1.shift || 'آقایان / بانوان'}</p>
+                </div>
+                <div class="card-item" style="background:#1e1e24;">
+                    <h3 style="color:var(--accent);">${gym2.name}</h3>
+                    <p style="font-size:12px; color:var(--text-muted);">📍 [${gym2.city || 'شیراز'}] ${gym2.address}</p>
+                    <p style="font-size:13px; color:var(--accent);">📞 ${gym2.phone || 'N/A'} | 📸 ${gym2.instagram || 'N/A'}</p>
+                    <hr style="border-color:var(--border);">
+                    <p style="font-size:13px;"><b>Price / شهریه:</b> <span style="color:#34d399;">${gym2.price}</span></p>
+                    <p style="font-size:13px;"><b>Equipment / تجهیزات:</b> ${gym2.equipment || 'Standard'}</p>
+                    <p style="font-size:13px;"><b>Shifts / سانس‌ها:</b> ${gym2.shift || 'آقایان / بانوان'}</p>
+                </div>
+            `;
+            document.getElementById('btnSaveCompare').style.display = 'block';
+        }
+
+        function switchMainTab(tabKey) {
+            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+
+            if (tabKey === 'gyms') {
+                document.querySelectorAll('.nav-tab-btn')[0].classList.add('active');
+                document.getElementById('tabGymsPanel').classList.add('active');
+            } else if (tabKey === 'addGym') {
+                document.querySelectorAll('.nav-tab-btn')[1].classList.add('active');
+                document.getElementById('tabAddGymPanel').classList.add('active');
+            } else if (tabKey === 'compare') {
+                document.querySelectorAll('.nav-tab-btn')[2].classList.add('active');
+                document.getElementById('tabComparePanel').classList.add('active');
+            }
+        }
+
+        function saveCardAsImage(elementId, filename) {
+            const el = document.getElementById(elementId);
+            html2canvas(el, { backgroundColor: '#1e1e24' }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // Run fetch on startup
+        loadGymsFromGitHub();
+    </script>
+</body>
+>>>>>>> 80c01da217c37133fa018884a730fc85c1f5e515
 </html>

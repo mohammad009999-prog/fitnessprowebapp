@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "Fitness Pro",
   "short_name": "FitnessPro",
@@ -18,4 +19,26 @@
       "type": "image/png"
     }
   ]
+=======
+{
+  "name": "Fitness Pro",
+  "short_name": "FitnessPro",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#ff9800",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+>>>>>>> 80c01da217c37133fa018884a730fc85c1f5e515
 }

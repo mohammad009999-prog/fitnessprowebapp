@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en" id="htmlRoot" dir="ltr">
 <head>
@@ -558,4 +559,566 @@
         renderBloodInputs();
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Pro - Advanced Clinical & Lab Suite</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e24;
+            --border-color: #2c2c35;
+            --accent: #ff5722;
+            --success: #00e676;
+            --warning: #fbbf24;
+            --text-main: #ffffff;
+            --text-muted: #a0a0ab;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 16px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        h1 {
+            color: var(--accent);
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+        .top-controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .top-btn {
+            background: var(--card-bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .list-item-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .list-item-header {
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: #25252d;
+            transition: background 0.2s;
+        }
+        .list-item-header:hover {
+            background: #2c2c38;
+        }
+        .list-item-header h2 {
+            color: var(--accent);
+            margin: 0;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .arrow-icon {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+        .list-item-card.active .arrow-icon {
+            transform: rotate(180deg);
+            color: var(--accent);
+        }
+        .list-item-body {
+            display: none;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            background: var(--card-bg);
+        }
+        .list-item-card.active .list-item-body {
+            display: block;
+        }
+        .section-title {
+            color: var(--success);
+            margin: 16px 0 8px 0;
+            font-size: 15px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+        }
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            background: #2c2c35;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .input-row-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .input-group label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+        .info-btn {
+            background: #3a3a45;
+            color: var(--warning);
+            border: 1px solid var(--warning);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .info-btn:hover {
+            background: var(--warning);
+            color: #000;
+        }
+        input, select, textarea {
+            padding: 10px;
+            background: #1e1e24;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            font-size: 13px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .action-btn {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+        .result-box {
+            margin-top: 15px;
+            padding: 20px;
+            background: #1e1e24;
+            color: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: none;
+            line-height: 1.6;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+        .disclaimer {
+            background: #252015;
+            border: 1px solid var(--warning);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #ffd54f;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-controls">
+            <a href="index.html" class="top-btn">← Back</a>
+        </div>
+        <h1>FITNESS PRO CLINICAL & LAB SUITE</h1>
+        <p style="color: var(--text-muted); font-size: 12px;">Advanced Blood Analysis & Prescription Tools</p>
+    </header>
+
+    <div class="container">
+
+        <!-- TOOL 1: CLINICAL BLOOD ANALYZER LIST ITEM -->
+        <div class="list-item-card" id="cardBloodAnalyzer">
+            <div class="list-item-header" onclick="toggleToolCard('cardBloodAnalyzer')">
+                <h2>🩸 1. Clinical Blood Analyzer (آنالیز جامع خون)</h2>
+                <span class="arrow-icon">▼</span>
+            </div>
+            <div class="list-item-body">
+                <div class="disclaimer">
+                    <b>🛡️ Important Medical Notice:</b> This tool is designed exclusively for fitness tracking, educational awareness, and self-evaluation. It <b>does not replace a professional medical doctor</b>, clinical diagnosis, or specialized laboratory interpretation. Always consult a qualified physician for health decisions.
+                </div>
+
+                <div class="grid-inputs" style="grid-template-columns: 2fr 1fr; margin-bottom: 10px;">
+                    <div class="input-group">
+                        <label>Patient Full Name / نام و نام خانوادگی بیمار</label>
+                        <input type="text" id="etUserName" placeholder="e.g., John Doe">
+                    </div>
+                    <div class="input-group">
+                        <label>Age / سن</label>
+                        <input type="number" id="etUserAge" placeholder="Age">
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>Gender / جنسیت</label>
+                    <select id="spinnerUserGender">
+                        <option value="Male">Male / مرد</option>
+                        <option value="Female">Female / زن</option>
+                    </select>
+                </div>
+
+                <div class="section-title">1. General & Hematology (خون‌شناسی)</div>
+                <div class="grid-inputs" id="groupHgb"></div>
+                <div class="grid-inputs" id="groupHct"></div>
+                <div class="grid-inputs" id="groupWbc"></div>
+                <div class="grid-inputs" id="groupPlt"></div>
+                <div class="grid-inputs" id="groupGlucose"></div>
+
+                <div class="section-title">2. Liver & Kidney Function (کبد و کلیه)</div>
+                <div class="grid-inputs" id="groupAlt"></div>
+                <div class="grid-inputs" id="groupAst"></div>
+                <div class="grid-inputs" id="groupGgt"></div>
+                <div class="grid-inputs" id="groupCreat"></div>
+                <div class="grid-inputs" id="groupBun"></div>
+                <div class="grid-inputs" id="groupCystatin"></div>
+
+                <div class="section-title">3. Hormonal Axis (محور هورمونی)</div>
+                <div class="grid-inputs" id="groupTesto"></div>
+                <div class="grid-inputs" id="groupShbg"></div>
+                <div class="grid-inputs" id="groupEstro"></div>
+                <div class="grid-inputs" id="groupProl"></div>
+                <div class="grid-inputs" id="groupLh"></div>
+                <div class="grid-inputs" id="groupFsh"></div>
+                <div class="grid-inputs" id="groupFai"></div>
+                <div class="grid-inputs" id="groupDheas"></div>
+
+                <div class="section-title">4. Metabolism & Vitamins (متابولیسم و ویتامین‌ها)</div>
+                <div class="grid-inputs" id="groupHba1c"></div>
+                <div class="grid-inputs" id="groupHomair"></div>
+                <div class="grid-inputs" id="groupCortisol"></div>
+                <div class="grid-inputs" id="groupVitD"></div>
+                <div class="grid-inputs" id="groupB12"></div>
+                <div class="grid-inputs" id="groupFolate"></div>
+                <div class="grid-inputs" id="groupFerr"></div>
+
+                <div class="section-title">5. Cardiovascular & Lipids (قلب و عروق و چربی‌ها)</div>
+                <div class="grid-inputs" id="groupLdl"></div>
+                <div class="grid-inputs" id="groupHdl"></div>
+                <div class="grid-inputs" id="groupApob"></div>
+                <div class="grid-inputs" id="groupHscrp"></div>
+
+                <button class="action-btn" style="margin-top: 15px;" onclick="processBloodAnalysis()">GENERATE FULL BLOOD ANALYSIS</button>
+                <button class="action-btn" style="background:#3a3a3c; color:#ffffff;" onclick="showBloodHistory()">VIEW HISTORY LOGS</button>
+
+                <div id="bloodResultContainer" class="result-box" style="background:#ffffff; color:#000000;"></div>
+                <button class="action-btn" id="btnSaveImage" style="background:#00e676; color:#000; display:none; margin-top:10px;" onclick="saveCardAsImage('bloodResultContainer', 'Clinical_Report.png')">SAVE REPORT AS IMAGE</button>
+            </div>
+        </div>
+
+        <!-- TOOL 2: LAB PRESCRIPTION REQUISITION LIST ITEM -->
+        <div class="list-item-card" id="cardPrescription">
+            <div class="list-item-header" onclick="toggleToolCard('cardPrescription')">
+                <h2>📝 2. Prescription & Lab Requisition Tool (نسخه‌نویس آزمایشگاه)</h2>
+                <span class="arrow-icon">▼</span>
+            </div>
+            <div class="list-item-body">
+                <div class="disclaimer">
+                    <b>🛡️ Clinical Supervision Notice:</b> This requisition slip generator is an informational template for educational guidance. It <b>does not replace an official prescription by a certified physician</b>. Laboratory tests must be ordered and interpreted by a medical professional.
+                </div>
+
+                <div class="grid-inputs" style="grid-template-columns: 2fr 1fr; margin-bottom: 10px;">
+                    <div class="input-group">
+                        <label>Patient Full Name / نام و نام خانوادگی بیمار</label>
+                        <input type="text" id="etRxName" placeholder="e.g., John Doe">
+                    </div>
+                    <div class="input-group">
+                        <label>Age / سن</label>
+                        <input type="number" id="etRxAge" placeholder="Age">
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>Gender / جنسیت</label>
+                    <select id="spinnerRxGender">
+                        <option value="Male">Male / مرد</option>
+                        <option value="Female">Female / زن</option>
+                    </select>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>Prescription Requisition Protocol / پروتکل نسخه آزمایشگاه</label>
+                    <select id="spinnerTestType">
+                        <option value="0">1. Full Bodybuilding Protocol / چکاپ جامع بدنسازی</option>
+                        <option value="1">2. Hormonal Axis & Fertility / آنالیز هورمون‌های جنسی</option>
+                        <option value="2">3. Advanced Liver & Renal Health / سلامت کبد و کلیه</option>
+                        <option value="3">4. Cardiovascular Wellness Panel / سلامت قلب و عروق</option>
+                        <option value="4">5. Thyroid & Metabolic Rate / غده تیروئید و متابولیسم</option>
+                        <option value="5">6. Micronutrient & Mineral Panel / ویتامین‌ها و املاح</option>
+                        <option value="6">7. Insulin & Glucose Management / مدیریت قند و انسولین</option>
+                        <option value="7">8. Recovery & Inflammation Markers / فاکتورهای ریکاوری</option>
+                    </select>
+                </div>
+
+                <button class="action-btn" style="background:#008cba;" onclick="generatePrescriptionSlip()">CREATE OFFICIAL LAB REQUISITION</button>
+
+                <div id="prescriptionResultContainer" class="result-box" style="background:#ffffff; color:#000000;"></div>
+                <button class="action-btn" id="btnSavePrescriptionImage" style="background:#00e676; color:#000; display:none; margin-top:10px;" onclick="saveCardAsImage('prescriptionResultContainer', 'Lab_Requisition_Slip.png')">SAVE REQUISITION SLIP AS IMAGE</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleToolCard(cardId) {
+            const card = document.getElementById(cardId);
+            card.classList.toggle('active');
+        }
+
+        // --- Full 30 Biomedical Markers Setup with Descriptions & Normal Ranges ---
+        const bloodMarkers = [
+            { id: "Hgb", cat: "General", name: "Hemoglobin (HGB)", unit: "g/dL", min: 13.5, max: 17.5, desc: "Measures oxygen-carrying protein in red blood cells. Low values indicate anemia, high values suggest dehydration or polycythemia." },
+            { id: "Hct", cat: "General", name: "Hematocrit (HCT)", unit: "%", min: 41.0, max: 50.0, desc: "Percentage of red blood cells in total blood volume. Reflects hydration and oxygen transport capacity." },
+            { id: "Wbc", cat: "General", name: "White Blood Cells (WBC)", unit: "10^3/uL", min: 4.5, max: 11.0, desc: "Core component of immune defense. Elevations indicate infection, inflammation, or physical stress." },
+            { id: "Plt", cat: "General", name: "Platelets (PLT)", unit: "k/uL", min: 150, max: 450, desc: "Responsible for blood clotting and vascular repair after intensive resistance training micro-trauma." },
+            { id: "Glucose", cat: "General", name: "Fasting Glucose", unit: "mg/dL", min: 70, max: 99, desc: "Measures blood sugar levels after overnight fasting. Key indicator of carbohydrate metabolism." },
+
+            { id: "Alt", cat: "Organ", name: "ALT Liver Enzyme", unit: "U/L", min: 0, max: 44, desc: "Primary hepatic enzyme. Elevated levels can reflect liver stress, oral anabolics, or heavy training breakdown." },
+            { id: "Ast", cat: "Organ", name: "AST Liver Enzyme", unit: "U/L", min: 0, max: 40, desc: "Enzyme found in liver and skeletal muscle. Rises significantly after severe workouts or muscle damage." },
+            { id: "Ggt", cat: "Organ", name: "GGT Biliary Enzyme", unit: "U/L", min: 8, max: 61, desc: "Sensitive marker for bile duct and liver tissue integrity and oxidative stress." },
+            { id: "Creat", cat: "Organ", name: "Creatinine", unit: "mg/dL", min: 0.7, max: 1.3, desc: "Waste product filtered by kidneys. Influenced by muscle mass, high protein diets, and creatine supplementation." },
+            { id: "Bun", cat: "Organ", name: "Blood Urea Nitrogen", unit: "mg/dL", min: 7, max: 20, desc: "Evaluates renal filtration and protein breakdown turnover in athletes." },
+            { id: "Cystatin", cat: "Organ", name: "Cystatin-C", unit: "mg/L", min: 0.6, max: 1.0, desc: "Advanced precise marker of renal function independent of muscle mass variations." },
+
+            { id: "Testo", cat: "Hormone", name: "Total Testosterone", unit: "ng/dL", min: 300, max: 1100, desc: "Main male sex hormone governing muscle hypertrophy, libido, and recovery capacity." },
+            { id: "Shbg", cat: "Hormone", name: "SHBG", unit: "nmol/L", min: 16, max: 55, desc: "Sex hormone-binding globulin. Binds testosterone, determining active free circulating hormone availability." },
+            { id: "Estro", cat: "Hormone", name: "Estradiol (E2)", unit: "pg/mL", min: 10, max: 40, desc: "Primary estrogen. Essential for joint health, mood regulation, and lipid balance in men." },
+            { id: "Prol", cat: "Hormone", name: "Prolactin", unit: "ng/mL", min: 2, max: 18, desc: "Pituitary hormone influencing mood, immune response, and sexual function." },
+            { id: "Lh", cat: "Hormone", name: "Luteinizing Hormone", unit: "mIU/mL", min: 1.7, max: 8.6, desc: "Pituitary signal stimulating testicular Leydig cells to manufacture testosterone." },
+            { id: "Fsh", cat: "Hormone", name: "FSH", unit: "mIU/mL", min: 1.5, max: 12.4, desc: "Follicle-stimulating hormone responsible for spermatogenesis and gonadal stimulation." },
+            { id: "Fai", cat: "Hormone", name: "Free Androgen Index", unit: "%", min: 30, max: 150, desc: "Ratio estimating biologically active free testosterone levels in blood." },
+            { id: "Dheas", cat: "Hormone", name: "DHEA-S", unit: "ug/dL", min: 160, max: 440, desc: "Adrenal steroid precursor supporting endocrine vitality and immune defense." },
+
+            { id: "Hba1c", cat: "Metabolic", name: "HbA1c", unit: "%", min: 4.0, max: 5.6, desc: "Average blood glucose glycation index over the past 3 months." },
+            { id: "Homair", cat: "Metabolic", name: "HOMA-IR", unit: "idx", min: 0.5, max: 1.5, desc: "Calculates insulin resistance state. Lower values reflect optimal metabolic flexibility." },
+            { id: "Cortisol", cat: "Metabolic", name: "Cortisol", unit: "ug/dL", min: 6, max: 23, desc: "Primary catabolic stress hormone. Elevated chronic levels impair anabolism and immunity." },
+            { id: "VitD", cat: "Metabolic", name: "Vitamin D3", unit: "ng/mL", min: 30, max: 100, desc: "Steroid hormone crucial for bone density, testosterone synthesis, and muscular strength." },
+            { id: "B12", cat: "Metabolic", name: "Vitamin B12", unit: "pg/mL", min: 200, max: 900, desc: "Vital for nerve function, red blood cell production, and cellular energy metabolism." },
+            { id: "Folate", cat: "Metabolic", name: "Folate (B9)", unit: "ng/mL", min: 4.5, max: 30, desc: "Essential coenzyme for DNA synthesis and tissue repair." },
+            { id: "Ferr", cat: "Metabolic", name: "Ferritin", unit: "ng/mL", min: 30, max: 400, desc: "Intracellular iron storage protein preventing deficiency and oxygen drop during exertion." },
+
+            { id: "Ldl", cat: "Cardio", name: "LDL Cholesterol", unit: "mg/dL", min: 0, max: 100, desc: "Atherogenic lipoprotein. Elevated levels require cardiovascular monitoring." },
+            { id: "Hdl", cat: "Cardio", name: "HDL Cholesterol", unit: "mg/dL", min: 40, max: 150, desc: "Cardioprotective cholesterol clearing arterial walls." },
+            { id: "Apob", cat: "Cardio", name: "Apolipoprotein B", unit: "mg/dL", min: 40, max: 90, desc: "Total count of atherogenic particles; superior cardiovascular risk predictor." },
+            { id: "Hscrp", cat: "Cardio", name: "hs-CRP Inflammation", unit: "mg/L", min: 0, max: 1.0, desc: "High-sensitivity marker detecting systemic vascular and tissue inflammation." }
+        ];
+
+        function renderBloodInputs() {
+            bloodMarkers.forEach(m => {
+                const container = document.getElementById("group" + m.id);
+                if (!container) return;
+                const div = document.createElement('div');
+                div.className = 'input-group';
+                div.innerHTML = `
+                    <div class="input-row-flex">
+                        <label>${m.name} (${m.unit})</label>
+                        <button type="button" class="info-btn" onclick="showMarkerInfo('${m.name}', '${m.min}', '${m.max}', '${m.unit}', '${m.desc}')" title="What is this?">i</button>
+                    </div>
+                    <input type="number" step="any" id="val_${m.id}" placeholder="Normal: ${m.min} - ${m.max}">
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function showMarkerInfo(name, min, max, unit, desc) {
+            alert(`📌 Test: ${name}\n📊 Normal Reference Range: ${min} - ${max} ${unit}\n\n📖 Description & Clinical Context:\n${desc}`);
+        }
+
+        function processBloodAnalysis() {
+            const name = document.getElementById('etUserName').value.trim() || "Patient / بیمار";
+            const age = document.getElementById('etUserAge').value || "--";
+            const gender = document.getElementById('spinnerUserGender').value;
+            const resBox = document.getElementById('bloodResultContainer');
+
+            const glucose = parseFloat(document.getElementById('val_Glucose').value) || 0;
+            const creat = parseFloat(document.getElementById('val_Creat').value) || 0;
+            const alt = parseFloat(document.getElementById('val_Alt').value) || 0;
+            const wbc = parseFloat(document.getElementById('val_Wbc').value) || 0;
+
+            if (glucose > 350.0 || creat > 3.5 || alt > 300.0 || wbc > 25.0) {
+                alert("⚠️ CRITICAL SAFETY WARNING (Red Flag):\n\nOne or more entered values indicate critical danger levels. Please consult an emergency physician immediately.");
+            }
+
+            let rows = "";
+            bloodMarkers.forEach(m => {
+                const valStr = document.getElementById(`val_${m.id}`).value;
+                if (valStr !== "") {
+                    const val = parseFloat(valStr);
+                    let color = "#000000";
+                    let status = "Normal";
+                    if (val > m.max) { color = "#d32f2f"; status = "High (بالا)"; }
+                    else if (val < m.min) { color = "#1976d2"; status = "Low (پایین)"; }
+                    rows += `<div class="metric-row"><span><b>${m.name}:</b></span><span style="color:${color}; font-weight:bold;">${val} ${m.unit} [${status}] (Ref: ${m.min}-${m.max})</span></div>`;
+                }
+            });
+
+            resBox.style.display = 'block';
+            resBox.innerHTML = `
+                <div style="font-size:20px; font-weight:bold; margin-bottom:5px;">FITNESS PRO CLINICAL SUITE</div>
+                <div style="font-size:12px; color:#555; margin-bottom:15px;">Biomedical Blood Analysis Report</div>
+                <hr style="border-color:#000;">
+                <p><b>Patient Name:</b> ${name} | <b>Age:</b> ${age} | <b>Gender:</b> ${gender}</p>
+                <p style="font-size:11px; color:#d32f2f; background:#ffebee; padding:6px; border-radius:4px;"><b>Disclaimer:</b> Informational tracker only. Not a medical diagnosis.</p>
+                <hr style="border-color:#ccc;">
+                ${rows || '<p>No markers entered.</p>'}
+            `;
+            document.getElementById('btnSaveImage').style.display = 'block';
+            saveBloodHistoryLog(name, "Analysis");
+        }
+
+        function generatePrescriptionSlip() {
+            const name = document.getElementById('etRxName').value.trim() || "Patient / بیمار";
+            const age = document.getElementById('etRxAge').value || "--";
+            const gender = document.getElementById('spinnerRxGender').value;
+            const protocolIndex = parseInt(document.getElementById('spinnerTestType').value);
+            const resBox = document.getElementById('prescriptionResultContainer');
+
+            const dateStr = new Date().toISOString().split('T')[0];
+            let protocolTitle = "";
+            let testsListHtml = "";
+
+            switch (protocolIndex) {
+                case 0:
+                    protocolTitle = "FULL BODYBUILDING PROTOCOL (چکاپ جامع بدنسازی)";
+                    testsListHtml = "• CBC with Diff (HGB, HCT, WBC, PLT)<br>• Liver Function: ALT, AST, GGT, ALP, Bilirubin T/D<br>• Renal Function: Creatinine, BUN, Uric Acid, eGFR<br>• Hormonal Axis: Total/Free Testosterone, SHBG, LH, FSH, Estradiol (E2), Prolactin, DHEA-S<br>• Lipid Profile: Cholesterol, LDL, HDL, TG, Apo-B<br>• Metabolic: FBS, Insulin, HbA1c, Vit D3, B12, Ferritin, hs-CRP";
+                    break;
+                case 1:
+                    protocolTitle = "HORMONAL AXIS & FERTILITY (آنالیز هورمون‌های جنسی)";
+                    testsListHtml = "• Total & Free Testosterone (FAI)<br>• SHBG, LH, FSH<br>• Estradiol (E2), Prolactin<br>• DHEA-S, Morning Cortisol (AM)";
+                    break;
+                case 2:
+                    protocolTitle = "ADVANCED LIVER & RENAL HEALTH (سلامت کبد و کلیه)";
+                    testsListHtml = "• ALT, AST, GGT, ALP, Bilirubin T/D<br>• Albumin, Creatinine, BUN, Uric Acid, Cystatin-C";
+                    break;
+                case 3:
+                    protocolTitle = "CARDIOVASCULAR WELLNESS PANEL (سلامت قلب و عروق)";
+                    testsListHtml = "• Full Lipid Panel (Cholesterol, LDL, HDL, TG)<br>• Apolipoprotein B (Apo-B)<br>• hs-CRP Inflammation<br>• Homocysteine";
+                    break;
+                case 4:
+                    protocolTitle = "THYROID & METABOLIC RATE (تیروئید و متابولیسم)";
+                    testsListHtml = "• TSH, Free T3, Free T4<br>• Reverse T3<br>• HbA1c & Fasting Glucose";
+                    break;
+                case 5:
+                    protocolTitle = "MICRONUTRIENT & MINERAL PANEL (ویتامین‌ها و املاح)";
+                    testsListHtml = "• Vitamin D3, Vitamin B12, Folate (B9)<br>• Serum Magnesium & Zinc<br>• Ferritin & TIBC";
+                    break;
+                case 6:
+                    protocolTitle = "INSULIN & GLUCOSE MANAGEMENT (مدیریت قند و انسولین)";
+                    testsListHtml = "• Fasting Blood Glucose<br>• Fasting Insulin & HOMA-IR Index<br>• HbA1c Glycated Hemoglobin";
+                    break;
+                case 7:
+                    protocolTitle = "RECOVERY & INFLAMMATION MARKERS (فاکتورهای ریکاوری)";
+                    testsListHtml = "• Creatine Phosphokinase (CPK)<br>• hs-CRP & ESR Inflammation<br>• Serum Cortisol & WBC Count";
+                    break;
+            }
+
+            resBox.style.display = 'block';
+            resBox.innerHTML = `
+                <div style="font-size:20px; font-weight:bold; margin-bottom:5px;">FITNESS PRO CLINICAL SUITE</div>
+                <div style="font-size:12px; color:#555; margin-bottom:15px;">Official Laboratory Requisition Slip</div>
+                <hr style="border-color:#000;">
+                <p><b>PATIENT NAME:</b> ${name.toUpperCase()} | <b>AGE:</b> ${age} | <b>SEX:</b> ${gender.toUpperCase()}</p>
+                <p><b>DATE:</b> ${dateStr}</p>
+                <p style="font-size:11px; color:#d32f2f; background:#ffebee; padding:6px; border-radius:4px;"><b>Medical Warning:</b> Template for reference only. Requires formal physician authorization.</p>
+                <hr style="border-color:#000;">
+                <b>PROTOCOL: ${protocolTitle}</b><br><br>
+                <b>Requested Laboratory Tests:</b><br>
+                ${testsListHtml}<br>
+                <hr style="border-color:#000;">
+                <b>CLINICAL INSTRUCTIONS:</b><br>
+                - 12h Complete Fasting Required.<br>
+                - No heavy resistance training 48h prior.<br>
+                - Adequate hydration recommended.<br>
+                <div style="text-align:right; margin-top:30px;">
+                    <div style="display:inline-block; border-top:1px solid #000; padding-top:4px; font-size:11px;">Physician / Coach Signature</div>
+                </div>
+            `;
+            document.getElementById('btnSavePrescriptionImage').style.display = 'block';
+            saveBloodHistoryLog(name, "Requisition Slip");
+        }
+
+        function saveBloodHistoryLog(name, type) {
+            let history = JSON.parse(localStorage.getItem('MedicalHistory') || '[]');
+            const timestamp = new Date().toLocaleString();
+            history.unshift(`[${timestamp}] ${name} - ${type} Completed`);
+            localStorage.setItem('MedicalHistory', JSON.stringify(history));
+        }
+
+        function showBloodHistory() {
+            let history = JSON.parse(localStorage.getItem('MedicalHistory') || '[]');
+            if (history.length === 0) { alert("No history found."); return; }
+            alert("Saved History Logs:\n\n" + history.join('\n'));
+        }
+
+        function saveCardAsImage(elementId, filename) {
+            const el = document.getElementById(elementId);
+            html2canvas(el, { backgroundColor: '#ffffff' }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        renderBloodInputs();
+    </script>
+</body>
+>>>>>>> 80c01da217c37133fa018884a730fc85c1f5e515
 </html>
