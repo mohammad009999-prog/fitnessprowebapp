@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en" id="encRoot" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Pro - Encyclopedia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent: #ff9800;
+            --danger: #f44336;
+            --text-main: #ffffff;
+            --text-muted: #b0b0b0;
+            --border: #333333;
+        }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        h1 { color: var(--accent); margin-bottom: 5px; }
+        .top-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 8px;
+        }
+        .top-btn {
+            background: var(--card-bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .top-btn:hover { background: var(--accent); color: #000; }
+        .sub-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .sub-tab-btn {
+            background: #222;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: 0.2s;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .sub-tab-btn.active {
+            background: #333;
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+        .section-content {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-content.active { display: block; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .card h3 { margin: 0 0 5px 0; color: var(--accent); }
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #252525;
+            display: block;
+        }
+        .prop-item {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+        .prop-item b { color: var(--accent); margin-right: 4px; }
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-top: 40px;
+            grid-column: 1/-1;
+        }
+    </style>
+</head>
+<body id="encBody">
+
+    <header>
+        <div class="top-controls">
+            <a href="index.html" class="top-btn">🏠 Home / خانه</a>
+            <button class="top-btn" onclick="toggleEncLang()" id="langBtn">فارسی / EN</button>
+        </div>
+        <h1 id="encTitle">Professional Fitness Encyclopedia</h1>
+        <p style="color:var(--text-muted); font-size:14px;" id="encSub">Comprehensive guides on yoga, injuries, nutrition, supplements, and legends</p>
+    </header>
+
+    <div class="sub-tabs" id="encSubTabs">
+        <button class="sub-tab-btn active" onclick="switchEncTab('yoga', event)" id="subYoga">Yoga</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('injuries', event)" id="subInjuries">Injuries</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('training_systems', event)" id="subTrainingSystems">Training Systems</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('supplement_authenticity', event)" id="subAuthenticity">Supplement Authenticity</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('supplements', event)" id="subSupplements">Supplements</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('body_types', event)" id="subBodyTypes">Body Types</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('calisthenics', event)" id="subCalisthenics">Calisthenics</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('cardio', event)" id="subCardio">Cardio Plans</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('nutrition', event)" id="subNutrition">Nutrition</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('pharmacology', event)" id="subPharmacology">Steroids</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('legends', event)" id="subLegends">Olympia Legends</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('gyms', event)" id="subGyms">Gyms</button>
+        <button class="sub-tab-btn" onclick="switchEncTab('contest', event)" id="subContest">Contest Secrets</button>
+    </div>
+
+    <div id="page_yoga" class="section-content active"><div id="grid_yoga" class="grid"><div class="loading">Loading Yoga...</div></div></div>
+    <div id="page_injuries" class="section-content"><div id="grid_injuries" class="grid"><div class="loading">Loading Injuries...</div></div></div>
+    <div id="page_training_systems" class="section-content"><div id="grid_training_systems" class="grid"><div class="loading">Loading Training Systems...</div></div></div>
+    <div id="page_supplement_authenticity" class="section-content"><div id="grid_supplement_authenticity" class="grid"><div class="loading">Loading Supplement Authenticity...</div></div></div>
+    <div id="page_supplements" class="section-content"><div id="grid_supplements" class="grid"><div class="loading">Loading Supplements...</div></div></div>
+    <div id="page_body_types" class="section-content"><div id="grid_body_types" class="grid"><div class="loading">Loading Body Types...</div></div></div>
+    <div id="page_calisthenics" class="section-content"><div id="grid_calisthenics" class="grid"><div class="loading">Loading Calisthenics...</div></div></div>
+    <div id="page_cardio" class="section-content"><div id="grid_cardio" class="grid"><div class="loading">Loading Cardio Plans...</div></div></div>
+    <div id="page_nutrition" class="section-content"><div id="grid_nutrition" class="grid"><div class="loading">Loading Nutrition...</div></div></div>
+    <div id="page_pharmacology" class="section-content"><div id="grid_pharmacology" class="grid"><div class="loading">Loading Steroids...</div></div></div>
+    <div id="page_legends" class="section-content"><div id="grid_legends" class="grid"><div class="loading">Loading Olympia Legends...</div></div></div>
+    <div id="page_gyms" class="section-content"><div id="grid_gyms" class="grid"><div class="loading">Loading Gyms...</div></div></div>
+    <div id="page_contest" class="section-content"><div id="grid_contest" class="grid"><div class="loading">Loading Contest Secrets...</div></div></div>
+
+    <script>
+        let encLang = 'en';
+        const DB_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/fitness_pro_database/main/';
+        let dbData = { yoga:[], injuries:[], training_systems:[], supplement_authenticity:[], supplements:[], body_types:[], calisthenics:[], cardio:[], nutrition:[], pharmacology:[], legends:[], gyms:[], contest:[] };
+
+        function switchEncTab(key, evt) {
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sub-tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('page_' + key).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function toggleEncLang() {
+            encLang = encLang === 'en' ? 'fa' : 'en';
+            const root = document.getElementById('encRoot');
+            root.setAttribute('dir', encLang === 'fa' ? 'rtl' : 'ltr');
+            root.setAttribute('lang', encLang);
+            
+            document.getElementById('encTitle').innerText = encLang === 'fa' ? 'دایره المعارف تخصصی تناسب اندام' : 'Professional Fitness Encyclopedia';
+            document.getElementById('encSub').innerText = encLang === 'fa' ? 'راهنماهای جامع یوگا، آسیب‌ها، تغذیه، مکمل‌ها و اسطوره‌ها' : 'Comprehensive guides on yoga, injuries, nutrition, supplements, and legends';
+            
+            document.getElementById('subYoga').innerText = encLang === 'fa' ? 'یوگا' : 'Yoga';
+            document.getElementById('subInjuries').innerText = encLang === 'fa' ? 'آسیب‌ها' : 'Injuries';
+            document.getElementById('subTrainingSystems').innerText = encLang === 'fa' ? 'سیستم‌های تمرینی' : 'Training Systems';
+            document.getElementById('subAuthenticity').innerText = encLang === 'fa' ? 'اصالت مکمل‌ها' : 'Supplement Authenticity';
+            document.getElementById('subSupplements').innerText = encLang === 'fa' ? 'مکمل‌ها' : 'Supplements';
+            document.getElementById('subBodyTypes').innerText = encLang === 'fa' ? 'تیپ‌های بدنی' : 'Body Types';
+            document.getElementById('subCalisthenics').innerText = encLang === 'fa' ? 'کالیستنیکس' : 'Calisthenics';
+            document.getElementById('subCardio').innerText = encLang === 'fa' ? 'برنامه‌های هوازی' : 'Cardio Plans';
+            document.getElementById('subNutrition').innerText = encLang === 'fa' ? 'تغذیه' : 'Nutrition';
+            document.getElementById('subPharmacology').innerText = encLang === 'fa' ? 'استروئیدها' : 'Steroids';
+            document.getElementById('subLegends').innerText = encLang === 'fa' ? 'اسطوره‌های المپیا' : 'Olympia Legends';
+            document.getElementById('subGyms').innerText = encLang === 'fa' ? 'باشگاه‌ها' : 'Gyms';
+            document.getElementById('subContest').innerText = encLang === 'fa' ? 'اسرار مسابقات' : 'Contest Secrets';
+
+            renderAllGrids();
+        }
+
+        async function fetchWikiImage(queryTerm, imgElementId) {
+            if (!queryTerm) return;
+            const imgEl = document.getElementById(imgElementId);
+            if (!imgEl) return;
+            try {
+                let res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(queryTerm)}&prop=pageimages&format=json&pithumbsize=400&origin=*`);
+                let data = await res.json();
+                let pages = data.query.pages;
+                let pageId = Object.keys(pages)[0];
+                if (pages[pageId] && pages[pageId].thumbnail && pages[pageId].thumbnail.source) {
+                    imgEl.src = pages[pageId].thumbnail.source;
+                }
+            } catch (e) {}
+        }
+
+        async function loadAllDatabases() {
+            async function fetchFile(filename, key) {
+                try {
+                    const r = await fetch(DB_BASE + filename);
+                    let d = await r.json();
+                    if (typeof d === 'string') { try { d = JSON.parse(d); } catch(err){} }
+                    if (d && !Array.isArray(d) && typeof d === 'object') {
+                        const subArr = d[key] || d.cardio_plans || d.data || d.items || Object.values(d).find(v => Array.isArray(v));
+                        if (subArr) d = subArr;
+                    }
+                    dbData[key] = Array.isArray(d) ? d : [d];
+                } catch(e) { dbData[key] = []; }
+            }
+
+            await fetchFile('yoga.json', 'yoga');
+            await fetchFile('injuries.json', 'injuries');
+            await fetchFile('training_systems.JSON', 'training_systems');
+            await fetchFile('supplement_authenticity.json', 'supplement_authenticity');
+            await fetchFile('supplements.json', 'supplements');
+            await fetchFile('body_types.json', 'body_types');
+            await fetchFile('calisthenics.json', 'calisthenics');
+            await fetchFile('cardio_data.json', 'cardio');
+            await fetchFile('food_database.json', 'nutrition');
+            await fetchFile('steroids.json', 'pharmacology');
+            await fetchFile('gyms.json', 'gyms');
+            await fetchFile('contest_data.json', 'contest');
+
+            try {
+                const rLeg = await fetch(DB_BASE + 'olympia_legends.json');
+                let dLeg = await rLeg.json();
+                dbData.legends = Array.isArray(dLeg) ? dLeg : [dLeg];
+            } catch(e) { dbData.legends = []; }
+
+            renderAllGrids();
+        }
+
+        function renderAllGrids() {
+            Object.keys(dbData).forEach(key => {
+                if(key === 'legends') renderLegendsGrid(dbData.legends);
+                else if(key === 'contest') renderContestGrid(dbData.contest);
+                else renderStandardGrid(key, dbData[key]);
+            });
+        }
+
+        function renderStandardGrid(key, data) {
+            const container = document.getElementById(`grid_${key}`);
+            if(!container) return;
+            if(!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No data available.</p>';
+                return;
+            }
+
+            container.innerHTML = data.map((item, idx) => {
+                if(typeof item !== 'object' || !item) return '';
+                const titleEn = item.disease_name || item.injury_name || item.food_name || item.name || item.title || item.substance || item.gym_name || '';
+                const titleFa = item.disease_name_fa || item.injury_name_fa || item.food_name_fa || item.name_fa || item.title_fa || '';
+                const title = encLang === 'fa' && titleFa ? titleFa : (titleEn || `Item #${idx+1}`);
+                
+                let imgId = `wiki_${key}_${idx}`;
+                let imageUrl = item.image || item.image_url || `https://placehold.co/400x180/1e1e1e/ff9800?text=${encodeURIComponent(titleEn || title)}`;
+                if(!item.image && titleEn) setTimeout(() => fetchWikiImage(titleEn, imgId), 50 + (idx * 20));
+
+                let details = '';
+                for(let [k, v] of Object.entries(item)) {
+                    if(['id','category','image','name','title'].includes(k.toLowerCase())) continue;
+                    let val = encLang === 'fa' ? (item[k+'_fa'] || v) : v;
+                    if(val && typeof val !== 'object') {
+                        details += `<div class="prop-item"><b>${k}:</b> ${val}</div>`;
+                    }
+                }
+
+                return `
+                    <div class="card">
+                        <h3>${title}</h3>
+                        <img id="${imgId}" src="${imageUrl}" alt="${title}" loading="lazy">
+                        <div style="margin-top:8px;">${details}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderLegendsGrid(data) {
+            const container = document.getElementById('grid_legends');
+            if(!container) return;
+            container.innerHTML = data.map((item, idx) => {
+                const name = encLang === 'fa' ? (item.name_fa || item.name_en) : (item.name_en || item.name_fa);
+                const imgId = `wiki_leg_${idx}`;
+                setTimeout(() => fetchWikiImage(item.name_en || name, imgId), 50 + (idx * 25));
+                return `
+                    <div class="card">
+                        <h3>${name}</h3>
+                        <p style="color:#4caf50; font-weight:bold; font-size:13px;">${item.title || ''}</p>
+                        <img id="${imgId}" src="https://placehold.co/400x180/1e1e1e/ff9800?text=${encodeURIComponent(name)}" alt="${name}">
+                        <div class="prop-item" style="margin-top:8px;"><b>Biography:</b> ${encLang === 'fa' ? (item.bio_fa || item.bio_en) : (item.bio_en || item.bio_fa)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderContestGrid(data) {
+            const container = document.getElementById('grid_contest');
+            if(!container) return;
+            let html = '';
+            data.forEach(item => {
+                for(let [secKey, secVal] of Object.entries(item)) {
+                    if(typeof secVal === 'object' && secVal !== null) {
+                        html += `<div class="card" style="grid-column:1/-1;"><h2 style="color:var(--accent);">${secKey.toUpperCase()}</h2>`;
+                        for(let [k, v] of Object.entries(secVal)) {
+                            if(typeof v === 'object' && v !== null) {
+                                html += `<div style="background:#232323; padding:12px; border-radius:6px; margin-top:8px;">
+                                    <h4 style="color:#4caf50; margin:0 0 5px 0;">${v.title_en || k}</h4>
+                                    <p style="margin:0; font-size:13px; color:var(--text-muted);">${v.content_en || ''}</p>
+                                </div>`;
+                            }
+                        }
+                        html += `</div>`;
+                    }
+                }
+            });
+            container.innerHTML = html;
+        }
+
+        loadAllDatabases();
+    </script>
+</body>
+</html>

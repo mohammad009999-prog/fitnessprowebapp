@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Pro - Free Workout & Nutrition Plans</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10B981',
+                        darkBg: '#111827',
+                        cardBg: '#1F2937'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Vazirmatn -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="bg-emerald-500 text-slate-900 p-2 rounded-xl font-black text-xl">
+                    <i class="fa-solid fa-dumbbell"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wider text-white">Fitness Pro</h1>
+                    <p class="text-xs text-slate-400">برنامه‌های تخصصی تمرین و تغذیه</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 space-x-reverse">
+                <button onclick="toggleLanguage()" id="langBtn" class="bg-slate-700 hover:bg-slate-600 text-sm px-3 py-1.5 rounded-lg transition text-slate-200">
+                    English / فارسی
+                </button>
+                <a href="index.html" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm px-4 py-2 rounded-xl transition font-medium">
+                    <i class="fa-solid fa-house ml-1"></i> بازگشت به خانه
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
+        
+        <!-- Page Title & Filters -->
+        <div class="mb-8 text-center">
+            <h2 id="pageTitle" class="text-3xl font-black text-white mb-2">برنامه‌های رایگان تمرین و تغذیه</h2>
+            <p id="pageSubtitle" class="text-slate-400 max-w-2xl mx-auto text-sm">برنامه خود را انتخاب کنید و همراه با جزئیات تغذیه، مکمل‌ها و کالری روزانه مشاهده نمایید.</p>
+            
+            <!-- Filters -->
+            <div class="flex flex-wrap justify-center gap-2 mt-6">
+                <button onclick="filterPlans('all')" class="filter-btn active-filter bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-md">همه برنامه‌ها</button>
+                <button onclick="filterPlans('men')" class="filter-btn bg-slate-800 text-slate-300 hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-medium transition">آقایان</button>
+                <button onclick="filterPlans('women')" class="filter-btn bg-slate-800 text-slate-300 hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-medium transition">بانوان</button>
+                <button onclick="filterPlans('sport')" class="filter-btn bg-slate-800 text-slate-300 hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-medium transition">ورزش‌های تخصصی</button>
+            </div>
+        </div>
+
+        <!-- Plans Grid -->
+        <div id="plansGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic Cards Will Load Here -->
+        </div>
+
+    </main>
+
+    <!-- Plan Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl text-slate-100">
+            <div class="flex justify-between items-start border-b border-slate-700 pb-4 mb-4">
+                <div>
+                    <span id="modalCategory" class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-md font-semibold"></span>
+                    <h3 id="modalTitle" class="text-2xl font-bold mt-2 text-white"></h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white bg-slate-700/50 hover:bg-slate-700 p-2 rounded-full transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body Content -->
+            <div class="space-y-6">
+                <!-- Info Section -->
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/60">
+                    <h4 class="text-sm font-bold text-emerald-400 mb-1"><i class="fa-solid fa-circle-info ml-1"></i> منطق و اطلاعات علمی برنامه</h4>
+                    <p id="modalInfo" class="text-slate-300 text-sm leading-relaxed"></p>
+                </div>
+
+                <!-- Tabs for Workout / Nutrition -->
+                <div class="flex border-b border-slate-700">
+                    <button onclick="switchTab('workout')" id="tabWorkoutBtn" class="flex-1 py-3 text-center font-bold text-emerald-400 border-b-2 border-emerald-500 transition">
+                        <i class="fa-solid fa-dumbbell ml-2"></i> برنامه تمرینی (Workout Schedule)
+                    </button>
+                    <button onclick="switchTab('nutrition')" id="tabNutritionBtn" class="flex-1 py-3 text-center font-bold text-slate-400 hover:text-white transition">
+                        <i class="fa-solid fa-utensils ml-2"></i> برنامه تغذیه و مکمل (Nutrition & Diet)
+                    </button>
+                </div>
+
+                <!-- Workout Schedule View -->
+                <div id="workoutView" class="space-y-4">
+                    <div id="workoutScheduleContainer"></div>
+                </div>
+
+                <!-- Nutrition View -->
+                <div id="nutritionView" class="space-y-4 hidden">
+                    <div id="nutritionSummaryContainer"></div>
+                    <div id="nutritionScheduleContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exercise Full Tutorial Modal -->
+    <div id="exerciseModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-xl w-full p-6 shadow-2xl text-slate-100 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start border-b border-slate-700 pb-3 mb-4">
+                <h3 id="exModalTitle" class="text-xl font-bold text-emerald-400"></h3>
+                <button onclick="closeExerciseModal()" class="text-slate-400 hover:text-white bg-slate-700/50 p-2 rounded-full transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="exModalBody" class="space-y-4 text-sm text-slate-300">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-6 mt-12 text-center text-xs text-slate-400">
+        <p>Fitness Pro © 2026 - All Rights Reserved. Powered by Gemini AI & GitHub Database.</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let currentLang = 'fa';
+        let workoutPlansData = [];
+        let nutritionPlansData = [];
+        let exercisesDatabase = []; 
+        
+        const DB_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/fitness_pro_database/main/';
+        const EX_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/free-exercise-db/main/';
+
+        async function loadData() {
+            try {
+                const [wRes, nRes, eRes] = await Promise.all([
+                    fetch(DB_BASE + 'workout_plans.json'),
+                    fetch(DB_BASE + 'nutrition_plans.json'),
+                    fetch(EX_BASE + 'dist/exercises.json')
+                ]);
+                
+                workoutPlansData = await wRes.json();
+                nutritionPlansData = await nRes.json();
+                
+                if (eRes.ok) {
+                    exercisesDatabase = await eRes.json();
+                    console.log("Loaded exercises database successfully. Count:", exercisesDatabase.length);
+                }
+                
+                renderPlans('all');
+            } catch (error) {
+                console.error('Error loading JSON files from GitHub:', error);
+                document.getElementById('plansGrid').innerHTML = `
+                    <div class="col-span-full text-center py-12 text-red-400">
+                        <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
+                        <p>خطا در بارگذاری اطلاعات از گیت‌هاب. لطفا اتصال اینترنت خود را بررسی کنید.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderPlans(filter) {
+            const grid = document.getElementById('plansGrid');
+            grid.innerHTML = '';
+
+            let filtered = workoutPlansData;
+            if (filter === 'men') {
+                filtered = workoutPlansData.filter(p => p.target_audience === 'men');
+            } else if (filter === 'women') {
+                filtered = workoutPlansData.filter(p => p.target_audience === 'women');
+            } else if (filter === 'sport') {
+                filtered = workoutPlansData.filter(p => ['soccer', 'volleyball', 'basketball', 'tennis', 'running'].includes(p.category));
+            }
+
+            filtered.forEach(plan => {
+                const title = currentLang === 'fa' ? plan.title_fa : plan.title_en;
+                const desc = currentLang === 'fa' ? plan.description_fa : plan.description_en;
+                const audText = plan.target_audience === 'women' ? (currentLang === 'fa' ? 'بانوان' : 'Women') : (plan.target_audience === 'men' ? (currentLang === 'fa' ? 'آقایان' : 'Men') : (currentLang === 'fa' ? 'عمومی' : 'General'));
+
+                const card = document.createElement('div');
+                card.className = 'bg-slate-800 border border-slate-700/80 rounded-2xl p-5 hover:border-emerald-500/50 transition flex flex-col justify-between shadow-lg';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-emerald-500/10 text-emerald-400 text-xs px-2.5 py-1 rounded-full font-semibold">${plan.category.toUpperCase()}</span>
+                            <span class="bg-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-full">${audText}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">${title}</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-4">${desc}</p>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between text-xs text-slate-400 mb-4 border-t border-slate-700/60 pt-3">
+                            <span><i class="fa-regular fa-clock ml-1"></i> ${plan.duration}</span>
+                            <span><i class="fa-solid fa-calendar-days ml-1"></i> ۷ روز هفته</span>
+                        </div>
+                        <button onclick="openPlanModal('${plan.id}')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl text-sm font-medium transition shadow-md">
+                            ${currentLang === 'fa' ? 'مشاهده برنامه کامل' : 'View Full Plan'}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterPlans(type) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = 'filter-btn bg-slate-800 text-slate-300 hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-medium transition';
+            });
+            event.target.className = 'filter-btn active-filter bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-md';
+            renderPlans(type);
+        }
+
+        function openPlanModal(planId) {
+            const workoutPlan = workoutPlansData.find(p => p.id === planId);
+            const nutritionPlan = nutritionPlansData.find(n => n.workout_plan_id === planId);
+
+            if (!workoutPlan) return;
+
+            document.getElementById('modalCategory').innerText = workoutPlan.category.toUpperCase();
+            document.getElementById('modalTitle').innerText = currentLang === 'fa' ? workoutPlan.title_fa : workoutPlan.title_en;
+            document.getElementById('modalInfo').innerText = currentLang === 'fa' ? workoutPlan.info_fa : workoutPlan.info_en;
+
+            const wContainer = document.getElementById('workoutScheduleContainer');
+            wContainer.innerHTML = '';
+            workoutPlan.schedule.forEach(day => {
+                const focus = currentLang === 'fa' ? day.focus_fa : day.focus_en;
+                let exHtml = day.exercises.map(ex => {
+                    const exName = currentLang === 'fa' ? (ex.name_fa || ex.id) : (ex.name_en || ex.id.replace(/_/g, ' '));
+                    return `
+                    <li class="text-xs text-slate-300 py-1.5 border-b border-slate-700/40 flex justify-between items-center">
+                        <button onclick="openExerciseTutorial('${ex.id.replace(/'/g, "\\'")}')" class="text-emerald-400 hover:text-emerald-300 hover:underline flex items-center text-right font-medium transition">
+                            <i class="fa-solid fa-dumbbell ml-1.5 text-xs"></i> ${exName}
+                        </button> 
+                        <span class="bg-slate-800 px-2 py-0.5 rounded text-emerald-300 font-mono">${ex.sets} sets × ${ex.reps}</span>
+                    </li>
+                `;
+                }).join('');
+                
+                wContainer.innerHTML += `
+                    <div class="bg-slate-900/70 border border-slate-700/60 rounded-xl p-4 mb-3">
+                        <h5 class="text-sm font-bold text-emerald-400 mb-2">روز ${day.day}: ${focus}</h5>
+                        <ul class="space-y-1">${exHtml}</ul>
+                    </div>
+                `;
+            });
+
+            const nContainer = document.getElementById('nutritionScheduleContainer');
+            const nSummary = document.getElementById('nutritionSummaryContainer');
+            nContainer.innerHTML = '';
+            nSummary.innerHTML = '';
+
+            if (nutritionPlan) {
+                const totals = nutritionPlan.totals.one_week;
+                nSummary.innerHTML = `
+                    <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-4 mb-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div><p class="text-xs text-slate-400">میانگین کالری روزانه</p><p class="text-lg font-bold text-emerald-400">${Math.round(totals.calories/7)} kcal</p></div>
+                        <div><p class="text-xs text-slate-400">میانگین پروتئین</p><p class="text-lg font-bold text-white">${Math.round(totals.protein_g/7)}g</p></div>
+                        <div><p class="text-xs text-slate-400">مجموع هفته (کالری)</p><p class="text-lg font-bold text-white">${totals.calories} kcal</p></div>
+                        <div><p class="text-xs text-slate-400">مجموع ماه (کالری)</p><p class="text-lg font-bold text-white">${nutritionPlan.totals.one_month.calories} kcal</p></div>
+                    </div>
+                `;
+
+                nutritionPlan.daily_breakdown.forEach(day => {
+                    let mealsHtml = '';
+                    if (day.meals && day.meals.length > 0) {
+                        mealsHtml = day.meals.map(m => `
+                            <div class="bg-slate-800/80 p-2.5 rounded-lg mb-2 text-xs">
+                                <span class="font-bold text-emerald-300"><i class="fa-solid fa-utensils ml-1"></i> ${currentLang === 'fa' ? m.meal_name_fa : m.meal_name_en}:</span>
+                                <span class="text-slate-200 mr-2">${m.items}</span>
+                            </div>
+                        `).join('');
+                    } else {
+                        mealsHtml = `<p class="text-xs text-slate-400">وعده‌های غذایی ثبت نشده است.</p>`;
+                    }
+
+                    let supps = day.supplements ? day.supplements.map(s => `<span class="bg-slate-800 text-amber-300 text-xs px-2 py-1 rounded-md">💊 ${currentLang === 'fa' ? s.name_fa : s.name_en}: ${s.dose}</span>`).join('') : 'ندارد';
+
+                    nContainer.innerHTML += `
+                        <div class="bg-slate-900/70 border border-slate-700/60 rounded-xl p-4 mb-3">
+                            <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-800">
+                                <h5 class="text-sm font-bold text-emerald-400">روز ${day.day}</h5>
+                                <div class="space-x-2 space-x-reverse text-xs text-slate-300">
+                                    <span class="bg-slate-800 px-2 py-1 rounded">🔥 ${day.calories} kcal</span>
+                                    <span class="bg-slate-800 px-2 py-1 rounded">🥩 ${day.protein_g}g Prot</span>
+                                    <span class="bg-slate-800 px-2 py-1 rounded">🍞 ${day.carbs_g}g Carb</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <p class="text-xs font-bold text-slate-400 mb-1.5">مواد غذایی و وعده‌ها:</p>
+                                ${mealsHtml}
+                            </div>
+                            <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800">
+                                <span class="text-xs text-slate-400 self-center">مکمل‌ها:</span> ${supps}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                nContainer.innerHTML = `<p class="text-center text-slate-400 py-4">برنامه تغذیه برای این مورد ثبت نشده است.</p>`;
+            }
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        // Exact Index.html Exercise Matching & Rendering Logic
+        function openExerciseTutorial(exId) {
+            const modal = document.getElementById('exerciseModal');
+            const titleEl = document.getElementById('exModalTitle');
+            const bodyEl = document.getElementById('exModalBody');
+
+            let exercise = null;
+            if (Array.isArray(exercisesDatabase) && exercisesDatabase.length > 0) {
+                const target = exId.toLowerCase().trim();
+                const targetClean = target.replace(/[_-\s]/g, '');
+                
+                exercise = exercisesDatabase.find(ex => {
+                    const idMatch = ex.id && ex.id.toLowerCase().trim() === target;
+                    const nameMatch = ex.name && ex.name.toLowerCase().trim() === target;
+                    const idClean = ex.id && ex.id.toLowerCase().replace(/[_-\s]/g, '') === targetClean;
+                    const nameClean = ex.name && ex.name.toLowerCase().replace(/[_-\s]/g, '') === targetClean;
+                    return idMatch || nameMatch || idClean || nameClean;
+                });
+            }
+
+            if (exercise) {
+                const name = currentLang === 'fa' ? (exercise.name_fa || exercise.name) : exercise.name;
+                titleEl.innerText = name;
+                
+                const rawInstructions = exercise.instructions;
+                const instructions = rawInstructions ? (Array.isArray(rawInstructions) ? rawInstructions.map(step => `<li class="mb-1.5">${step}</li>`).join('') : `<li>${rawInstructions}</li>`) : '<li>دستورالعملی ثبت نشده است.</li>';
+                
+                let imagesHtml = '';
+                if (exercise.images && exercise.images.length > 0) {
+                    imagesHtml = `<div class="img-container flex gap-2 overflow-x-auto mb-3 justify-center">${exercise.images.map(img => `<img src="${EX_BASE}exercises/${img}" alt="${name}" class="max-h-56 object-contain rounded-xl bg-slate-900" onerror="this.style.display='none'">`).join('')}</div>`;
+                }
+
+                const muscles = exercise.primaryMuscles ? exercise.primaryMuscles.join(', ') : 'N/A';
+
+                bodyEl.innerHTML = `
+                    <div class="flex gap-2 mb-3">
+                        <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-md font-semibold">${exercise.level || 'intermediate'}</span>
+                        <span class="bg-blue-500/20 text-blue-400 text-xs px-2.5 py-1 rounded-md font-semibold">${muscles}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-2"><strong>Equipment:</strong> ${exercise.equipment || 'N/A'}</p>
+                    ${imagesHtml}
+                    <div class="text-xs text-slate-300 leading-relaxed">
+                        <p class="font-bold text-white mb-1">Instructions:</p>
+                        <ul class="list-disc list-inside space-y-1">${instructions}</ul>
+                    </div>
+                `;
+            } else {
+                titleEl.innerText = exId.replace(/_/g, ' ').toUpperCase();
+                bodyEl.innerHTML = `
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 p-3 rounded-xl mb-3 text-yellow-300 text-xs">
+                        <i class="fa-solid fa-triangle-exclamation ml-1"></i> اطلاعات کامل این حرکت در دیتابیس یافت نشد (ID: ${exId})
+                    </div>
+                    <div class="flex gap-2 mb-3">
+                        <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-md font-semibold">intermediate</span>
+                        <span class="bg-blue-500/20 text-blue-400 text-xs px-2.5 py-1 rounded-md font-semibold">strength</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-2"><strong>Equipment:</strong> barbell / body</p>
+                    <div class="text-xs text-slate-300 leading-relaxed">
+                        <p class="font-bold text-white mb-1">Instructions:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Set up your equipment properly and maintain core engagement throughout the movement.</li>
+                            <li>Perform the movement through a full range of motion with controlled tempo.</li>
+                            <li>Breathe consistently: inhale on the eccentric phase and exhale on the exertion/concentric phase.</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeExerciseModal() {
+            document.getElementById('exerciseModal').classList.add('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function switchTab(tab) {
+            const wBtn = document.getElementById('tabWorkoutBtn');
+            const nBtn = document.getElementById('tabNutritionBtn');
+            const wView = document.getElementById('workoutView');
+            const nView = document.getElementById('nutritionView');
+
+            if (tab === 'workout') {
+                wBtn.className = 'flex-1 py-3 text-center font-bold text-emerald-400 border-b-2 border-emerald-500 transition';
+                nBtn.className = 'flex-1 py-3 text-center font-bold text-slate-400 hover:text-white transition';
+                wView.classList.remove('hidden');
+                nView.classList.add('hidden');
+            } else {
+                nBtn.className = 'flex-1 py-3 text-center font-bold text-emerald-400 border-b-2 border-emerald-500 transition';
+                wBtn.className = 'flex-1 py-3 text-center font-bold text-slate-400 hover:text-white transition';
+                nView.classList.remove('hidden');
+                wView.classList.add('hidden');
+            }
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            const htmlTag = document.documentElement;
+            if (currentLang === 'fa') {
+                htmlTag.setAttribute('lang', 'fa');
+                htmlTag.setAttribute('dir', 'rtl');
+                document.getElementById('pageTitle').innerText = 'برنامه‌های رایگان تمرین و تغذیه';
+                document.getElementById('pageSubtitle').innerText = 'برنامه خود را انتخاب کنید و همراه با جزئیات تغذیه، مکمل‌ها و کالری روزانه مشاهده نمایید.';
+            } else {
+                htmlTag.setAttribute('lang', 'en');
+                htmlTag.setAttribute('dir', 'ltr');
+                document.getElementById('pageTitle').innerText = 'Free Workout & Nutrition Plans';
+                document.getElementById('pageSubtitle').innerText = 'Choose your plan to view detailed daily workouts, macronutrients, and supplement schedules.';
+            }
+            renderPlans('all');
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>

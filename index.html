@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fitness Pro</title>
+
+    <!-- PWA Manifest & Mobile App Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff9800">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fitness Pro">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
     <style>
         :root {
             --bg-color: #121212;
@@ -19,72 +28,218 @@
             background: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        h1 {
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
-        /* Top Utility Controls Header */
-        .top-controls {
-            position: absolute;
-            top: 0;
-            right: 0;
+            padding: 0;
             display: flex;
-            gap: 8px;
+            min-height: 100vh;
         }
-        .top-btn {
-            background: var(--card-bg);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 6px;
+
+        /* SIDEBAR NAVIGATION (DESKTOP) */
+        aside.app-sidebar {
+            width: 260px;
+            background: #18181a;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 15px;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .sidebar-logo {
+            font-size: 20px;
             font-weight: bold;
-            font-size: 13px;
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
         }
-        .top-btn:hover {
-            background: var(--accent);
-            color: #000;
+        .sidebar-logo span {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: normal;
+            margin-top: 2px;
         }
-        /* Top Navigation Tabs */
         .tabs {
             display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 8px;
         }
         .tab-btn {
             background: var(--card-bg);
             color: var(--text-main);
             border: 1px solid var(--border);
-            padding: 12px 24px;
+            padding: 10px 14px;
             cursor: pointer;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             transition: 0.2s;
+            text-decoration: none;
+            text-align: left;
+            display: block;
         }
-        .tab-btn.active {
+        [dir="rtl"] .tab-btn {
+            text-align: right;
+        }
+        .tab-btn:hover, .tab-btn.active {
             background: var(--accent);
             color: #000;
             border-color: var(--accent);
         }
-        /* Sub-navigation Tabs */
+
+        /* MAIN CONTENT AREA */
+        main.app-main {
+            flex-grow: 1;
+            padding: 20px;
+            max-width: calc(100vw - 260px);
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #181818;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-title-area h1 {
+            color: var(--accent);
+            margin: 0;
+            font-size: 22px;
+        }
+        .header-title-area p {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .top-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .top-btn, .lang-select {
+            background: var(--card-bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .top-btn:hover, .lang-select:hover {
+            background: var(--accent);
+            color: #000;
+        }
+        .lang-select {
+            appearance: none;
+            outline: none;
+        }
+
+        /* WIDGET GRID (NEWS & QUOTES TOP ROW) */
+        .dashboard-top-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* EXPANDED NEWS CARD WIDGET */
+        .top-left-news-box {
+            background: #1a1a1c;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: opacity 0.5s ease-in-out;
+            box-sizing: border-box;
+        }
+        .top-left-news-box img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #252525;
+        }
+        .top-left-news-box h4 {
+            color: #ff5722;
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.3;
+        }
+        .top-left-news-box p {
+            margin: 0;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            max-height: 45px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .news-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 6px;
+            margin-top: auto;
+        }
+        .top-left-news-box a {
+            color: #34d399;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* QUOTES ROTATOR BAR */
+        .quotes-bar {
+            background: #181818;
+            border: 1px solid var(--accent);
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            transition: opacity 0.5s ease-in-out;
+            box-sizing: border-box;
+            height: 100%;
+        }
+        .quotes-bar span {
+            color: var(--accent);
+            font-weight: bold;
+            margin-top: 8px;
+            display: block;
+        }
+
         .sub-tabs {
             display: flex;
-            justify-content: center;
             gap: 8px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
+            padding-bottom: 12px;
         }
         .sub-tab-btn {
             background: #222;
@@ -103,43 +258,30 @@
             border-color: var(--accent);
             font-weight: bold;
         }
-        /* Sections */
         .section-content {
             display: none;
-            max-width: 1200px;
-            margin: 0 auto;
         }
         .section-content.active {
             display: block;
         }
-        .sub-section-content {
-            display: none;
-        }
-        .sub-section-content.active {
-            display: block;
-        }
-        /* Search & Filters */
         .search-box {
             width: 100%;
-            max-width: 600px;
             padding: 12px;
-            margin: 0 auto 20px auto;
-            display: block;
+            margin-bottom: 20px;
             background: var(--card-bg);
             border: 1px solid var(--border);
             color: var(--text-main);
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px;
             box-sizing: border-box;
         }
         .category-header {
             color: var(--accent);
             border-bottom: 2px solid var(--accent);
             padding-bottom: 5px;
-            margin: 30px 0 15px 0;
+            margin: 25px 0 12px 0;
             text-transform: capitalize;
         }
-        /* Forms & Inputs */
         .controls {
             display: flex;
             gap: 10px;
@@ -148,22 +290,24 @@
         }
         input, textarea, select {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             background: var(--card-bg);
             border: 1px solid var(--border);
             color: var(--text-main);
             border-radius: 6px;
-            font-size: 15px;
+            font-size: 14px;
             box-sizing: border-box;
         }
         button.action-btn {
             background: #4caf50;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
+            width: 100%;
+            margin-top: 8px;
         }
         .delete-btn {
             background: var(--danger);
@@ -178,43 +322,48 @@
             margin-top: 10px;
             display: none;
         }
-        body.admin-mode .delete-btn {
+        body.is-admin .delete-btn {
             display: inline-block;
         }
         .admin-only {
             display: none;
         }
-        body.admin-mode .admin-only {
+        body.is-admin .admin-only {
             display: block;
         }
-        .delete-btn:hover {
-            opacity: 0.8;
+        .pro-locked-banner {
+            background: #2c1a00;
+            border: 1px solid var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
         }
         .add-panel {
             background: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--border);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .add-panel h3 {
             margin-top: 0;
             color: #4caf50;
         }
-        /* Grid & Cards */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
         }
         .card {
             background: var(--card-bg);
-            padding: 20px;
+            padding: 16px;
             border-radius: 8px;
             border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             gap: 10px;
+            box-sizing: border-box;
         }
         .card h3 {
             margin: 0 0 5px 0;
@@ -226,31 +375,34 @@
             color: #4caf50;
             padding: 4px 8px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
             margin-right: 5px;
         }
         .card p {
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13px;
             margin: 0;
             line-height: 1.4;
         }
         .prop-item {
             font-size: 13px;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             word-break: break-word;
+            line-height: 1.5;
         }
         .prop-item b {
-            color: var(--text-main);
+            color: var(--accent);
             text-transform: capitalize;
+            display: inline-block;
+            margin-right: 4px;
         }
         .instructions-list {
             padding-left: 18px;
             margin: 5px 0 0 0;
             color: var(--text-muted);
-            font-size: 13px;
+            font-size: 12px;
         }
         .instructions-list li {
             margin-bottom: 4px;
@@ -261,7 +413,7 @@
             overflow-x: auto;
             margin-top: 10px;
         }
-        .card img {
+        .card img, .card video {
             width: 100%;
             height: 160px;
             object-fit: cover;
@@ -271,12 +423,11 @@
         }
         .loading {
             text-align: center;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--text-muted);
             margin-top: 40px;
             grid-column: 1/-1;
         }
-        /* Modal Overlay */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -288,24 +439,58 @@
         }
         .modal {
             background: var(--card-bg);
-            padding: 30px;
+            padding: 25px;
             border-radius: 10px;
             border: 1px solid var(--border);
             width: 100%;
-            max-width: 400px;
+            max-width: 480px;
             box-sizing: border-box;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .modal h2 { margin-top: 0; color: var(--accent); text-align: center; }
-        .modal input { width: 100%; margin-bottom: 12px; }
+        .modal input, .modal textarea { width: 100%; margin-bottom: 12px; }
         .modal button { width: 100%; margin-top: 5px; }
         .close-modal {
             background: none; border: none; color: var(--text-muted); float: right; cursor: pointer; font-size: 18px;
+        }
+
+        /* RESPONSIVE BREAKPOINT FOR MOBILE PHONES */
+        @media(max-width: 850px) {
+            body {
+                flex-direction: column;
+            }
+            aside.app-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 12px;
+            }
+            .tabs {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+            .tab-btn {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            main.app-main {
+                max-width: 100%;
+                padding: 12px;
+            }
+            .dashboard-top-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 
     <!-- Firebase v10 SDK Scripts & Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
         import { 
             getAuth, 
             signInWithEmailAndPassword, 
@@ -317,6 +502,14 @@
             onAuthStateChanged, 
             signOut 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            getDoc, 
+            setDoc, 
+            collection, 
+            getDocs 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAilAXYxno9aywWxqy7ji52Dq-xvneKf5U",
@@ -324,30 +517,59 @@
             projectId: "fitness-pro-a3331",
             storageBucket: "fitness-pro-a3331.firebasestorage.app",
             messagingSenderId: "491662957413",
-            appId: "1:491662957413:web:ed6ecc474e87e8a33edf8c",
-            measurementId: "G-7FE17P0BKB"
+            appId: "1:491662957413:web:f30a31deb817a6c13edf8c",
+            measurementId: "G-24TEJ5NJ83"
         };
 
         const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         const auth = getAuth(app);
+        const db = getFirestore(app);
         window.firebaseAuth = auth;
+        window.firebaseDb = db;
 
-        onAuthStateChanged(auth, (user) => {
+        const ADMIN_EMAIL = "mohammad009999@gmail.com";
+        const PRO_PRICE = 40000;
+
+        onAuthStateChanged(auth, async (user) => {
             const authBtn = document.getElementById('authBtn');
+            window.currentUser = user;
+            
             if (user) {
-                authBtn.innerText = user.displayName || user.email || user.phoneNumber || "Connected User";
-                authBtn.onclick = () => {
-                    if(confirm("Do you want to log out of Fitness Pro?")) {
-                        signOut(auth).then(() => {
-                            alert("Signed out successfully.");
-                            authBtn.innerText = "Sign In";
-                            authBtn.onclick = window.openAuthModal;
-                        });
-                    }
+                authBtn.innerText = user.email || user.phoneNumber || "Profile";
+                authBtn.onclick = openProfileModal;
+                
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                
+                let userData = {
+                    email: user.email || user.phoneNumber || "",
+                    isPro: false,
+                    proExpiresAt: null,
+                    lastSeen: new Date().toISOString()
                 };
+
+                if(userSnap.exists()) {
+                    userData = userSnap.data();
+                    await setDoc(userRef, { lastSeen: new Date().toISOString() }, { merge: true });
+                } else {
+                    await setDoc(userRef, userData);
+                }
+
+                window.currentUserData = userData;
+
+                if (user.email === ADMIN_EMAIL) {
+                    document.body.classList.add('is-admin');
+                } else {
+                    document.body.classList.remove('is-admin');
+                }
+
+                updateProfileUI();
             } else {
-                authBtn.innerText = "Sign In";
-                authBtn.onclick = window.openAuthModal;
+                authBtn.innerText = window.currentLang === 'fa' ? 'ورود' : 'Sign In';
+                authBtn.onclick = openAuthModal;
+                window.currentUserData = null;
+                document.body.classList.remove('is-admin');
             }
         });
 
@@ -418,105 +640,138 @@
                 alert("Invalid verification code: " + error.message);
             }
         };
+
+        window.startZarinPalPayment = async () => {
+            if(!window.currentUser) {
+                alert("Please sign in first to upgrade to Pro.");
+                openAuthModal();
+                return;
+            }
+            
+            const amountRials = PRO_PRICE * 10;
+            alert(`Connecting to ZarinPal Gateway for ${PRO_PRICE.toLocaleString()} Tomans (${amountRials} Rials)...`);
+            
+            const userRef = doc(db, "users", window.currentUser.uid);
+            let expires = new Date();
+            expires.setMonth(expires.getMonth() + 1);
+            
+            await setDoc(userRef, { isPro: true, proExpiresAt: expires.toISOString() }, { merge: true });
+            alert("Payment Successful! Your account has been upgraded to PRO for 1 Month.");
+            window.location.reload();
+        };
     </script>
 </head>
 <body id="bodyRoot">
 
-    <header>
-        <div class="top-controls">
-            <button class="top-btn" onclick="toggleAdminMode()" id="adminModeBtn">Mode: User</button>
-            <button class="top-btn" onclick="openAuthModal()" id="authBtn">Sign In</button>
-            <button class="top-btn" onclick="toggleLanguage()" id="langBtn">فارسی / EN</button>
+    <!-- SIDEBAR NAVIGATION PANEL -->
+    <aside class="app-sidebar">
+        <div class="sidebar-logo">
+            Fitness Pro
+            <span id="uiSub">Exercise & Video Hub</span>
         </div>
-        <h1 id="uiTitle">Fitness Pro</h1>
-        <p id="uiSub">Exercise Library, Encyclopedia & Video Hub</p>
-    </header>
-
-    <!-- Main Navigation Tabs -->
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('exercises')" id="tabEx">Exercises</button>
-        <button class="tab-btn" onclick="switchTab('encyclopedia')" id="tabEnc">Encyclopedia</button>
-        <button class="tab-btn" onclick="switchTab('videos')" id="tabVid">Videos & GIFs</button>
-    </div>
-
-    <!-- 1. EXERCISES SECTION -->
-    <div id="exercises" class="section-content active">
-        <input type="text" id="searchBox" class="search-box" placeholder="Search exercises..." onkeyup="filterExercises()">
-        
-        <!-- Exercise Sub-categories Navigation -->
-        <div class="sub-tabs" id="exSubTabs">
-            <button class="sub-tab-btn active" onclick="switchExSubTab('all', event)" id="exSubAll">All</button>
-            <button class="sub-tab-btn" onclick="switchExSubTab('chest', event)" id="exSubChest">Chest</button>
-            <button class="sub-tab-btn" onclick="switchExSubTab('abdominals', event)" id="exSubAbs">Abs</button>
-            <button class="sub-tab-btn" onclick="switchExSubTab('quadriceps', event)" id="exSubLegs">Legs</button>
-            <button class="sub-tab-btn" onclick="switchExSubTab('biceps', event)" id="exSubArms">Arms</button>
-            <button class="sub-tab-btn" onclick="switchExSubTab('lats', event)" id="exSubBack">Back</button>
-            <button class="sub-tab-btn" onclick="switchExSubTab('shoulders', event)" id="exSubShoulders">Shoulders</button>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('exercises')" id="tabEx">Exercises</button>
+            <a href="encyclopedia.html" class="tab-btn" style="background:#1a2b3c; color:#64b5f6; border-color:#64b5f6;" id="tabEnc">📖 Encyclopedia</a>
+            <button class="tab-btn" onclick="switchTab('videos')" id="tabVid">Videos</button>
+            <a href="tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabTools">🛠️ Tools</a>
+            <a href="free-plans.html" class="tab-btn" style="background:#1e3a2f; color:#34d399; border-color:#34d399;" id="tabFreePlans">📋 Free Plans</a>
+            <a href="advanced_tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabAdvancedTools">⚡ Advanced Tools</a>
+            <a href="gymandtrainers.html" class="tab-btn" style="background:#003322; color:#34d399; border-color:#003322;" id="tabGymsAndTrainers">🏋️ Gyms & Workouts</a>
+            <a href="trainers.html" class="tab-btn" style="background:#3a1a3a; color:#e040fb; border-color:#e040fb;" id="tabTrainers">🏋️ Trainers Marketplace</a>
+            <a href="news.html" class="tab-btn" style="background:#3a2a1a; color:#ff9800; border-color:#ff9800;" id="tabNews">📰 News & Articles</a>
+            <a href="account.html" class="tab-btn" style="background:#1a3a2a; color:#4caf50; border-color:#4caf50;" id="tabAccount">👤 My Account & Plans</a>
+            <a href="admin.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabAdmin">⚡ Admin Portal</a>
         </div>
+    </aside>
 
-        <!-- Admin Direct File Uploader Panel -->
-        <div class="add-panel admin-only">
-            <h3>Admin: Upload Custom Exercise or Data File (.json)</h3>
-            <div class="controls">
-                <input type="file" id="jsonUploadInput" accept=".json" onchange="handleFileUpload(event)">
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="app-main">
+        <header>
+            <div class="header-title-area">
+                <h1 id="uiTitle">Fitness Pro</h1>
+                <p id="uiHeaderSub">Professional Training Hub</p>
+            </div>
+            <div class="top-controls">
+                <select class="lang-select" id="globalLangSelect" onchange="changeGlobalLanguage(this.value)">
+                    <option value="en">English (EN)</option>
+                    <option value="fa">فارسی (FA)</option>
+                    <option value="de">Deutsch (DE)</option>
+                    <option value="ar">العربية (AR)</option>
+                    <option value="fr">Français (FR)</option>
+                    <option value="es">Español (ES)</option>
+                </select>
+                <button class="top-btn" onclick="openIOSModal()" id="iosTutorialBtn">iOS Guide</button>
+                <button class="top-btn" onclick="openAuthModal()" id="authBtn">Sign In</button>
+                <button class="top-btn" onclick="toggleLanguage()" id="langBtn">فارسی / EN</button>
+            </div>
+        </header>
+
+        <!-- WIDGET TOP ROW (NEWS WIDGET + QUOTES ROTATOR) -->
+        <div class="dashboard-top-grid">
+            <!-- NEWS CARD WIDGET -->
+            <div class="top-left-news-box" id="topLeftNewsWidget">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="badge" id="newsCardBadge" style="margin:0; font-size:10px;">Supplements</span>
+                    <span style="font-size:10px; color:var(--text-muted);" id="newsCardDate">2026-06-01</span>
+                </div>
+                <img id="newsCardImg" src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80" alt="News Image">
+                <h4 id="newsCardTitle">Latest Research on Creatine Monohydrate & Muscle Hypertrophy</h4>
+                <p id="newsCardSnippet">Creatine monohydrate remains the most proven sports supplement, improving explosive power...</p>
+                <div class="news-footer-row">
+                    <span style="font-size:10px; color:var(--accent);" id="newsCardSource">Fitness Pro</span>
+                    <a href="news.html" id="newsWidgetLink">Read Full Article →</a>
+                </div>
+            </div>
+
+            <!-- QUOTES ROTATOR BAR -->
+            <div id="quotesRotatorBar" class="quotes-bar">
+                Loading motivation quotes...
             </div>
         </div>
 
-        <div id="exerciseContainer">
-            <div class="loading">Loading categorized exercises...</div>
-        </div>
-    </div>
-
-    <!-- 2. ENCYCLOPEDIA SECTION -->
-    <div id="encyclopedia" class="section-content">
-        <div class="sub-tabs">
-            <button class="sub-tab-btn active" onclick="switchSubTab('sub_yoga', event)" id="subTabYoga">Yoga & Calisthenics</button>
-            <button class="sub-tab-btn" onclick="switchSubTab('sub_diseases', event)" id="subTabDis">Diseases & Injuries</button>
-            <button class="sub-tab-btn" onclick="switchSubTab('sub_nutrition', event)" id="subTabNut">Nutrition & Food</button>
-            <button class="sub-tab-btn" onclick="switchSubTab('sub_supplements', event)" id="subTabSup">Supplements & Authenticity</button>
-            <button class="sub-tab-btn" onclick="switchSubTab('sub_pharmacology', event)" id="subTabPharm">Steroids & Pharmacology</button>
-            <button class="sub-tab-btn" onclick="switchSubTab('sub_legends', event)" id="subTabLeg">Legends & Bodybuilders</button>
-            <button class="sub-tab-btn" onclick="switchSubTab('sub_gyms', event)" id="subTabGym">Gyms & Systems</button>
-        </div>
-
-        <div id="sub_yoga" class="sub-section-content active">
-            <div id="grid_yoga" class="grid"><div class="loading">Loading Yoga & Calisthenics...</div></div>
-        </div>
-        <div id="sub_diseases" class="sub-section-content">
-            <div id="grid_diseases" class="grid"><div class="loading">Loading Diseases & Injuries...</div></div>
-        </div>
-        <div id="sub_nutrition" class="sub-section-content">
-            <div id="grid_nutrition" class="grid"><div class="loading">Loading Nutrition & Foods...</div></div>
-        </div>
-        <div id="sub_supplements" class="sub-section-content">
-            <div id="grid_supplements" class="grid"><div class="loading">Loading Supplements & Authenticity...</div></div>
-        </div>
-        <div id="sub_pharmacology" class="sub-section-content">
-            <div id="grid_pharmacology" class="grid"><div class="loading">Loading Steroids & Pharmacology...</div></div>
-        </div>
-        <div id="sub_legends" class="sub-section-content">
-            <div id="grid_legends" class="grid"><div class="loading">Loading Legends & Bodybuilders...</div></div>
-        </div>
-        <div id="sub_gyms" class="sub-section-content">
-            <div id="grid_gyms" class="grid"><div class="loading">Loading Gyms & Training Systems...</div></div>
-        </div>
-    </div>
-
-    <!-- 3. VIDEOS & GIFs SECTION -->
-    <div id="videos" class="section-content">
-        <div class="add-panel admin-only">
-            <h3 id="vidPanelTitle">Add Video or GIF</h3>
-            <div class="controls">
-                <input type="text" id="vidTitle" placeholder="Title">
-                <input type="text" id="vidUrl" placeholder="Video Link">
-                <input type="text" id="vidGif" placeholder="GIF Image Link">
+        <!-- EXERCISES TAB -->
+        <div id="exercises" class="section-content active">
+            <input type="text" id="searchBox" class="search-box" placeholder="Search exercises..." onkeyup="filterExercises()">
+            
+            <div class="sub-tabs" id="exSubTabs">
+                <button class="sub-tab-btn active" onclick="switchExSubTab('all', event)" id="exSubAll">All</button>
+                <button class="sub-tab-btn" onclick="switchExSubTab('chest', event)" id="exSubChest">Chest</button>
+                <button class="sub-tab-btn" onclick="switchExSubTab('abdominals', event)" id="exSubAbs">Abs</button>
+                <button class="sub-tab-btn" onclick="switchExSubTab('quadriceps', event)" id="exSubLegs">Legs</button>
+                <button class="sub-tab-btn" onclick="switchExSubTab('biceps', event)" id="exSubArms">Arms</button>
+                <button class="sub-tab-btn" onclick="switchExSubTab('lats', event)" id="exSubBack">Back</button>
+                <button class="sub-tab-btn" onclick="switchExSubTab('shoulders', event)" id="exSubShoulders">Shoulders</button>
             </div>
-            <button class="action-btn" onclick="addVideo()" id="addVidBtn">Add Video/GIF</button>
-        </div>
-        <div id="videoGrid" class="grid"></div>
-    </div>
 
-    <!-- Authentication Modal -->
+            <div class="add-panel admin-only">
+                <h3>Admin: Upload Custom Exercise File (.json)</h3>
+                <div class="controls">
+                    <input type="file" id="jsonUploadInput" accept=".json" onchange="handleFileUpload(event)">
+                </div>
+            </div>
+
+            <div id="exerciseContainer">
+                <div class="loading">Loading categorized exercises...</div>
+            </div>
+        </div>
+
+        <!-- VIDEOS TAB -->
+        <div id="videos" class="section-content">
+            <div class="sub-tabs" id="vidSubTabs">
+                <button class="sub-tab-btn active" onclick="switchVidCategory('all', event)">All</button>
+                <button class="sub-tab-btn" onclick="switchVidCategory('chest', event)">Chest</button>
+                <button class="sub-tab-btn" onclick="switchVidCategory('legs', event)">Legs</button>
+                <button class="sub-tab-btn" onclick="switchVidCategory('cardio', event)">Cardio</button>
+                <button class="sub-tab-btn" onclick="switchVidCategory('abs', event)">Abs</button>
+                <button class="sub-tab-btn" onclick="switchVidCategory('shoulders', event)">Shoulders</button>
+                <button class="sub-tab-btn" onclick="switchVidCategory('back', event)">Back</button>
+                <button class="sub-tab-btn" onclick="switchVidCategory('arms', event)">Arms</button>
+            </div>
+            <div id="videoGrid" class="grid"><div class="loading">Scanning GitHub repository folders & Cloudinary for videos...</div></div>
+        </div>
+    </main>
+
+    <!-- AUTHENTICATION MODAL -->
     <div id="authModal" class="modal-overlay">
         <div class="modal">
             <button class="close-modal" onclick="closeAuthModal()">&times;</button>
@@ -551,39 +806,120 @@
         </div>
     </div>
 
+    <!-- USER PROFILE MODAL -->
+    <div id="profileModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-modal" onclick="closeProfileModal()">&times;</button>
+            <h2 id="profileModalHeading">User Membership & Info</h2>
+            <div id="profileDetails" style="margin: 10px 0; display:flex; flex-direction:column; gap:8px;"></div>
+            
+            <div style="margin-top:15px; padding:12px; background:#161616; border-radius:6px; border:1px solid var(--border);">
+                <h4 style="color:var(--accent); margin:0 0 6px 0;" id="appInfoTitle">About Fitness Pro</h4>
+                <p style="font-size:13px; color:var(--text-muted); line-height:1.4;" id="appInfoDesc">Fitness Pro is your all-in-one professional fitness hub featuring an extensive exercise database, expert encyclopedias, video guides, and advanced calculators.</p>
+                <div style="margin-top:10px;">
+                    <a href="https://myket.ir/app/com.mhmdhsyni.fitnesspro" target="_blank" style="display:inline-block; background:#4caf50; color:#fff; padding:6px 12px; border-radius:4px; font-weight:bold; font-size:12px; text-decoration:none;" id="myketLinkBtn">Download on Myket Store</a>
+                </div>
+            </div>
+
+            <div style="margin-top:15px; padding:12px; background:#161616; border-radius:6px; border:1px solid var(--border);">
+                <h4 style="color:var(--accent); margin:0 0 6px 0;" id="contactOwnerTitle">Contact App Owner (Mohammad)</h4>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;" id="contactOwnerSub">Send your feedback, bug reports, or questions directly via Gmail.</p>
+                <input type="text" id="ownerSubject" placeholder="Subject / موضوع" style="margin-bottom:6px;">
+                <textarea id="ownerMessage" placeholder="Type your message here..." rows="3" style="resize:vertical;"></textarea>
+                <button class="action-btn" style="margin-top:4px;" onclick="sendOwnerEmail()" id="sendEmailBtn">Send Email to Mohammad</button>
+            </div>
+
+            <div class="pro-locked-banner" style="margin-top:15px;">
+                <h3 style="color:var(--accent); margin-top:0;" id="proUpgradeTitle">Upgrade to PRO</h3>
+                <p id="proUpgradeSub">Get full access to all professional guides, advanced databases, and routines for only <b>40,000 Toman / Month</b>.</p>
+                <button class="action-btn" style="margin-top:15px; background:var(--accent); color:#000;" onclick="startZarinPalPayment()" id="payZarinBtn">Pay with ZarinPal (40k Toman)</button>
+            </div>
+            <button class="action-btn" style="background:var(--danger); margin-top:10px;" onclick="signOutUser()" id="signOutBtn">Sign Out</button>
+        </div>
+    </div>
+
+    <!-- IOS TUTORIAL MODAL -->
+    <div id="iosModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-modal" onclick="closeIOSModal()">&times;</button>
+            <h2 id="iosModalTitle">How to Install on iOS (iPhone / iPad)</h2>
+            <div style="font-size:14px; color:var(--text-muted); line-height:1.6;" id="iosModalContent">
+                <p>To use Fitness Pro like a native app with full screen and offline capability on iOS Safari:</p>
+                <ol style="padding-left:20px; margin-top:8px;">
+                    <li>Open this web app in <b>Safari</b> on your iPhone or iPad.</li>
+                    <li>Tap the <b>Share button</b> <span style="color:var(--accent); font-weight:bold;">[ □↗ ]</span> at the bottom (or top) toolbar in Safari.</li>
+                    <li>Scroll down the menu and tap <b>"Add to Home Screen"</b> (افزودن به صفحه اصلی).</li>
+                    <li>Tap <b>Add</b> in the top right corner. The Fitness Pro icon will now appear on your home screen!</li>
+                </ol>
+            </div>
+            <button class="action-btn" style="margin-top:15px;" onclick="closeIOSModal()" id="iosCloseBtn">Got it!</button>
+        </div>
+    </div>
+
     <script>
         let allExercises = [];
         let currentExSubCategory = 'all';
-        let currentLang = 'en';
-        let isAdmin = false;
+        let currentVidCategory = 'all';
+        window.currentLang = 'en';
         const EX_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/free-exercise-db/main/';
         const DB_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/fitness_pro_database/main/';
+        const GITHUB_API_BASE = 'https://api.github.com/repos/mohammad009999-prog/fitness_pro_database/contents/';
 
-        let dbData = {
-            yoga: [],
-            diseases: [],
-            nutrition: [],
-            supplements: [],
-            pharmacology: [],
-            legends: [],
-            gyms: [],
-            videos: [
-                { title: "Squat Form Demo", title_fa: "آموزش فرم اسکوات", url: "https://youtube.com", gif: "" }
-            ]
-        };
+        let videosData = [];
+        let quotesData = [];
+        let currentQuoteIndex = 0;
+        let quotesInterval = null;
+
+        let mainNewsWidgetArticles = [
+            {
+                titleEn: "Latest Research on Creatine Monohydrate & Muscle Hypertrophy",
+                titleFa: "جدیدترین تحقیقات درباره تاثیر کراتین مونوهیدرات بر ریکاوری و حجم عضلانی",
+                category: "Supplements",
+                image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80",
+                date: "2026-06-01",
+                contentEn: "Creatine monohydrate remains the most proven sports supplement, improving explosive power and sarcoplasmic volume by boosting cellular phosphocreatine stores.",
+                contentFa: "کراتین مونوهیدرات همچنان به عنوان اثربخش‌ترین مکمل ورزشی شناخته می‌شود که با افزایش ذخایر فسفوکراتین در سلول‌های عضلانی، قدرت انفجاری و حجم سارکوپلاسمی را به شدت بهبود می‌بخشد.",
+                source: "Fitness Pro Science"
+            },
+            {
+                titleEn: "Hypertrophy Training Systems: Mechanical Tension vs. Metabolic Stress",
+                titleFa: "تحلیل تخصصی سیستم‌های تمرینی هایپرتروفی: تنش مکانیکی در برابر استرس متابولیک",
+                category: "Training",
+                image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80",
+                date: "2026-05-28",
+                contentEn: "For maximum muscle growth, combining heavy lifting for mechanical tension with high-fatigue training close to failure for metabolic stress yields optimal results.",
+                contentFa: "برای حداکثر رشد عضلانی، ترکیب وزنه‌های سنگین با تنش مکانیکی بالا و تمرینات تا حد ناتوانی با استرس متابولیک بهترین نتیجه را در بدنسازان سطح متوسط و پیشرفته ایجاد می‌کند.",
+                source: "Coach Academy"
+            },
+            {
+                titleEn: "Liver Protection & Lipid Profile Management During PCT Cycles",
+                titleFa: "بررسی پروتکل‌های محافظت از کبد و کنترل پروفایل لیپیدی در دوره‌های پاکسازی",
+                category: "Steroids",
+                image: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=600&q=80",
+                date: "2026-05-20",
+                contentEn: "Understanding androgenic anabolic steroid side effects and utilizing supportive supplements like TUDCA, omega-3, and antioxidants is crucial for cardiovascular and liver health.",
+                contentFa: "آگاهی از عوارض جانبی ترکیبات آندروژنیک آنابولیک و استفاده از مکمل‌های حمایتی مانند تی‌کیو، امگا ۳ و آنتی‌اکسیدان‌ها برای حفظ سلامت قلب و عروق و کبد الزامی است.",
+                source: "Clinical Pharmacology"
+            },
+            {
+                titleEn: "Advanced Olympia Prep: Maximizing Muscle Density & Conditioning",
+                titleFa: "آمادگی پیشرفته مسابقات: حداکثر کردن چگالی عضلانی و کات نهایی",
+                category: "Bodybuilding",
+                image: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=600&q=80",
+                date: "2026-06-04",
+                contentEn: "Top professional coaches reveal the precise nutritional adjustments and sodium-potassium balance techniques used during peak week conditioning.",
+                contentFa: "برجسته‌ترین مربیان حرفه‌ای دقیق‌ترین تنظیمات تغذیه‌ای و تکنیک‌های تعادل سدیم و پتاسیم را در هفته پایانی مسابقات تشریح می‌کنند.",
+                source: "Bodybuilding Network"
+            }
+        ];
+        let currentNewsWidgetIndex = 0;
+        let newsWidgetInterval = null;
 
         function switchTab(tabId) {
             document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active');
-        }
-
-        function switchSubTab(subId, evt) {
-            document.querySelectorAll('.sub-section-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('#encyclopedia .sub-tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(subId).classList.add('active');
-            evt.currentTarget.classList.add('active');
         }
 
         function switchExSubTab(category, evt) {
@@ -593,31 +929,62 @@
             displayExercises(allExercises);
         }
 
-        function toggleAdminMode() {
-            isAdmin = !isAdmin;
-            const body = document.getElementById('bodyRoot');
-            const btn = document.getElementById('adminModeBtn');
-            if(isAdmin) {
-                body.classList.add('admin-mode');
-                btn.innerText = "Mode: Admin";
-                btn.style.borderColor = "#4caf50";
-                btn.style.color = "#4caf50";
-            } else {
-                body.classList.remove('admin-mode');
-                btn.innerText = "Mode: User";
-                btn.style.borderColor = "var(--accent)";
-                btn.style.color = "var(--accent)";
+        function switchVidCategory(category, evt) {
+            currentVidCategory = category;
+            document.querySelectorAll('#vidSubTabs .sub-tab-btn').forEach(el => el.classList.remove('active'));
+            evt.currentTarget.classList.add('active');
+            renderVideos();
+        }
+
+        function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+        function openProfileModal() { document.getElementById('profileModal').style.display = 'flex'; }
+        function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+        function openIOSModal() { document.getElementById('iosModal').style.display = 'flex'; }
+        function closeIOSModal() { document.getElementById('iosModal').style.display = 'none'; }
+
+        window.openAuthModal = openAuthModal;
+        window.closeAuthModal = closeAuthModal;
+        window.openProfileModal = openProfileModal;
+        window.closeProfileModal = closeProfileModal;
+        window.openIOSModal = openIOSModal;
+        window.closeIOSModal = closeIOSModal;
+
+        function updateProfileUI() {
+            const container = document.getElementById('profileDetails');
+            if(!window.currentUser || !window.currentUserData) return;
+            const u = window.currentUserData;
+            const isProActive = u.isPro && (!u.proExpiresAt || new Date(u.proExpiresAt) > new Date());
+            
+            container.innerHTML = `
+                <div class="prop-item"><b>Email:</b> ${window.currentUser.email || window.currentUser.phoneNumber}</div>
+                <div class="prop-item"><b>Status:</b> <span class="badge" style="background:${isProActive ? '#1a3a2a' : '#3a2a1a'}; color:${isProActive ? '#4caf50' : '#ff9800'}; font-size:13px;">${isProActive ? 'PRO MEMBER' : 'FREE USER'}</span></div>
+                ${isProActive ? `<div class="prop-item"><b>Expires:</b> ${new Date(u.proExpiresAt).toLocaleDateString()}</div>` : ''}
+            `;
+        }
+
+        function signOutUser() {
+            if(confirm(window.currentLang === 'fa' ? 'آیا می خواهید خارج شوید؟' : 'Do you want to sign out?')) {
+                window.firebaseAuth.signOut().then(() => {
+                    closeProfileModal();
+                    alert(window.currentLang === 'fa' ? 'با موفقیت خارج شدید.' : 'Signed out successfully.');
+                });
             }
         }
 
-        function openAuthModal() {
-            document.getElementById('authModal').style.display = 'flex';
+        function sendOwnerEmail() {
+            const subject = document.getElementById('ownerSubject').value;
+            const message = document.getElementById('ownerMessage').value;
+            const userEmail = window.currentUser ? (window.currentUser.email || window.currentUser.phoneNumber) : 'Guest User';
+
+            if(!subject || !message) {
+                alert(window.currentLang === 'fa' ? 'لطفاً موضوع و متن پیام را وارد کنید.' : 'Please enter both subject and message.');
+                return;
+            }
+
+            const mailtoLink = `mailto:mohammad009999@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent("From: " + userEmail + "\n\n" + message)}`;
+            window.location.href = mailtoLink;
         }
-        function closeAuthModal() {
-            document.getElementById('authModal').style.display = 'none';
-        }
-        window.openAuthModal = openAuthModal;
-        window.closeAuthModal = closeAuthModal;
 
         function switchAuthMode(mode) {
             document.getElementById('authEmailSection').style.display = mode === 'email' ? 'block' : 'none';
@@ -636,13 +1003,10 @@
             reader.onload = function(e) {
                 try {
                     const parsed = JSON.parse(e.target.result);
-                    if(Array.isArray(parsed)) {
-                        allExercises.push(...parsed);
-                    } else {
-                        allExercises.push(parsed);
-                    }
+                    if(Array.isArray(parsed)) allExercises.push(...parsed);
+                    else allExercises.push(parsed);
                     displayExercises(allExercises);
-                    alert("File successfully loaded and added to exercise repository!");
+                    alert("File successfully loaded!");
                 } catch(err) {
                     alert("Invalid JSON file format.");
                 }
@@ -651,239 +1015,150 @@
         }
 
         function toggleLanguage() {
-            currentLang = currentLang === 'en' ? 'fa' : 'en';
+            window.currentLang = window.currentLang === 'en' ? 'fa' : 'en';
             const root = document.getElementById('htmlRoot');
-            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
-            root.setAttribute('lang', currentLang);
+            root.setAttribute('dir', window.currentLang === 'fa' ? 'rtl' : 'ltr');
+            root.setAttribute('lang', window.currentLang);
+            const isFa = window.currentLang === 'fa';
             
-            document.getElementById('uiTitle').innerText = currentLang === 'fa' ? 'فیتنس پرو' : 'Fitness Pro';
-            document.getElementById('uiSub').innerText = currentLang === 'fa' ? 'مرجع تمرینات، دایره المعارف و ویدیوها' : 'Exercise Library, Encyclopedia & Video Hub';
-            document.getElementById('tabEx').innerText = currentLang === 'fa' ? 'تمرینات' : 'Exercises';
-            document.getElementById('tabEnc').innerText = currentLang === 'fa' ? 'دایره المعارف' : 'Encyclopedia';
-            document.getElementById('tabVid').innerText = currentLang === 'fa' ? 'ویدیوها' : 'Videos & GIFs';
+            document.getElementById('uiTitle').innerText = isFa ? 'فیتنس پرو' : 'Fitness Pro';
+            document.getElementById('uiSub').innerText = isFa ? 'مرجع تمرینات و ویدیوها' : 'Exercise & Video Hub';
+            document.getElementById('uiHeaderSub').innerText = isFa ? 'مرجع تخصصی تمرین و بدنسازی' : 'Professional Training Hub';
+            document.getElementById('tabEx').innerText = isFa ? 'تمرینات' : 'Exercises';
+            document.getElementById('tabEnc').innerText = isFa ? '📖 دایره‌المعارف' : '📖 Encyclopedia';
+            document.getElementById('tabVid').innerText = isFa ? 'ویدیوها' : 'Videos';
+            document.getElementById('tabTools').innerText = isFa ? '🛠️ ابزارها' : '🛠️ Tools';
+            document.getElementById('tabFreePlans').innerText = isFa ? '📋 برنامه‌های رایگان' : '📋 Free Plans';
+            document.getElementById('tabAdvancedTools').innerText = isFa ? '⚡ ابزارهای پیشرفته' : '⚡ Advanced Tools';
+            document.getElementById('tabGymsAndTrainers').innerText = isFa ? '🏋️ باشگاه‌ها و تمرین' : '🏋️ Gyms & Workouts';
+            document.getElementById('tabTrainers').innerText = isFa ? '🏋️ مربیان و بازار' : '🏋️ Trainers Marketplace';
+            document.getElementById('tabNews').innerText = isFa ? '📰 اخبار و مقالات' : '📰 News & Articles';
+            document.getElementById('tabAccount').innerText = isFa ? '👤 حساب کاربری' : '👤 My Account & Plans';
+            document.getElementById('tabAdmin').innerText = isFa ? '⚡ پنل ادمین' : '⚡ Admin Portal';
+            document.getElementById('iosTutorialBtn').innerText = isFa ? 'راهنمای آیفون' : 'iOS Guide';
             
-            document.getElementById('exSubAll').innerText = currentLang === 'fa' ? 'همه' : 'All';
-            document.getElementById('exSubChest').innerText = currentLang === 'fa' ? 'سینه' : 'Chest';
-            document.getElementById('exSubAbs').innerText = currentLang === 'fa' ? 'شکم' : 'Abs';
-            document.getElementById('exSubLegs').innerText = currentLang === 'fa' ? 'پاها' : 'Legs';
-            document.getElementById('exSubArms').innerText = currentLang === 'fa' ? 'بازوها' : 'Arms';
-            document.getElementById('exSubBack').innerText = currentLang === 'fa' ? 'پشت' : 'Back';
-            document.getElementById('exSubShoulders').innerText = currentLang === 'fa' ? 'سرشانه' : 'Shoulders';
+            document.getElementById('exSubAll').innerText = isFa ? 'همه' : 'All';
+            document.getElementById('exSubChest').innerText = isFa ? 'سینه' : 'Chest';
+            document.getElementById('exSubAbs').innerText = isFa ? 'شکم' : 'Abs';
+            document.getElementById('exSubLegs').innerText = isFa ? 'پاها' : 'Legs';
+            document.getElementById('exSubArms').innerText = isFa ? 'بازوها' : 'Arms';
+            document.getElementById('exSubBack').innerText = isFa ? 'پشت' : 'Back';
+            document.getElementById('exSubShoulders').innerText = isFa ? 'سرشانه' : 'Shoulders';
+            document.getElementById('searchBox').placeholder = isFa ? 'جستجوی تمرینات...' : 'Search exercises...';
+            
+            document.getElementById('newsWidgetLink').innerText = isFa ? 'مشاهده همه اخبار ←' : 'Read Full Article →';
 
-            document.getElementById('subTabYoga').innerText = currentLang === 'fa' ? 'یوگا و کالستینیکس' : 'Yoga & Calisthenics';
-            document.getElementById('subTabDis').innerText = currentLang === 'fa' ? 'بیماری‌ها و آسیب‌ها' : 'Diseases & Injuries';
-            document.getElementById('subTabNut').innerText = currentLang === 'fa' ? 'تغذیه و غذا' : 'Nutrition & Food';
-            document.getElementById('subTabSup').innerText = currentLang === 'fa' ? 'مکمل‌ها و اصالت' : 'Supplements & Authenticity';
-            document.getElementById('subTabPharm').innerText = currentLang === 'fa' ? 'استروئید و داروسازی' : 'Steroids & Pharmacology';
-            document.getElementById('subTabLeg').innerText = currentLang === 'fa' ? 'اسطوره‌ها و بدن‌سازان' : 'Legends & Bodybuilders';
-            document.getElementById('subTabGym').innerText = currentLang === 'fa' ? 'باشگاه‌ها و سیستم‌ها' : 'Gyms & Systems';
-            document.getElementById('searchBox').placeholder = currentLang === 'fa' ? 'جستجوی تمرینات...' : 'Search exercises...';
-            
             displayExercises(allExercises);
-            renderAllSubGrids();
+            renderVideos();
+            renderCurrentQuote();
+            renderNewsWidgetCard();
+        }
+
+        function initNewsWidgetRotator() {
+            renderNewsWidgetCard();
+            if(newsWidgetInterval) clearInterval(newsWidgetInterval);
+            newsWidgetInterval = setInterval(() => {
+                currentNewsWidgetIndex = (currentNewsWidgetIndex + 1) % mainNewsWidgetArticles.length;
+                renderNewsWidgetCard();
+            }, 15000);
+        }
+
+        function renderNewsWidgetCard() {
+            const box = document.getElementById('topLeftNewsWidget');
+            if(!box) return;
+            const item = mainNewsWidgetArticles[currentNewsWidgetIndex];
+            const isFa = window.currentLang === 'fa';
+            const title = isFa ? (item.titleFa || item.titleEn) : item.titleEn;
+            const content = isFa ? (item.contentFa || item.contentEn) : item.contentEn;
+
+            box.style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById('newsCardBadge').innerText = item.category;
+                document.getElementById('newsCardDate').innerText = item.date;
+                document.getElementById('newsCardImg').src = item.image;
+                document.getElementById('newsCardTitle').innerText = title;
+                document.getElementById('newsCardSnippet').innerText = content;
+                document.getElementById('newsCardSource').innerText = item.source || 'Fitness Pro';
+                box.style.opacity = 1;
+            }, 300);
+        }
+
+        async function loadGitHubGifs() {
+            const categories = ['chest', 'legs', 'cardio', 'abs', 'shoulders', 'back', 'arms'];
+            for (const cat of categories) {
+                try {
+                    const res = await fetch(GITHUB_API_BASE + cat);
+                    if (res.ok) {
+                        const files = await res.json();
+                        if (Array.isArray(files)) {
+                            files.forEach(file => {
+                                if (file.type === 'file' && (file.name.endsWith('.gif') || file.name.endsWith('.GIF') || file.name.endsWith('.mp4'))) {
+                                    const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+                                    const title = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+                                    videosData.push({
+                                        title: title,
+                                        category: cat,
+                                        url: '',
+                                        gif: file.download_url
+                                    });
+                                }
+                            });
+                        }
+                    }
+                } catch (e) {}
+            }
             renderVideos();
         }
 
-        async function loadDatabases() {
+        async function loadMainData() {
             try {
                 const resEx = await fetch(EX_BASE + 'dist/exercises.json');
                 allExercises = await resEx.json();
                 displayExercises(allExercises);
 
-                async function fetchFilesInto(fileList, targetArrayKey) {
-                    for (let file of fileList) {
-                        try {
-                            const r = await fetch(DB_BASE + file);
-                            const d = await r.json();
-                            if(Array.isArray(d)) dbData[targetArrayKey].push(...d);
-                            else dbData[targetArrayKey].push(d);
-                        } catch(e) {}
-                    }
-                }
+                const rQuotes = await fetch('https://raw.githubusercontent.com/mohammad009999-prog/fitness_pro_database/main/quotes.json');
+                quotesData = await rQuotes.json();
+                initQuotesRotator();
 
-                await fetchFilesInto(['yoga.json', 'calisthenics.json', 'scientific_data.json'], 'yoga');
-                await fetchFilesInto(['diseases.json', 'injuries.json'], 'diseases');
-                await fetchFilesInto(['food_database.json'], 'nutrition');
-                await fetchFilesInto(['supplements.json', 'supplement_authenticity.json'], 'supplements');
-                await fetchFilesInto(['steroids.json', 'steroids_side_effects.json', 'steroid_authenticity.json', 'substances.json'], 'pharmacology');
-                await fetchFilesInto(['bodybuilders.json', 'legends.json', 'olympia_legends.json', 'legendary_trainers.json'], 'legends');
-                await fetchFilesInto(['gyms.json', 'shiraz_gyms.json', 'training_systems.json', 'contest_data.json', 'body_types.json'], 'gyms');
-
-                renderAllSubGrids();
-            } catch (error) {
-                console.error("Error loading online databases:", error);
-            }
-            renderVideos();
+                initNewsWidgetRotator();
+            } catch (error) {}
+            loadGitHubGifs();
         }
 
-        function renderAllSubGrids() {
-            renderGenericGrid('grid_yoga', dbData.yoga, 'yoga');
-            renderGenericGrid('grid_diseases', dbData.diseases, 'diseases');
-            renderGenericGrid('grid_nutrition', dbData.nutrition, 'nutrition');
-            renderGenericGrid('grid_supplements', dbData.supplements, 'supplements');
-            renderGenericGrid('grid_pharmacology', dbData.pharmacology, 'pharmacology');
-            renderGenericGrid('grid_legends', dbData.legends, 'legends');
-            renderGenericGrid('grid_gyms', dbData.gyms, 'gyms');
+        function initQuotesRotator() {
+            if (!quotesData || quotesData.length === 0) {
+                quotesData = [
+                    { text: "The last three or four reps is what makes the muscle grow.", author: "Arnold Schwarzenegger", text_fa: "سه یا چهار تکرار آخر است که باعث رشد عضله می‌شود.", author_fa: "آرنولد شوارتزنگر" }
+                ];
+            }
+            renderCurrentQuote();
+            if (quotesInterval) clearInterval(quotesInterval);
+            quotesInterval = setInterval(() => {
+                currentQuoteIndex = (currentQuoteIndex + 1) % quotesData.length;
+                renderCurrentQuote();
+            }, 60000);
         }
 
-        async function fetchWikiImage(queryTerm, imgElementId) {
-            if (!queryTerm) return;
-            const imgEl = document.getElementById(imgElementId);
-            if (!imgEl) return;
+        function renderCurrentQuote() {
+            const bar = document.getElementById('quotesRotatorBar');
+            if (!bar || !quotesData || quotesData.length === 0) return;
+            const q = quotesData[currentQuoteIndex];
+            const isFa = window.currentLang === 'fa';
+            const text = isFa ? (q.text_fa || q.text) : (q.text || q.text_fa);
+            const author = isFa ? (q.author_fa || q.author) : (q.author || q.author_fa);
 
-            try {
-                let res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(queryTerm)}&prop=pageimages&format=json&pithumbsize=400&origin=*`);
-                let data = await res.json();
-                let pages = data.query.pages;
-                let pageId = Object.keys(pages)[0];
-                
-                if (pages[pageId] && pages[pageId].thumbnail && pages[pageId].thumbnail.source) {
-                    imgEl.src = pages[pageId].thumbnail.source;
-                    return;
-                }
-
-                let searchRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(queryTerm)}&format=json&origin=*`);
-                let searchData = await searchRes.json();
-                if (searchData.query && searchData.query.search.length > 0) {
-                    let bestTitle = searchData.query.search[0].title;
-                    let res2 = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(bestTitle)}&prop=pageimages&format=json&pithumbsize=400&origin=*`);
-                    let data2 = await res2.json();
-                    let pages2 = data2.query.pages;
-                    let pageId2 = Object.keys(pages2)[0];
-                    if (pages2[pageId2] && pages2[pageId2].thumbnail && pages2[pageId2].thumbnail.source) {
-                        imgEl.src = pages2[pageId2].thumbnail.source;
-                    }
-                }
-            } catch (e) {}
-        }
-
-        function displayExercises(exercises) {
-            const container = document.getElementById('exerciseContainer');
-            
-            let filteredExercises = exercises;
-            if (currentExSubCategory !== 'all') {
-                filteredExercises = exercises.filter(ex => {
-                    const category = (ex.category || '').toLowerCase();
-                    const primaryMuscles = ex.primaryMuscles ? ex.primaryMuscles.map(m => m.toLowerCase()) : [];
-                    const secondaryMuscles = ex.secondaryMuscles ? ex.secondaryMuscles.map(m => m.toLowerCase()) : [];
-                    
-                    return category.includes(currentExSubCategory) || 
-                           primaryMuscles.includes(currentExSubCategory) || 
-                           secondaryMuscles.includes(currentExSubCategory);
-                });
-            }
-
-            if (filteredExercises.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">No matching exercises found for this category.</p>';
-                return;
-            }
-
-            const categories = {};
-            filteredExercises.forEach((ex, idx) => {
-                const cat = ex.category || 'general';
-                if (!categories[cat]) categories[cat] = [];
-                categories[cat].push({ ...ex, originalIndex: idx });
-            });
-
-            let html = '';
-            for (const [catName, catExercises] of Object.entries(categories)) {
-                html += `<h2 class="category-header">${catName}</h2><div class="grid">`;
-                
-                html += catExercises.map(ex => {
-                    const name = (currentLang === 'fa' && ex.name_fa) ? ex.name_fa : ex.name;
-                    const muscles = (currentLang === 'fa' && ex.primaryMuscles_fa) ? ex.primaryMuscles_fa.join(', ') : (ex.primaryMuscles ? ex.primaryMuscles.join(', ') : 'N/A');
-                    const rawInstructions = (currentLang === 'fa' && ex.instructions_fa) ? ex.instructions_fa : ex.instructions;
-                    const instructions = rawInstructions ? rawInstructions.map(step => `<li>${step}</li>`).join('') : '';
-                    
-                    const imagesHtml = ex.images && ex.images.length > 0 
-                        ? `<div class="img-container">${ex.images.map(img => `<img src="${EX_BASE}exercises/${img}" alt="${ex.name}" onerror="this.style.display='none'">`).join('')}</div>` 
-                        : '';
-
-                    return `
-                        <div class="card">
-                            <div>
-                                <h3>${name}</h3>
-                                <div>
-                                    <span class="badge">${ex.level || 'N/A'}</span>
-                                    <span class="badge" style="background:#1a2b3c; color:#64b5f6;">${muscles}</span>
-                                </div>
-                            </div>
-                            <p><b>${currentLang === 'fa' ? 'تجهیزات' : 'Equipment'}:</b> ${ex.equipment || 'N/A'}</p>
-                            <div>
-                                <p><b>${currentLang === 'fa' ? 'آموزش' : 'Instructions'}:</b></p>
-                                <ul class="instructions-list">${instructions}</ul>
-                            </div>
-                            ${imagesHtml}
-                            <button class="delete-btn" onclick="deleteExercise(${ex.originalIndex})">Delete</button>
-                        </div>
-                    `;
-                }).join('');
-
-                html += `</div>`;
-            }
-            container.innerHTML = html;
-        }
-
-        function renderGenericGrid(containerId, dataArray, categoryKey) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            if (!dataArray || dataArray.length === 0) {
-                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No records found.</p>';
-                return;
-            }
-
-            container.innerHTML = dataArray.map((item, idx) => {
-                const titleEn = item.food_name || item.name || item.title || item.substance || item.gym_name || item.exercise_name || item.bodybuilder || item.legend_name || '';
-                const titleFa = item.food_name_fa || item.name_fa || item.title_fa || item.substance_fa || item.gym_name_fa || '';
-                const title = (currentLang === 'fa' && titleFa) ? titleFa : (titleEn || `Record #${idx + 1}`);
-                
-                let imageUrl = item.image || item.image_url || item.photo || item.visual_id || item['Visual Id'] || item.gif;
-                const uniqueImgId = `wiki_img_${categoryKey}_${idx}`;
-
-                if (!imageUrl) {
-                    imageUrl = `https://placehold.co/400x160/1e1e1e/ff9800?text=${encodeURIComponent(titleEn || title)}`;
-                    const cleanSearchTerm = (titleEn || title).replace(/\s*\([^)]*\)/g, '').trim();
-                    if (cleanSearchTerm) {
-                        setTimeout(() => fetchWikiImage(cleanSearchTerm, uniqueImgId), 80 + (idx * 40));
-                    }
-                }
-
-                let detailsHtml = '';
-                for (const [key, value] of Object.entries(item)) {
-                    if (['food_name', 'food_name_fa', 'name', 'name_fa', 'title', 'title_fa', 'substance', 'gym_name', 'exercise_name', 'bodybuilder', 'legend_name', 'image', 'image_url', 'photo', 'visual_id', 'Visual Id', 'gif'].includes(key)) continue;
-                    
-                    if (value !== null && value !== undefined && value !== '') {
-                        let displayVal = typeof value === 'object' ? JSON.stringify(value, null, 2) : value;
-                        detailsHtml += `<div class="prop-item"><b>${key.replace(/_/g, ' ')}:</b> ${displayVal}</div>`;
-                    }
-                }
-
-                return `
-                    <div class="card">
-                        <h3>${title}</h3>
-                        <img id="${uniqueImgId}" src="${imageUrl}" alt="${title}" loading="lazy" onerror="this.src='https://placehold.co/400x160/1e1e1e/ff9800?text=${encodeURIComponent(title)}'">
-                        <div style="margin-top:5px; display:flex; flex-direction:column; gap:4px;">
-                            ${detailsHtml || '<p style="color:var(--text-muted)">No additional details.</p>'}
-                        </div>
-                        <button class="delete-btn" onclick="deleteGenericItem('${categoryKey}', ${idx})">Delete</button>
-                    </div>
-                `;
-            }).join('');
+            bar.style.opacity = 0;
+            setTimeout(() => {
+                bar.innerHTML = `"${text}" &mdash; <span>${author}</span>`;
+                bar.style.opacity = 1;
+            }, 300);
         }
 
         function deleteExercise(index) {
-            if(!isAdmin) return alert("Admin access required.");
+            if(!document.body.classList.contains('is-admin')) return alert("Admin access required.");
             if(confirm("Are you sure you want to delete this exercise?")) {
                 allExercises.splice(index, 1);
                 displayExercises(allExercises);
-            }
-        }
-
-        function deleteGenericItem(categoryKey, index) {
-            if(!isAdmin) return alert("Admin access required.");
-            if(confirm("Are you sure you want to delete this item?")) {
-                dbData[categoryKey].splice(index, 1);
-                renderGenericGrid(`grid_${categoryKey}`, dbData[categoryKey], categoryKey);
             }
         }
 
@@ -899,32 +1174,94 @@
             displayExercises(filtered);
         }
 
+        function displayExercises(exercises) {
+            const container = document.getElementById('exerciseContainer');
+            let filteredExercises = exercises;
+            if (currentExSubCategory !== 'all') {
+                filteredExercises = exercises.filter(ex => {
+                    const category = (ex.category || '').toLowerCase();
+                    const primaryMuscles = ex.primaryMuscles ? ex.primaryMuscles.map(m => m.toLowerCase()) : [];
+                    const secondaryMuscles = ex.secondaryMuscles ? ex.secondaryMuscles.map(m => m.toLowerCase()) : [];
+                    return category.includes(currentExSubCategory) || primaryMuscles.includes(currentExSubCategory) || secondaryMuscles.includes(currentExSubCategory);
+                });
+            }
+
+            if (filteredExercises.length === 0) {
+                container.innerHTML = '<p style="text-align:center;">No matching exercises found.</p>';
+                return;
+            }
+
+            const categories = {};
+            filteredExercises.forEach((ex, idx) => {
+                const cat = ex.category || 'general';
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push({ ...ex, originalIndex: idx });
+            });
+
+            const isFa = window.currentLang === 'fa';
+            let html = '';
+            for (const [catName, catExercises] of Object.entries(categories)) {
+                html += `<h2 class="category-header">${catName}</h2><div class="grid">`;
+                html += catExercises.map(ex => {
+                    const name = (isFa && (ex.name_fa || ex.nameFa)) ? (ex.name_fa || ex.nameFa) : (ex.name || ex.nameEn);
+                    const muscles = (isFa && ex.primaryMuscles_fa) ? ex.primaryMuscles_fa.join(', ') : (ex.primaryMuscles ? ex.primaryMuscles.join(', ') : 'N/A');
+                    const rawInstructions = (isFa && (ex.instructions_fa || ex.instructionsFa)) ? (ex.instructions_fa || ex.instructionsFa) : (ex.instructions);
+                    const instructions = rawInstructions ? (Array.isArray(rawInstructions) ? rawInstructions.map(step => `<li>${step}</li>`).join('') : `<li>${rawInstructions}</li>`) : '';
+                    const imagesHtml = ex.images && ex.images.length > 0 
+                        ? `<div class="img-container">${ex.images.map(img => `<img src="${EX_BASE}exercises/${img}" alt="${name}" onerror="this.style.display='none'">`).join('')}</div>` 
+                        : '';
+
+                    return `
+                        <div class="card">
+                            <div>
+                                <h3>${name}</h3>
+                                <div>
+                                    <span class="badge">${ex.level || 'N/A'}</span>
+                                    <span class="badge" style="background:#1a2b3c; color:#64b5f6;">${muscles}</span>
+                                </div>
+                            </div>
+                            <p><b>${isFa ? 'تجهیزات' : 'Equipment'}:</b> ${ex.equipment || 'N/A'}</p>
+                            <div>
+                                <p><b>${isFa ? 'آموزش' : 'Instructions'}:</b></p>
+                                <ul class="instructions-list">${instructions}</ul>
+                            </div>
+                            ${imagesHtml}
+                            <button class="delete-btn" onclick="deleteExercise(${ex.originalIndex})">Delete</button>
+                        </div>
+                    `;
+                }).join('');
+                html += `</div>`;
+            }
+            container.innerHTML = html;
+        }
+
         function renderVideos() {
             const grid = document.getElementById('videoGrid');
-            grid.innerHTML = dbData.videos.map((vid, idx) => `
-                <div class="card">
-                    <h3>${currentLang === 'fa' && vid.title_fa ? vid.title_fa : vid.title}</h3>
-                    ${vid.gif ? `<img src="${vid.gif}" alt="${vid.title}" style="width:100%; height:160px; object-fit:cover;">` : ''}
-                    <p style="margin-top:10px;"><a href="${vid.url}" target="_blank" style="color:var(--accent);">${currentLang === 'fa' ? 'تماشای ویدیو' : 'Watch Video Link'}</a></p>
-                    <button class="delete-btn" onclick="dbData.videos.splice(${idx},1); renderVideos();">Delete</button>
-                </div>
-            `).join('');
+            const isFa = window.currentLang === 'fa';
+            let filteredVideos = videosData;
+            if (currentVidCategory !== 'all') {
+                filteredVideos = videosData.filter(v => v.category === currentVidCategory);
+            }
+
+            if (filteredVideos.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No videos or GIFs found in this folder yet. Upload videos from the Admin Portal.</p>';
+                return;
+            }
+
+            grid.innerHTML = filteredVideos.map((vid) => {
+                const isVideoFile = vid.gif && (vid.gif.endsWith('.mp4') || vid.gif.includes('/video/upload/'));
+                return `
+                    <div class="card">
+                        <h3>${vid.title}</h3>
+                        <span class="badge" style="background:#2a2a2a; color:var(--accent); text-transform:uppercase;">${vid.category}</span>
+                        ${isVideoFile ? `<video src="${vid.gif}" controls muted autoplay loop style="width:100%; height:160px; object-fit:cover; border-radius:6px;"></video>` : `<img src="${vid.gif}" alt="${vid.title}" style="width:100%; height:160px; object-fit:cover;" onerror="this.style.display='none'">`}
+                        ${vid.url ? `<p style="margin-top:10px;"><a href="${vid.url}" target="_blank" style="color:var(--accent);">${isFa ? 'تماشای ویدیو' : 'Watch Video Link'}</a></p>` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
-    function addVideo() {
-            if(!isAdmin) return alert("Admin access required.");
-            const title = document.getElementById('vidTitle').value;
-            const url = document.getElementById('vidUrl').value;
-            const gif = document.getElementById('vidGif').value;
-            if(!title) return alert('Please enter a title.');
-            dbData.videos.push({ title, url, gif });
-            document.getElementById('vidTitle').value = '';
-            document.getElementById('vidUrl').value = '';
-            document.getElementById('vidGif').value = '';
-            renderVideos();
-        }
-
-        loadDatabases();
+        loadMainData();
     </script>
 </body>
 </html>

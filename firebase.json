@@ -1,17 +1,11 @@
 {
   "hosting": {
-    "site": "fitnessspro",
+    "site": "fitness-pro-a3331",
     "public": ".",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   }
 }
