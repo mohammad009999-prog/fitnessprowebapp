@@ -12,19 +12,22 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fitness Pro">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
+            --bg-color: #0b0b0e;
+            --card-bg: #16161c;
+            --card-inner: #1f1f28;
             --accent: #ff9800;
-            --danger: #f44336;
+            --success: #00e676;
+            --danger: #ff3b30;
             --text-main: #ffffff;
-            --text-muted: #b0b0b0;
-            --border: #333333;
+            --text-muted: #9ca3af;
+            --border: #2a2a35;
         }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Vazirmatn', Arial, sans-serif;
             background: var(--bg-color);
             color: var(--text-main);
             margin: 0;
@@ -83,6 +86,7 @@
             text-decoration: none;
             text-align: left;
             display: block;
+            font-family: 'Vazirmatn', sans-serif;
         }
         [dir="rtl"] .tab-btn {
             text-align: right;
@@ -141,6 +145,7 @@
             font-weight: bold;
             font-size: 12px;
             text-decoration: none;
+            font-family: 'Vazirmatn', sans-serif;
         }
         .top-btn:hover, .lang-select:hover {
             background: var(--accent);
@@ -251,6 +256,7 @@
             font-size: 13px;
             transition: 0.2s;
             text-transform: capitalize;
+            font-family: 'Vazirmatn', sans-serif;
         }
         .sub-tab-btn.active {
             background: #333;
@@ -352,22 +358,25 @@
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
         }
         .card {
             background: var(--card-bg);
-            padding: 16px;
-            border-radius: 8px;
+            padding: 22px;
+            border-radius: 14px;
             border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
             box-sizing: border-box;
         }
         .card h3 {
-            margin: 0 0 5px 0;
+            margin: 0;
             color: var(--accent);
+            font-size: 20px;
+            font-weight: 800;
         }
         .badge {
             display: inline-block;
@@ -385,19 +394,96 @@
             margin: 0;
             line-height: 1.4;
         }
-        .prop-item {
+        .prop-box {
+            background: var(--card-inner);
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
             font-size: 13px;
             color: var(--text-muted);
-            margin-bottom: 6px;
-            word-break: break-word;
-            line-height: 1.5;
+            line-height: 1.6;
         }
-        .prop-item b {
+        .prop-box b { color: var(--accent); display: block; margin-bottom: 4px; font-size: 14px; }
+
+        /* Premium Routine & Diet Plan Styling (Exact Encyclopedia Style) */
+        .routine-container {
+            background: var(--card-inner);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .routine-header {
+            background: #252530;
+            padding: 10px 14px;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .routine-body {
+            padding: 12px;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+        .routine-body::-webkit-scrollbar { width: 5px; }
+        .routine-body::-webkit-scrollbar-thumb { background: #3a3a48; border-radius: 4px; }
+        
+        .exercise-row {
+            background: #121216;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #22222a;
+        }
+        .exercise-name {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .exercise-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .badge-inner {
+            background: #22222d;
             color: var(--accent);
-            text-transform: capitalize;
-            display: inline-block;
-            margin-right: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            border: 1px solid #333340;
         }
+        .diet-macro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .macro-pill {
+            background: #121216;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 11px;
+            border: 1px solid #22222a;
+            color: var(--text-muted);
+        }
+        .macro-pill b { color: var(--success); font-size: 12px; display: block; }
+        .meal-item {
+            background: #121216;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            border-left: 2px solid var(--accent);
+        }
+
         .instructions-list {
             padding-left: 18px;
             margin: 5px 0 0 0;
@@ -415,9 +501,9 @@
         }
         .card img, .card video {
             width: 100%;
-            height: 160px;
+            height: 200px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 10px;
             background: #252525;
             display: block;
         }
@@ -763,7 +849,7 @@
             <h2 class="category-header" id="legendsHeaderTitle">🏆 Olympia Legends Master Database</h2>
             <p style="color:var(--text-muted); margin-bottom:15px;" id="legendsHeaderSub">Explore legendary champions, their biographies, off-season & contest diets, and custom training routines.</p>
             <div id="legendsContainer" class="grid">
-                <div class="loading">Loading Olympia Legends from Encyclopedia...</div>
+                <div class="loading">Loading Olympia Legends...</div>
             </div>
         </div>
 
@@ -1132,6 +1218,21 @@
             }, 300);
         }
 
+        async function fetchWikiImage(queryTerm, imgElementId) {
+            if (!queryTerm) return;
+            const imgEl = document.getElementById(imgElementId);
+            if (!imgEl) return;
+            try {
+                let res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(queryTerm)}&prop=pageimages&format=json&pithumbsize=400&origin=*`);
+                let data = await res.json();
+                let pages = data.query.pages;
+                let pageId = Object.keys(pages)[0];
+                if (pages[pageId] && pages[pageId].thumbnail && pages[pageId].thumbnail.source) {
+                    imgEl.src = pages[pageId].thumbnail.source;
+                }
+            } catch (e) {}
+        }
+
         async function loadGitHubGifs() {
             const categories = ['chest', 'legs', 'cardio', 'abs', 'shoulders', 'back', 'arms'];
             for (const cat of categories) {
@@ -1205,6 +1306,76 @@
             loadGitHubGifs();
         }
 
+        // --- ENCYCLOPEDIA STYLING RENDERERS FOR HOMEPAGE ---
+        function renderStructuredRoutine(scheduleArr) {
+            if (!Array.isArray(scheduleArr) || scheduleArr.length === 0) return '';
+            let html = `
+                <div class="routine-container">
+                    <div class="routine-header">
+                        <span>🏋️ ${window.currentLang === 'fa' ? 'برنامه تمرینی هفتگی' : 'Weekly Training Schedule'}</span>
+                    </div>
+                    <div class="routine-body">
+            `;
+            scheduleArr.forEach(dayItem => {
+                let focus = window.currentLang === 'fa' ? (dayItem.focus_fa || dayItem.focus_en || `روز ${dayItem.day}`) : (dayItem.focus_en || dayItem.focus_fa || `Day ${dayItem.day}`);
+                html += `
+                    <div class="exercise-row" style="background:#16161c;">
+                        <div class="exercise-name" style="color:var(--success);">Day ${dayItem.day}: ${focus}</div>
+                `;
+                if (Array.isArray(dayItem.exercises) && dayItem.exercises.length > 0) {
+                    dayItem.exercises.forEach(ex => {
+                        html += `
+                            <div style="margin-top:6px; padding-top:4px; border-top:1px solid #22222a;">
+                                <div style="font-size:12px; color:#fff; font-weight:bold;">🔹 ${ex.name}</div>
+                                <div class="exercise-badges" style="margin-top:4px;">
+                                    ${ex.sets ? `<span class="badge-inner">Sets: ${ex.sets}</span>` : ''}
+                                    ${ex.reps ? `<span class="badge-inner">Reps: ${ex.reps}</span>` : ''}
+                                    ${ex.rest_sec !== undefined ? `<span class="badge-inner">Rest: ${ex.rest_sec}s</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<div style="font-size:11px; color:#777; margin-top:2px;">${window.currentLang === 'fa' ? 'استراحت / ریکاوری' : 'Rest / Recovery'}</div>`;
+                }
+                html += `</div>`;
+            });
+            html += `</div></div>`;
+            return html;
+        }
+
+        function renderDietPlan(dietObj, titleLabel) {
+            if (!dietObj || typeof dietObj !== 'object') return '';
+            let notes = window.currentLang === 'fa' ? (dietObj.notes_fa || dietObj.notes_en || '') : (dietObj.notes_en || dietObj.notes_fa || '');
+            let monthly = dietObj.monthly_plan || [];
+            
+            let html = `
+                <div class="routine-container" style="margin-top:8px;">
+                    <div class="routine-header" style="color:var(--accent);">
+                        <span>🥗 ${titleLabel}</span>
+                    </div>
+                    <div class="routine-body">
+                        <div class="diet-macro-grid">
+                            <div class="macro-pill">Calories<b>${dietObj.calories || '-'}</b></div>
+                            <div class="macro-pill">Protein<b>${dietObj.protein_g || '-'}g</b></div>
+                            <div class="macro-pill">Carbs<b>${dietObj.carbs_g || '-'}g</b></div>
+                            <div class="macro-pill">Fats<b>${dietObj.fats_g || '-'}g</b></div>
+                        </div>
+                        ${notes ? `<div style="font-size:12px; color:#bbb; margin-bottom:8px; line-height:1.5;">${notes}</div>` : ''}
+            `;
+            
+            if (Array.isArray(monthly) && monthly.length > 0) {
+                monthly.forEach(m => {
+                    for (let [k, v] of Object.entries(m)) {
+                        if (k === 'day_range') continue;
+                        html += `<div class="meal-item"><b>${k.replace(/_/g, ' ').toUpperCase()}:</b> ${v}</div>`;
+                    }
+                });
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
         function renderLegends() {
             const container = document.getElementById('legendsContainer');
             if(!container) return;
@@ -1214,16 +1385,25 @@
             }
             const isFa = window.currentLang === 'fa';
             container.innerHTML = legendsData.map((item, idx) => {
-                const name = isFa ? (item.name_fa || item.name_en || item.name) : (item.name_en || item.name_fa || item.name);
-                const title = item.title || '';
+                const nameEn = item.name_en || item.name || `Legend #${idx+1}`;
+                const nameFa = item.name_fa || nameEn;
+                const name = isFa ? nameFa : nameEn;
+                
+                const imgId = `wiki_leg_main_${idx}`;
+                let imageUrl = item.image || item.image_url || `https://placehold.co/400x190/1e1e1e/ff9800?text=${encodeURIComponent(nameEn)}`;
+                if(!item.image && nameEn) setTimeout(() => fetchWikiImage(nameEn, imgId), 50 + (idx * 25));
+
                 const bio = isFa ? (item.bio_fa || item.bio_en || '') : (item.bio_en || item.bio_fa || '');
+
                 return `
                     <div class="card">
-                        <h3>${name || 'Legend'}</h3>
-                        ${title ? `<p style="color:var(--accent); font-weight:bold; font-size:12px;">${title}</p>` : ''}
-                        ${bio ? `<p>${bio}</p>` : ''}
-                        ${item.off_season_routine_style ? `<div class="prop-item"><b>${isFa ? 'سبک تمرین حجم' : 'Off-Season Style'}:</b> ${item.off_season_routine_style}</div>` : ''}
-                        ${item.contest_routine_style ? `<div class="prop-item"><b>${isFa ? 'سبک تمرین مسابقه' : 'Contest Style'}:</b> ${item.contest_routine_style}</div>` : ''}
+                        <h3>${name}</h3>
+                        <p style="color:var(--success); font-weight:bold; font-size:13px; margin:0;">${item.title || ''}</p>
+                        <img id="${imgId}" src="${imageUrl}" alt="${name}" loading="lazy">
+                        ${bio ? `<div class="prop-box"><b>${isFa ? 'بیوگرافی' : 'Biography'}</b>${bio}</div>` : ''}
+                        ${renderStructuredRoutine(item.schedule)}
+                        ${renderDietPlan(item.off_season_diet, isFa ? 'رژیم دوره حجم (Off-Season)' : 'Off-Season Bulking Diet')}
+                        ${renderDietPlan(item.contest_diet, isFa ? 'رژیم پیش از مسابقه (Contest Prep)' : 'Contest Cutting Diet')}
                     </div>
                 `;
             }).join('');
@@ -1238,15 +1418,32 @@
             }
             const isFa = window.currentLang === 'fa';
             container.innerHTML = steroidsData.map((item, idx) => {
-                const name = isFa ? (item.name_fa || item.name_en || item.name || item.substance) : (item.name_en || item.name_fa || item.name || item.substance);
-                const desc = isFa ? (item.description_fa || item.description_en || item.description || item.notes_fa) : (item.description_en || item.description_fa || item.description || item.notes_en);
+                const titleEn = item.name || item.substance || item.title || `Substance #${idx+1}`;
+                const titleFa = item.name_fa || titleEn;
+                const title = isFa ? titleFa : titleEn;
+
+                let imgId = `wiki_steroid_main_${idx}`;
+                let imageUrl = item.image || item.image_url || `https://placehold.co/400x190/1e1e1e/ff9800?text=${encodeURIComponent(titleEn)}`;
+                if(!item.image && titleEn) setTimeout(() => fetchWikiImage(titleEn, imgId), 50 + (idx * 20));
+
+                let details = '';
+                for(let [k, v] of Object.entries(item)) {
+                    if(['id','category','image','image_url','name','name_en','name_fa','title','title_fa','substance'].includes(k.toLowerCase())) continue;
+                    if (isFa && k.endsWith('_en')) continue;
+                    if (!isFa && k.endsWith('_fa')) continue;
+
+                    let val = isFa ? (item[k+'_fa'] || v) : v;
+                    if(val !== null && val !== undefined && val !== '' && typeof val !== 'object') {
+                        let cleanKey = k.replace(/_fa|_en/g, '').toUpperCase().replace(/_/g, ' ');
+                        details += `<div class="prop-box"><b>${cleanKey}</b>${val}</div>`;
+                    }
+                }
+
                 return `
                     <div class="card">
-                        <h3>${name || 'Substance'}</h3>
-                        ${item.category ? `<span class="badge">${item.category}</span>` : ''}
-                        ${desc ? `<p>${desc}</p>` : ''}
-                        ${item.half_life ? `<div class="prop-item"><b>${isFa ? 'نیمه عمر' : 'Half-Life'}:</b> ${item.half_life}</div>` : ''}
-                        ${item.dosage ? `<div class="prop-item"><b>${isFa ? 'دوز مصرفی' : 'Dosage'}:</b> ${item.dosage}</div>` : ''}
+                        <h3>${title}</h3>
+                        <img id="${imgId}" src="${imageUrl}" alt="${title}" loading="lazy">
+                        ${details}
                     </div>
                 `;
             }).join('');
@@ -1261,12 +1458,17 @@
             }
             const isFa = window.currentLang === 'fa';
             let html = '';
-            contestData.forEach(item => {
+            const itemsArray = Array.isArray(contestData) ? contestData : [contestData];
+
+            itemsArray.forEach(item => {
                 for(let [secKey, secVal] of Object.entries(item)) {
+                    html += `<div class="card" style="grid-column:1/-1;"><h2 style="color:var(--accent); border-bottom:1px solid #333; padding-bottom:8px; margin-top:0;">${secKey.toUpperCase().replace(/_/g, ' ')}</h2>`;
+                    
                     if(typeof secVal === 'object' && secVal !== null) {
                         for(let [k, v] of Object.entries(secVal)) {
                             let titleText = (typeof v === 'object' && v !== null) ? (isFa ? (v.title_fa || v.title || k) : (v.title || v.title_en || k)) : k;
                             let contentText = '';
+                            
                             if (typeof v === 'object' && v !== null) {
                                 contentText = isFa ? (v.content_fa || v.content || v.description) : (v.content || v.content_en || v.description);
                                 if (!contentText) {
@@ -1275,17 +1477,21 @@
                             } else {
                                 contentText = v;
                             }
+
                             html += `
-                                <div class="card">
-                                    <h3 style="color:var(--success); font-size:16px;">${titleText.toUpperCase().replace(/_/g, ' ')}</h3>
-                                    <p>${contentText || ''}</p>
+                                <div class="prop-box" style="border-left:3px solid var(--success);">
+                                    <h4 style="color:var(--success); margin:0 0 6px 0; font-size:15px;">${titleText.toUpperCase().replace(/_/g, ' ')}</h4>
+                                    <div style="font-size:13px; color:var(--text-muted); line-height:1.6;">${contentText}</div>
                                 </div>
                             `;
                         }
+                    } else {
+                        html += `<div class="prop-box">${secVal}</div>`;
                     }
+                    html += `</div>`;
                 }
             });
-            container.innerHTML = html || '<p style="text-align:center; grid-column:1/-1;">No displayable contest items.</p>';
+            container.innerHTML = html;
         }
 
         function initQuotesRotator() {
