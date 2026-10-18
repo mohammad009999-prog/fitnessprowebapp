@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro - Encyclopedia</title>
+    <title>Fitness Pro - Encyclopedia & Master Database</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
+            --bg-color: #0b0b0e;
+            --card-bg: #16161c;
+            --card-inner: #1f1f28;
             --accent: #ff9800;
-            --danger: #f44336;
+            --success: #00e676;
+            --danger: #ff3b30;
             --text-main: #ffffff;
-            --text-muted: #b0b0b0;
-            --border: #333333;
+            --text-muted: #9ca3af;
+            --border: #2a2a35;
         }
         body {
             font-family: 'Vazirmatn', sans-serif;
@@ -27,13 +29,17 @@
             margin-bottom: 25px;
             position: relative;
         }
-        h1 { color: var(--accent); margin-bottom: 5px; }
+        h1 { color: var(--accent); margin-bottom: 5px; font-size: 24px; }
         .top-controls {
             position: absolute;
             top: 0;
             right: 0;
             display: flex;
             gap: 8px;
+        }
+        [dir="rtl"] .top-controls {
+            right: auto;
+            left: 0;
         }
         .top-btn {
             background: var(--card-bg);
@@ -45,79 +51,161 @@
             font-weight: bold;
             font-size: 13px;
             text-decoration: none;
+            font-family: 'Vazirmatn', sans-serif;
         }
         .top-btn:hover { background: var(--accent); color: #000; }
         .sub-tabs {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
             border-bottom: 1px solid var(--border);
             padding-bottom: 15px;
-            max-width: 1200px;
+            max-width: 1300px;
             margin-left: auto;
             margin-right: auto;
         }
         .sub-tab-btn {
-            background: #222;
+            background: var(--card-bg);
             color: var(--text-muted);
             border: 1px solid var(--border);
-            padding: 8px 14px;
+            padding: 9px 16px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 13px;
             transition: 0.2s;
             font-family: 'Vazirmatn', sans-serif;
         }
         .sub-tab-btn.active {
-            background: #333;
-            color: var(--accent);
+            background: var(--accent);
+            color: #000000;
             border-color: var(--accent);
             font-weight: bold;
         }
         .section-content {
             display: none;
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
         }
         .section-content.active { display: block; }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 20px;
         }
         .card {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
+            padding: 22px;
+            border-radius: 14px;
             border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
-        .card h3 { margin: 0 0 5px 0; color: var(--accent); }
+        .card h3 { margin: 0; color: var(--accent); font-size: 20px; font-weight: 800; }
         .card img {
             width: 100%;
-            height: 180px;
+            height: 200px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 10px;
             background: #252525;
             display: block;
         }
-        .prop-item {
+        .prop-box {
+            background: var(--card-inner);
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
             font-size: 13px;
             color: var(--text-muted);
-            margin-bottom: 6px;
-            word-break: break-word;
-            line-height: 1.5;
+            line-height: 1.6;
         }
-        .prop-item b { color: var(--accent); margin-right: 4px; }
+        .prop-box b { color: var(--accent); display: block; margin-bottom: 4px; font-size: 14px; }
+        
+        /* Premium Routine & Diet Plan Styling */
+        .routine-container {
+            background: var(--card-inner);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .routine-header {
+            background: #252530;
+            padding: 10px 14px;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .routine-body {
+            padding: 12px;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+        .routine-body::-webkit-scrollbar { width: 5px; }
+        .routine-body::-webkit-scrollbar-thumb { background: #3a3a48; border-radius: 4px; }
+        
+        .exercise-row {
+            background: #121216;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #22222a;
+        }
+        .exercise-name {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .exercise-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: #22222d;
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            border: 1px solid #333340;
+        }
+        .diet-macro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .macro-pill {
+            background: #121216;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 11px;
+            border: 1px solid #22222a;
+        }
+        .macro-pill b { color: var(--success); font-size: 12px; display: block; }
+        .meal-item {
+            background: #121216;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            border-left: 2px solid var(--accent);
+        }
         .loading {
             text-align: center;
             font-size: 18px;
             color: var(--text-muted);
-            margin-top: 40px;
+            margin-top: 50px;
             grid-column: 1/-1;
         }
     </style>
@@ -126,8 +214,8 @@
 
     <header>
         <div class="top-controls">
-            <a href="index.html" class="top-btn">🏠 Home / خانه</a>
-            <button class="top-btn" onclick="toggleEncLang()" id="langBtn">فارسی / EN</button>
+            <a href="index.html" class="top-btn" id="homeLink">🏠 Home / خانه</a>
+            <button class="top-btn" onclick="toggleEncLang()" id="langBtn">فارسی / FA</button>
         </div>
         <h1 id="encTitle">Professional Fitness Encyclopedia</h1>
         <p style="color:var(--text-muted); font-size:14px;" id="encSub">Comprehensive guides on yoga, injuries, nutrition, supplements, and legends</p>
@@ -181,6 +269,8 @@
             root.setAttribute('dir', encLang === 'fa' ? 'rtl' : 'ltr');
             root.setAttribute('lang', encLang);
             
+            document.getElementById('langBtn').innerText = encLang === 'fa' ? 'English / EN' : 'فارسی / FA';
+            document.getElementById('homeLink').innerText = encLang === 'fa' ? '🏠 خانه / Home' : '🏠 Home / خانه';
             document.getElementById('encTitle').innerText = encLang === 'fa' ? 'دایره المعارف تخصصی تناسب اندام' : 'Professional Fitness Encyclopedia';
             document.getElementById('encSub').innerText = encLang === 'fa' ? 'راهنماهای جامع یوگا، آسیب‌ها، تغذیه، مکمل‌ها و اسطوره‌ها' : 'Comprehensive guides on yoga, injuries, nutrition, supplements, and legends';
             
@@ -241,11 +331,19 @@
             await fetchFile('food_database.json', 'nutrition');
             await fetchFile('steroids.json', 'pharmacology');
             await fetchFile('gyms.json', 'gyms');
-            await fetchFile('contest_data.json', 'contest');
+            
+            try {
+                const rContest = await fetch(DB_BASE + 'contest_data.json');
+                let dContest = await rContest.json();
+                dbData.contest = Array.isArray(dContest) ? dContest : [dContest];
+            } catch(e) { dbData.contest = []; }
 
             try {
                 const rLeg = await fetch(DB_BASE + 'olympia_legends.json');
                 let dLeg = await rLeg.json();
+                if (dLeg && !Array.isArray(dLeg) && typeof dLeg === 'object') {
+                    dLeg = dLeg.legends || dLeg.olympia_legends || dLeg.data || Object.values(dLeg).find(v => Array.isArray(v)) || [dLeg];
+                }
                 dbData.legends = Array.isArray(dLeg) ? dLeg : [dLeg];
             } catch(e) { dbData.legends = []; }
 
@@ -275,15 +373,19 @@
                 const title = encLang === 'fa' && titleFa ? titleFa : (titleEn || `Item #${idx+1}`);
                 
                 let imgId = `wiki_${key}_${idx}`;
-                let imageUrl = item.image || item.image_url || `https://placehold.co/400x180/1e1e1e/ff9800?text=${encodeURIComponent(titleEn || title)}`;
+                let imageUrl = item.image || item.image_url || `https://placehold.co/400x190/1e1e1e/ff9800?text=${encodeURIComponent(titleEn || title)}`;
                 if(!item.image && titleEn) setTimeout(() => fetchWikiImage(titleEn, imgId), 50 + (idx * 20));
 
                 let details = '';
                 for(let [k, v] of Object.entries(item)) {
-                    if(['id','category','image','name','title'].includes(k.toLowerCase())) continue;
+                    if(['id','category','image','image_url','name','name_en','name_fa','title','title_fa'].includes(k.toLowerCase())) continue;
+                    if (encLang === 'fa' && k.endsWith('_en')) continue;
+                    if (encLang === 'en' && k.endsWith('_fa')) continue;
+
                     let val = encLang === 'fa' ? (item[k+'_fa'] || v) : v;
-                    if(val && typeof val !== 'object') {
-                        details += `<div class="prop-item"><b>${k}:</b> ${val}</div>`;
+                    if(val !== null && val !== undefined && val !== '' && typeof val !== 'object') {
+                        let cleanKey = k.replace(/_fa|_en/g, '').toUpperCase().replace(/_/g, ' ');
+                        details += `<div class="prop-box"><b>${cleanKey}</b>${val}</div>`;
                     }
                 }
 
@@ -291,25 +393,110 @@
                     <div class="card">
                         <h3>${title}</h3>
                         <img id="${imgId}" src="${imageUrl}" alt="${title}" loading="lazy">
-                        <div style="margin-top:8px;">${details}</div>
+                        ${details}
                     </div>
                 `;
             }).join('');
         }
 
+        function renderStructuredRoutine(scheduleArr) {
+            if (!Array.isArray(scheduleArr) || scheduleArr.length === 0) return '';
+            let html = `
+                <div class="routine-container">
+                    <div class="routine-header">
+                        <span>🏋️ ${encLang === 'fa' ? 'برنامه تمرینی هفتگی' : 'Weekly Training Schedule'}</span>
+                    </div>
+                    <div class="routine-body">
+            `;
+            scheduleArr.forEach(dayItem => {
+                let focus = encLang === 'fa' ? (dayItem.focus_fa || dayItem.focus_en || `روز ${dayItem.day}`) : (dayItem.focus_en || dayItem.focus_fa || `Day ${dayItem.day}`);
+                html += `
+                    <div class="exercise-row" style="background:#16161c;">
+                        <div class="exercise-name" style="color:var(--success);">Day ${dayItem.day}: ${focus}</div>
+                `;
+                if (Array.isArray(dayItem.exercises) && dayItem.exercises.length > 0) {
+                    dayItem.exercises.forEach(ex => {
+                        html += `
+                            <div style="margin-top:6px; padding-top:4px; border-top:1px solid #22222a;">
+                                <div style="font-size:12px; color:#fff; font-weight:bold;">🔹 ${ex.name}</div>
+                                <div class="exercise-badges" style="margin-top:4px;">
+                                    ${ex.sets ? `<span class="badge">Sets: ${ex.sets}</span>` : ''}
+                                    ${ex.reps ? `<span class="badge">Reps: ${ex.reps}</span>` : ''}
+                                    ${ex.rest_sec !== undefined ? `<span class="badge">Rest: ${ex.rest_sec}s</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<div style="font-size:11px; color:#777; margin-top:2px;">${encLang === 'fa' ? 'استراحت / ریکاوری' : 'Rest / Recovery'}</div>`;
+                }
+                html += `</div>`;
+            });
+            html += `</div></div>`;
+            return html;
+        }
+
+        function renderDietPlan(dietObj, titleLabel) {
+            if (!dietObj || typeof dietObj !== 'object') return '';
+            let notes = encLang === 'fa' ? (dietObj.notes_fa || dietObj.notes_en || '') : (dietObj.notes_en || dietObj.notes_fa || '');
+            let monthly = dietObj.monthly_plan || [];
+            
+            let html = `
+                <div class="routine-container" style="margin-top:8px;">
+                    <div class="routine-header" style="color:var(--accent);">
+                        <span>🥗 ${titleLabel}</span>
+                    </div>
+                    <div class="routine-body">
+                        <div class="diet-macro-grid">
+                            <div class="macro-pill">Calories<b>${dietObj.calories || '-'}</b></div>
+                            <div class="macro-pill">Protein<b>${dietObj.protein_g || '-'}g</b></div>
+                            <div class="macro-pill">Carbs<b>${dietObj.carbs_g || '-'}g</b></div>
+                            <div class="macro-pill">Fats<b>${dietObj.fats_g || '-'}g</b></div>
+                        </div>
+                        ${notes ? `<div style="font-size:12px; color:#bbb; margin-bottom:8px; line-height:1.5;">${notes}</div>` : ''}
+            `;
+            
+            if (Array.isArray(monthly) && monthly.length > 0) {
+                monthly.forEach(m => {
+                    for (let [k, v] of Object.entries(m)) {
+                        if (k === 'day_range') continue;
+                        html += `<div class="meal-item"><b>${k.replace(/_/g, ' ').toUpperCase()}:</b> ${v}</div>`;
+                    }
+                });
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
         function renderLegendsGrid(data) {
             const container = document.getElementById('grid_legends');
             if(!container) return;
+            if(!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No legends data available.</p>';
+                return;
+            }
+
             container.innerHTML = data.map((item, idx) => {
-                const name = encLang === 'fa' ? (item.name_fa || item.name_en) : (item.name_en || item.name_fa);
+                const nameEn = item.name_en || item.name || `Legend #${idx+1}`;
+                const nameFa = item.name_fa || nameEn;
+                const name = encLang === 'fa' ? nameFa : nameEn;
+                
                 const imgId = `wiki_leg_${idx}`;
-                setTimeout(() => fetchWikiImage(item.name_en || name, imgId), 50 + (idx * 25));
+                let imageUrl = item.image || item.image_url || `https://placehold.co/400x190/1e1e1e/ff9800?text=${encodeURIComponent(nameEn)}`;
+                if(!item.image && nameEn) setTimeout(() => fetchWikiImage(nameEn, imgId), 50 + (idx * 25));
+
+                const bio = encLang === 'fa' ? (item.bio_fa || item.bio_en || '') : (item.bio_en || item.bio_fa || '');
+                const routineStyle = encLang === 'fa' ? (item.off_season_routine_style || '') : (item.off_season_routine_style || '');
+
                 return `
                     <div class="card">
                         <h3>${name}</h3>
-                        <p style="color:#4caf50; font-weight:bold; font-size:13px;">${item.title || ''}</p>
-                        <img id="${imgId}" src="https://placehold.co/400x180/1e1e1e/ff9800?text=${encodeURIComponent(name)}" alt="${name}">
-                        <div class="prop-item" style="margin-top:8px;"><b>Biography:</b> ${encLang === 'fa' ? (item.bio_fa || item.bio_en) : (item.bio_en || item.bio_fa)}</div>
+                        <p style="color:var(--success); font-weight:bold; font-size:13px; margin:0;">${item.title || ''}</p>
+                        <img id="${imgId}" src="${imageUrl}" alt="${name}">
+                        ${bio ? `<div class="prop-box"><b>${encLang === 'fa' ? 'بیوگرافی' : 'Biography'}</b>${bio}</div>` : ''}
+                        ${renderStructuredRoutine(item.schedule)}
+                        ${renderDietPlan(item.off_season_diet, encLang === 'fa' ? 'رژیم دوره حجم (Off-Season)' : 'Off-Season Bulking Diet')}
+                        ${renderDietPlan(item.contest_diet, encLang === 'fa' ? 'رژیم پیش از مسابقه (Contest Prep)' : 'Contest Cutting Diet')}
                     </div>
                 `;
             }).join('');
@@ -318,21 +505,43 @@
         function renderContestGrid(data) {
             const container = document.getElementById('grid_contest');
             if(!container) return;
+            if(!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No contest data available.</p>';
+                return;
+            }
+
             let html = '';
-            data.forEach(item => {
+            const itemsArray = Array.isArray(data) ? data : [data];
+
+            itemsArray.forEach(item => {
                 for(let [secKey, secVal] of Object.entries(item)) {
+                    html += `<div class="card" style="grid-column:1/-1;"><h2 style="color:var(--accent); border-bottom:1px solid #333; padding-bottom:8px; margin-top:0;">${secKey.toUpperCase().replace(/_/g, ' ')}</h2>`;
+                    
                     if(typeof secVal === 'object' && secVal !== null) {
-                        html += `<div class="card" style="grid-column:1/-1;"><h2 style="color:var(--accent);">${secKey.toUpperCase()}</h2>`;
                         for(let [k, v] of Object.entries(secVal)) {
-                            if(typeof v === 'object' && v !== null) {
-                                html += `<div style="background:#232323; padding:12px; border-radius:6px; margin-top:8px;">
-                                    <h4 style="color:#4caf50; margin:0 0 5px 0;">${v.title_en || k}</h4>
-                                    <p style="margin:0; font-size:13px; color:var(--text-muted);">${v.content_en || ''}</p>
-                                </div>`;
+                            let titleText = (typeof v === 'object' && v !== null) ? (encLang === 'fa' ? (v.title_fa || v.title || k) : (v.title || v.title_en || k)) : k;
+                            let contentText = '';
+                            
+                            if (typeof v === 'object' && v !== null) {
+                                contentText = encLang === 'fa' ? (v.content_fa || v.content || v.description) : (v.content || v.content_en || v.description);
+                                if (!contentText) {
+                                    contentText = Object.entries(v).map(([subK, subV]) => `<b>${subK}:</b> ${subV}`).join('<br>');
+                                }
+                            } else {
+                                contentText = v;
                             }
+
+                            html += `
+                                <div class="prop-box" style="border-left:3px solid var(--success);">
+                                    <h4 style="color:var(--success); margin:0 0 6px 0; font-size:15px;">${titleText.toUpperCase().replace(/_/g, ' ')}</h4>
+                                    <div style="font-size:13px; color:var(--text-muted); line-height:1.6;">${contentText}</div>
+                                </div>
+                            `;
                         }
-                        html += `</div>`;
+                    } else {
+                        html += `<div class="prop-box">${secVal}</div>`;
                     }
+                    html += `</div>`;
                 }
             });
             container.innerHTML = html;

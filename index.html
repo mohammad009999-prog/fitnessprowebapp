@@ -672,6 +672,9 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('exercises')" id="tabEx">Exercises</button>
             <a href="encyclopedia.html" class="tab-btn" style="background:#1a2b3c; color:#64b5f6; border-color:#64b5f6;" id="tabEnc">📖 Encyclopedia</a>
+            <button class="tab-btn" onclick="switchTab('legends')" id="tabLegendsNav">🏆 Olympia Legends</button>
+            <button class="tab-btn" onclick="switchTab('steroids')" id="tabSteroidsNav">💉 Steroids (Pharmacology)</button>
+            <button class="tab-btn" onclick="switchTab('contest')" id="tabContestNav">🥇 Contest Secrets</button>
             <button class="tab-btn" onclick="switchTab('videos')" id="tabVid">Videos</button>
             <a href="tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabTools">🛠️ Tools</a>
             <a href="free-plans.html" class="tab-btn" style="background:#1e3a2f; color:#34d399; border-color:#34d399;" id="tabFreePlans">📋 Free Plans</a>
@@ -752,6 +755,33 @@
 
             <div id="exerciseContainer">
                 <div class="loading">Loading categorized exercises...</div>
+            </div>
+        </div>
+
+        <!-- OLYMPIA LEGENDS TAB -->
+        <div id="legends" class="section-content">
+            <h2 class="category-header" id="legendsHeaderTitle">🏆 Olympia Legends Master Database</h2>
+            <p style="color:var(--text-muted); margin-bottom:15px;" id="legendsHeaderSub">Explore legendary champions, their biographies, off-season & contest diets, and custom training routines.</p>
+            <div id="legendsContainer" class="grid">
+                <div class="loading">Loading Olympia Legends from Encyclopedia...</div>
+            </div>
+        </div>
+
+        <!-- STEROIDS / PHARMACOLOGY TAB -->
+        <div id="steroids" class="section-content">
+            <h2 class="category-header" id="steroidsHeaderTitle">💉 Pharmacology & Steroids Database</h2>
+            <p style="color:var(--text-muted); margin-bottom:15px;" id="steroidsHeaderSub">Comprehensive pharmacological guides, properties, cycles, and medical considerations.</p>
+            <div id="steroidsContainer" class="grid">
+                <div class="loading">Loading Steroids data...</div>
+            </div>
+        </div>
+
+        <!-- CONTEST SECRETS TAB -->
+        <div id="contest" class="section-content">
+            <h2 class="category-header" id="contestHeaderTitle">🥇 Contest Secrets & Peak Week Protocols</h2>
+            <p style="color:var(--text-muted); margin-bottom:15px;" id="contestHeaderSub">Professional stage preparation secrets, water manipulation, sodium loading, and peak week strategies.</p>
+            <div id="contestContainer" class="grid">
+                <div class="loading">Loading Contest Secrets...</div>
             </div>
         </div>
 
@@ -869,6 +899,10 @@
         let quotesData = [];
         let currentQuoteIndex = 0;
         let quotesInterval = null;
+
+        let legendsData = [];
+        let steroidsData = [];
+        let contestData = [];
 
         let mainNewsWidgetArticles = [
             {
@@ -1026,6 +1060,9 @@
             document.getElementById('uiHeaderSub').innerText = isFa ? 'مرجع تخصصی تمرین و بدنسازی' : 'Professional Training Hub';
             document.getElementById('tabEx').innerText = isFa ? 'تمرینات' : 'Exercises';
             document.getElementById('tabEnc').innerText = isFa ? '📖 دایره‌المعارف' : '📖 Encyclopedia';
+            document.getElementById('tabLegendsNav').innerText = isFa ? '🏆 اسطوره‌های المپیا' : '🏆 Olympia Legends';
+            document.getElementById('tabSteroidsNav').innerText = isFa ? '💉 استروئیدها (فارماکولوژی)' : '💉 Steroids (Pharmacology)';
+            document.getElementById('tabContestNav').innerText = isFa ? '🥇 اسرار مسابقات' : '🥇 Contest Secrets';
             document.getElementById('tabVid').innerText = isFa ? 'ویدیوها' : 'Videos';
             document.getElementById('tabTools').innerText = isFa ? '🛠️ ابزارها' : '🛠️ Tools';
             document.getElementById('tabFreePlans').innerText = isFa ? '📋 برنامه‌های رایگان' : '📋 Free Plans';
@@ -1048,7 +1085,19 @@
             
             document.getElementById('newsWidgetLink').innerText = isFa ? 'مشاهده همه اخبار ←' : 'Read Full Article →';
 
+            document.getElementById('legendsHeaderTitle').innerText = isFa ? '🏆 پایگاه داده اسطوره‌های المپیا' : '🏆 Olympia Legends Master Database';
+            document.getElementById('legendsHeaderSub').innerText = isFa ? 'قهرمانان افسانه‌ای، بیوگرافی‌ها، رژیم‌های دوره حجم و کات و برنامه‌های تمرینی اختصاصی.' : 'Explore legendary champions, their biographies, off-season & contest diets, and custom training routines.';
+            
+            document.getElementById('steroidsHeaderTitle').innerText = isFa ? '💉 فارماکولوژی و استروئیدها' : '💉 Pharmacology & Steroids Database';
+            document.getElementById('steroidsHeaderSub').innerText = isFa ? 'راهنماهای جامع دارویی، خواص، سیکل‌ها و ملاحظات پزشکی.' : 'Comprehensive pharmacological guides, properties, cycles, and medical considerations.';
+
+            document.getElementById('contestHeaderTitle').innerText = isFa ? '🥇 اسرار مسابقات و پروتکل‌های هفته پایانی' : '🥇 Contest Secrets & Peak Week Protocols';
+            document.getElementById('contestHeaderSub').innerText = isFa ? 'اسرار آماده‌سازی مسابقات حرفه‌ای، دستکاری آب، بارگیری سدیم و استراتژی‌های اوج‌گیری.' : 'Professional stage preparation secrets, water manipulation, sodium loading, and peak week strategies.';
+
             displayExercises(allExercises);
+            renderLegends();
+            renderSteroids();
+            renderContest();
             renderVideos();
             renderCurrentQuote();
             renderNewsWidgetCard();
@@ -1121,8 +1170,122 @@
                 initQuotesRotator();
 
                 initNewsWidgetRotator();
+
+                // Load Olympia Legends
+                try {
+                    const rLeg = await fetch(DB_BASE + 'olympia_legends.json');
+                    let dLeg = await rLeg.json();
+                    if (dLeg && !Array.isArray(dLeg) && typeof dLeg === 'object') {
+                        dLeg = dLeg.legends || dLeg.olympia_legends || dLeg.data || Object.values(dLeg).find(v => Array.isArray(v)) || [dLeg];
+                    }
+                    legendsData = Array.isArray(dLeg) ? dLeg : [dLeg];
+                } catch (e) { legendsData = []; }
+                renderLegends();
+
+                // Load Steroids / Pharmacology
+                try {
+                    const rSteroids = await fetch(DB_BASE + 'steroids.json');
+                    let dSteroids = await rSteroids.json();
+                    if (dSteroids && !Array.isArray(dSteroids) && typeof dSteroids === 'object') {
+                        dSteroids = dSteroids.steroids || dSteroids.pharmacology || dSteroids.data || Object.values(dSteroids).find(v => Array.isArray(v)) || [dSteroids];
+                    }
+                    steroidsData = Array.isArray(dSteroids) ? dSteroids : [dSteroids];
+                } catch (e) { steroidsData = []; }
+                renderSteroids();
+
+                // Load Contest Secrets
+                try {
+                    const rContest = await fetch(DB_BASE + 'contest_data.json');
+                    let dContest = await rContest.json();
+                    contestData = Array.isArray(dContest) ? dContest : [dContest];
+                } catch (e) { contestData = []; }
+                renderContest();
+
             } catch (error) {}
             loadGitHubGifs();
+        }
+
+        function renderLegends() {
+            const container = document.getElementById('legendsContainer');
+            if(!container) return;
+            if(!legendsData || legendsData.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No Olympia Legends data available.</p>';
+                return;
+            }
+            const isFa = window.currentLang === 'fa';
+            container.innerHTML = legendsData.map((item, idx) => {
+                const name = isFa ? (item.name_fa || item.name_en || item.name) : (item.name_en || item.name_fa || item.name);
+                const title = item.title || '';
+                const bio = isFa ? (item.bio_fa || item.bio_en || '') : (item.bio_en || item.bio_fa || '');
+                return `
+                    <div class="card">
+                        <h3>${name || 'Legend'}</h3>
+                        ${title ? `<p style="color:var(--accent); font-weight:bold; font-size:12px;">${title}</p>` : ''}
+                        ${bio ? `<p>${bio}</p>` : ''}
+                        ${item.off_season_routine_style ? `<div class="prop-item"><b>${isFa ? 'سبک تمرین حجم' : 'Off-Season Style'}:</b> ${item.off_season_routine_style}</div>` : ''}
+                        ${item.contest_routine_style ? `<div class="prop-item"><b>${isFa ? 'سبک تمرین مسابقه' : 'Contest Style'}:</b> ${item.contest_routine_style}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderSteroids() {
+            const container = document.getElementById('steroidsContainer');
+            if(!container) return;
+            if(!steroidsData || steroidsData.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No pharmacology data available.</p>';
+                return;
+            }
+            const isFa = window.currentLang === 'fa';
+            container.innerHTML = steroidsData.map((item, idx) => {
+                const name = isFa ? (item.name_fa || item.name_en || item.name || item.substance) : (item.name_en || item.name_fa || item.name || item.substance);
+                const desc = isFa ? (item.description_fa || item.description_en || item.description || item.notes_fa) : (item.description_en || item.description_fa || item.description || item.notes_en);
+                return `
+                    <div class="card">
+                        <h3>${name || 'Substance'}</h3>
+                        ${item.category ? `<span class="badge">${item.category}</span>` : ''}
+                        ${desc ? `<p>${desc}</p>` : ''}
+                        ${item.half_life ? `<div class="prop-item"><b>${isFa ? 'نیمه عمر' : 'Half-Life'}:</b> ${item.half_life}</div>` : ''}
+                        ${item.dosage ? `<div class="prop-item"><b>${isFa ? 'دوز مصرفی' : 'Dosage'}:</b> ${item.dosage}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderContest() {
+            const container = document.getElementById('contestContainer');
+            if(!container) return;
+            if(!contestData || contestData.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No contest secrets data available.</p>';
+                return;
+            }
+            const isFa = window.currentLang === 'fa';
+            let html = '';
+            contestData.forEach(item => {
+                for(let [secKey, secVal] of Object.entries(item)) {
+                    if(typeof secVal === 'object' && secVal !== null) {
+                        for(let [k, v] of Object.entries(secVal)) {
+                            let titleText = (typeof v === 'object' && v !== null) ? (isFa ? (v.title_fa || v.title || k) : (v.title || v.title_en || k)) : k;
+                            let contentText = '';
+                            if (typeof v === 'object' && v !== null) {
+                                contentText = isFa ? (v.content_fa || v.content || v.description) : (v.content || v.content_en || v.description);
+                                if (!contentText) {
+                                    contentText = Object.entries(v).map(([subK, subV]) => `<b>${subK}:</b> ${subV}`).join('<br>');
+                                }
+                            } else {
+                                contentText = v;
+                            }
+                            html += `
+                                <div class="card">
+                                    <h3 style="color:var(--success); font-size:16px;">${titleText.toUpperCase().replace(/_/g, ' ')}</h3>
+                                    <p>${contentText || ''}</p>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+            });
+            container.innerHTML = html || '<p style="text-align:center; grid-column:1/-1;">No displayable contest items.</p>';
         }
 
         function initQuotesRotator() {
