@@ -9,7 +9,9 @@
         :root {
             --bg-color: #121212;
             --card-bg: #1e1e1e;
+            --card-inner: #161616;
             --accent: #ff9800;
+            --success: #00e676;
             --danger: #f44336;
             --text-main: #ffffff;
             --text-muted: #b0b0b0;
@@ -32,6 +34,12 @@
             position: absolute;
             top: 0;
             right: 0;
+            display: flex;
+            gap: 8px;
+        }
+        [dir="rtl"] .top-controls {
+            right: auto;
+            left: 0;
         }
         .top-btn {
             background: var(--card-bg);
@@ -43,10 +51,11 @@
             font-weight: bold;
             font-size: 13px;
             text-decoration: none;
+            font-family: 'Vazirmatn', sans-serif;
         }
         .top-btn:hover { background: var(--accent); color: #000; }
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -62,7 +71,7 @@
         input, select, textarea {
             width: 100%;
             padding: 10px;
-            background: #111;
+            background: var(--card-inner);
             border: 1px solid var(--border);
             color: var(--text-main);
             border-radius: 6px;
@@ -86,25 +95,48 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            font-size: 14px;
+            font-size: 13px;
         }
         table.admin-table th, table.admin-table td {
             border: 1px solid var(--border);
             padding: 10px;
             text-align: left;
         }
+        [dir="rtl"] table.admin-table th, [dir="rtl"] table.admin-table td {
+            text-align: right;
+        }
         table.admin-table th { background: #222; color: var(--accent); }
         .badge {
             display: inline-block;
             padding: 4px 8px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
         }
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .analytic-card {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .analytic-card span { font-size: 11px; color: var(--text-muted); display: block; }
+        .analytic-card b { font-size: 20px; color: var(--success); display: block; margin-top: 5px; }
+
         #accessDenied {
             text-align: center;
             padding: 50px;
             display: none;
+        }
+
+        @media(max-width: 768px) {
+            .analytics-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 
@@ -131,6 +163,8 @@
         const CLOUD_NAME = 'djibtdplp';
         const UPLOAD_PRESET = 'FITNESS PRO WEB';
 
+        let currentLang = 'fa'; // Default to Farsi
+
         onAuthStateChanged(auth, async (user) => {
             if (!user || user.email !== ADMIN_EMAIL) {
                 document.getElementById('accessDenied').style.display = 'block';
@@ -143,71 +177,98 @@
         });
 
         window.loadAdminData = async () => {
-            // Load Users
-            const usersSnap = await getDocs(collection(db, "users"));
-            let userHtml = '';
-            usersSnap.forEach(d => {
-                let u = d.data();
-                let uid = d.id;
-                let isPro = u.isPro && (!u.proExpiresAt || new Date(u.proExpiresAt) > new Date());
-                userHtml += `
-                    <tr>
-                        <td>${u.email || uid}</td>
-                        <td><span class="badge" style="background:${isPro ? '#1a3a2a' : '#3a2a1a'}; color:${isPro ? '#4caf50' : '#ff9800'}">${isPro ? 'PRO' : 'FREE'}</span></td>
-                        <td>${u.proExpiresAt ? new Date(u.proExpiresAt).toLocaleDateString() : 'None'}</td>
-                        <td>
-                            <button class="action-btn" style="padding:4px 8px; font-size:11px;" onclick="grantPro('${uid}')">Grant Pro</button>
-                            <button class="action-btn" style="padding:4px 8px; font-size:11px; background:var(--danger);" onclick="revokePro('${uid}')">Revoke</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            document.getElementById('adminUsersTable').innerHTML = userHtml;
+            try {
+                // Load Users & Biometrics
+                const usersSnap = await getDocs(collection(db, "users"));
+                let userHtml = '';
+                let totalUsers = 0;
+                let proUsers = 0;
 
-            // Load Trainers Review Applications
-            const trainersSnap = await getDocs(collection(db, "trainers"));
-            let trainerHtml = '';
-            trainersSnap.forEach(d => {
-                let t = d.data();
-                let tid = d.id;
-                let statusColor = t.status === 'approved' ? '#4caf50' : t.status === 'rejected' ? '#f44336' : '#ff9800';
-                trainerHtml += `
-                    <tr>
-                        <td><img src="${t.imageUrl || 'https://placehold.co/40'}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;"></td>
-                        <td>
-                            <b>${t.name}</b> (${t.email})<br>
-                            <small style="color:var(--text-muted);">Gym: ${t.gym || 'N/A'} | Specialty: ${t.specialty || 'N/A'}</small><br>
-                            ${t.certificates ? `<small style="color:#64b5f6;">Cert: ${t.certificates}</small><br>` : ''}
-                            ${t.championships ? `<small style="color:#e040fb;">Champs: ${t.championships}</small>` : ''}
-                        </td>
-                        <td><span class="badge" style="background:#222; color:${statusColor}">${t.status || 'pending'}</span></td>
-                        <td>
-                            <button class="action-btn" style="padding:4px 8px; font-size:11px; background:#4caf50; margin-bottom:4px;" onclick="updateTrainerStatus('${tid}', 'approved')">Approve</button>
-                            <button class="action-btn" style="padding:4px 8px; font-size:11px; background:var(--danger);" onclick="updateTrainerStatus('${tid}', 'rejected')">Reject</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            document.getElementById('adminTrainersTable').innerHTML = trainerHtml || '<tr><td colspan="4" style="text-align:center;">No trainer requests yet.</td></tr>';
+                usersSnap.forEach(d => {
+                    let u = d.data();
+                    let uid = d.id;
+                    totalUsers++;
+                    let isPro = u.isPro && (!u.proExpiresAt || new Date(u.proExpiresAt) > new Date());
+                    if(isPro) proUsers++;
+
+                    userHtml += `
+                        <tr>
+                            <td>
+                                <b>${u.email || uid}</b><br>
+                                <small style="color:var(--text-muted);">وزن: ${u.weight || '--'} kg | قد: ${u.height || '--'} cm | سن: ${u.age || '--'}</small><br>
+                                <small style="color:var(--accent);">تیپ: ${u.bodyType || '--'} | چربی: ${u.bodyFat || '--'}% | هدف: ${u.goal || '--'}</small>
+                            </td>
+                            <td><span class="badge" style="background:${isPro ? '#1a3a2a' : '#3a2a1a'}; color:${isPro ? '#4caf50' : '#ff9800'}">${isPro ? 'PRO' : 'FREE'}</span></td>
+                            <td>${u.proExpiresAt ? new Date(u.proExpiresAt).toLocaleDateString() : 'ندارد'}</td>
+                            <td>
+                                <button class="action-btn" style="padding:4px 8px; font-size:11px; margin-bottom:4px;" onclick="grantPro('${uid}')">اعطای پرو</button>
+                                <button class="action-btn" style="padding:4px 8px; font-size:11px; background:var(--danger);" onclick="revokePro('${uid}')">لغو پرو</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('adminUsersTable').innerHTML = userHtml || '<tr><td colspan="4" style="text-align:center;">کاربری یافت نشد.</td></tr>';
+
+                // Load Trainers Review Applications
+                const trainersSnap = await getDocs(collection(db, "trainers"));
+                let trainerHtml = '';
+                let totalTrainers = 0;
+
+                trainersSnap.forEach(d => {
+                    let t = d.data();
+                    let tid = d.id;
+                    totalTrainers++;
+                    let statusColor = t.status === 'approved' ? '#4caf50' : t.status === 'rejected' ? '#f44336' : '#ff9800';
+                    trainerHtml += `
+                        <tr>
+                            <td><img src="${t.imageUrl || 'https://placehold.co/40'}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;"></td>
+                            <td>
+                                <b>${t.name}</b> (${t.email})<br>
+                                <small style="color:var(--text-muted);">باشگاه: ${t.gym || 'N/A'} | تخصص: ${t.specialty || 'N/A'}</small><br>
+                                ${t.certificates ? `<small style="color:#64b5f6;">مدرک: ${t.certificates}</small><br>` : ''}
+                            </td>
+                            <td><span class="badge" style="background:#222; color:${statusColor}">${t.status || 'pending'}</span></td>
+                            <td>
+                                <button class="action-btn" style="padding:4px 8px; font-size:11px; background:#4caf50; margin-bottom:4px;" onclick="updateTrainerStatus('${tid}', 'approved')">تایید</button>
+                                <button class="action-btn" style="padding:4px 8px; font-size:11px; background:var(--danger);" onclick="updateTrainerStatus('${tid}', 'rejected')">رد</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('adminTrainersTable').innerHTML = trainerHtml || '<tr><td colspan="4" style="text-align:center;">درخواست مربی ثبت نشده است.</td></tr>';
+
+                // Load Videos Count
+                const videosSnap = await getDocs(collection(db, "videos"));
+                let totalVideos = videosSnap.size;
+
+                // Update Analytics Summary Counters
+                document.getElementById('statTotalUsers').innerText = totalUsers;
+                document.getElementById('statProUsers').innerText = proUsers;
+                document.getElementById('statTrainers').innerText = totalTrainers;
+                document.getElementById('statVideos').innerText = totalVideos;
+
+            } catch(err) {
+                console.error("Error loading admin data:", err);
+            }
         };
 
         window.grantPro = async (uid) => {
             let expires = new Date();
             expires.setMonth(expires.getMonth() + 1);
             await setDoc(doc(db, "users", uid), { isPro: true, proExpiresAt: expires.toISOString() }, { merge: true });
-            alert("Pro granted for 1 month!");
+            alert("اشتراک پرو با موفقیت برای یک ماه فعال شد!");
             loadAdminData();
         };
 
         window.revokePro = async (uid) => {
             await setDoc(doc(db, "users", uid), { isPro: false, proExpiresAt: null }, { merge: true });
-            alert("Pro revoked!");
+            alert("اشتراک پرو لغو شد!");
             loadAdminData();
         };
 
         window.updateTrainerStatus = async (tid, status) => {
             await setDoc(doc(db, "trainers", tid), { status: status }, { merge: true });
-            alert(`Trainer status updated to ${status}!`);
+            alert(`وضعیت مربی به ${status} تغییر یافت!`);
             loadAdminData();
         };
 
@@ -217,7 +278,7 @@
             const fileInput = document.getElementById('adminVideoFile');
             const progress = document.getElementById('uploadProgress');
 
-            if(!title || fileInput.files.length === 0) return alert("Enter title and select a video file.");
+            if(!title || fileInput.files.length === 0) return alert("لطفاً عنوان ویدیو را وارد کرده و یک فایل انتخاب کنید.");
             
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
@@ -225,7 +286,7 @@
             formData.append('resource_type', 'video');
 
             progress.style.display = 'block';
-            progress.innerText = "Uploading video to Cloudinary...";
+            progress.innerText = "در حال آپلود ویدیو به کلادیناری...";
 
             try {
                 const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`, { method: 'POST', body: formData });
@@ -233,87 +294,118 @@
                 if(data.secure_url) {
                     await setDoc(doc(collection(db, "videos")), { title, category, url: data.secure_url, createdAt: new Date().toISOString() });
                     progress.style.display = 'none';
-                    alert("Video successfully uploaded and published!");
+                    alert("ویدیو با موفقیت آپلود و منتشر شد!");
                     document.getElementById('adminVideoTitle').value = '';
                     fileInput.value = '';
+                    loadAdminData();
                 } else {
                     throw new Error(data.error?.message || "Upload failed");
                 }
             } catch(e) {
                 progress.style.display = 'none';
-                alert("Error: " + e.message);
+                alert("خطا در آپلود: " + e.message);
             }
+        };
+
+        window.toggleLang = () => {
+            currentLang = currentLang === 'en' ? 'fa' : 'en';
+            const root = document.getElementById('htmlRoot');
+            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+            root.setAttribute('lang', currentLang);
+            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'English / EN' : 'فارسی / FA';
         };
     </script>
 </head>
 <body>
     <header>
         <div class="top-controls">
-            <a href="index.html" class="top-btn">🏠 Home / بازگشت</a>
+            <a href="index.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
+            <button class="top-btn" onclick="toggleLang()" id="langBtn">English / EN</button>
         </div>
-        <h1>Master Admin Control Panel</h1>
-        <p style="color:var(--text-muted); font-size:14px;">Exclusive Owner Portal: Manage users, video uploads, and trainer approvals</p>
+        <h1 id="mainTitle">پنل مدیریت جامع فیتنس پرو (Master Admin)</h1>
+        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">مدیریت کامل کاربران، بیومتریک‌ها، مربیان، تایید حساب‌های پرو و آپلود ویدیو</p>
     </header>
 
     <div id="accessDenied">
-        <h2 style="color:var(--danger);">Access Denied / دسترسی غیرمجاز</h2>
-        <p style="color:var(--text-muted);">You must be signed in as the master administrator (mohammad009999@gmail.com) to view this page.</p>
-        <a href="index.html" class="top-btn" style="display:inline-block; margin-top:15px;">Return to Home</a>
+        <h2 style="color:var(--danger);">دسترسی غیرمجاز (Access Denied)</h2>
+        <p style="color:var(--text-muted);">شما باید به عنوان مدیر اصلی (mohammad009999@gmail.com) وارد سیستم شده باشید.</p>
+        <a href="index.html" class="top-btn" style="display:inline-block; margin-top:15px;">بازگشت به صفحه اصلی</a>
     </div>
 
     <div id="adminContent" class="container" style="display:none;">
         
+        <!-- ANALYTICS SUMMARY CARDS -->
+        <div class="analytics-grid">
+            <div class="analytic-card">
+                <span>کل کاربران ثبت‌نامی</span>
+                <b id="statTotalUsers">0</b>
+            </div>
+            <div class="analytic-card">
+                <span>کاربران ویژه (PRO)</span>
+                <b id="statProUsers" style="color:var(--accent);">0</b>
+            </div>
+            <div class="analytic-card">
+                <span>مربیان سامانه</span>
+                <b id="statTrainers" style="color:#64b5f6;">0</b>
+            </div>
+            <div class="analytic-card">
+                <span>ویدیوهای بارگذاری شده</span>
+                <b id="statVideos" style="color:#e040fb;">0</b>
+            </div>
+        </div>
+
         <!-- Video Upload Card -->
         <div class="card">
-            <h2>Upload Video to Cloudinary</h2>
-            <input type="text" id="adminVideoTitle" placeholder="Video Title (e.g., Heavy Bench Press)">
+            <h2>آپلود ویدیو به کلادیناری (Cloudinary)</h2>
+            <input type="text" id="adminVideoTitle" placeholder="عنوان ویدیو (مثال: پرس سینه سنگین)">
             <select id="adminVideoCategory">
-                <option value="chest">Chest</option>
-                <option value="legs">Legs</option>
-                <option value="cardio">Cardio</option>
-                <option value="abs">Abs</option>
-                <option value="shoulders">Shoulders</option>
-                <option value="back">Back</option>
-                <option value="arms">Arms</option>
+                <option value="chest">سینه (Chest)</option>
+                <option value="legs">پا (Legs)</option>
+                <option value="cardio">هوازی (Cardio)</option>
+                <option value="abs">شکم (Abs)</option>
+                <option value="shoulders">سرشانه (Shoulders)</option>
+                <option value="back">سرشانه و زیربغل (Back)</option>
+                <option value="arms">بازو و جلوبازو (Arms)</option>
             </select>
             <input type="file" id="adminVideoFile" accept="video/*">
-            <button class="action-btn" onclick="uploadVideoToCloudinary()">Upload Video to Cloudinary</button>
+            <button class="action-btn" onclick="uploadVideoToCloudinary()">آپلود و انتشار ویدیو</button>
             <div id="uploadProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
         </div>
 
         <!-- Trainer Applications Review Card -->
         <div class="card">
-            <h2>Trainer Applications & Requests</h2>
-            <p style="font-size:13px; color:var(--text-muted);">Review trainers who applied to offer custom workouts. Approved trainers will show up in the public Trainer Marketplace.</p>
+            <h2>درخواست‌های همکاری مربیان</h2>
+            <p style="font-size:13px; color:var(--text-muted);">مربیانی که درخواست ارائه برنامه تمرینی داده‌اند را بررسی و تایید کنید تا در بازارچه مربیان نمایش داده شوند.</p>
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Photo</th>
-                        <th>Trainer Info</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>تصویر</th>
+                        <th>اطلاعات مربی</th>
+                        <th>وضعیت</th>
+                        <th>عملیات</th>
                     </tr>
                 </thead>
                 <tbody id="adminTrainersTable">
-                    <tr><td colspan="4" style="text-align:center;">Loading trainers...</td></tr>
+                    <tr><td colspan="4" style="text-align:center;">در حال بارگذاری مربیان...</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Users & Memberships Card -->
+        <!-- Users & Biometrics Intelligence Card -->
         <div class="card">
-            <h2>Registered Users & Pro Status</h2>
+            <h2>مدیریت کاربران، بیومتریک و وضعیت اشتراک پرو</h2>
+            <p style="font-size:13px; color:var(--text-muted);">مشاهده اطلاعات بدنی، وزن، قد، تیپ بدنی و وضعیت حساب کاربری تمامی اعضا.</p>
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>User Email / ID</th>
-                        <th>Status</th>
-                        <th>Pro Expiry</th>
-                        <th>Actions</th>
+                        <th>مشخصات کاربر و بیومتریک</th>
+                        <th>وضعیت</th>
+                        <th>انقضای پرو</th>
+                        <th>عملیات</th>
                     </tr>
                 </thead>
                 <tbody id="adminUsersTable">
-                    <tr><td colspan="4" style="text-align:center;">Loading users...</td></tr>
+                    <tr><td colspan="4" style="text-align:center;">در حال بارگذاری کاربران...</td></tr>
                 </tbody>
             </table>
         </div>

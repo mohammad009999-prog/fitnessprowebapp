@@ -3,130 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro - Advanced Clinical & Lab Suite</title>
+    <title>Fitness Pro - Elite Clinical & Nutrition Suite</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e24;
-            --border-color: #2c2c35;
-            --accent: #ff5722;
+            --bg-color: #0b0b0e;
+            --card-bg: #14141a;
+            --card-inner: #0f0f13;
+            --border-color: #22222c;
+            --accent: #ff9800;
             --success: #00e676;
             --warning: #fbbf24;
+            --danger: #f44336;
             --text-main: #ffffff;
-            --text-muted: #a0a0ab;
+            --text-muted: #9ca3af;
         }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Vazirmatn', Arial, sans-serif;
             background: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 16px;
+            padding: 20px;
         }
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             position: relative;
+            background: linear-gradient(180deg, #14141a 0%, #0b0b0e 100%);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
         }
         h1 {
             color: var(--accent);
-            margin-bottom: 5px;
-            font-size: 20px;
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 900;
         }
         .top-controls {
             position: absolute;
-            top: 0;
-            left: 0;
-            display: flex;
-            gap: 8px;
-            align-items: center;
+            top: 20px;
+            left: 20px;
+        }
+        [dir="rtl"] .top-controls {
+            left: auto;
+            right: 20px;
         }
         .top-btn {
-            background: var(--card-bg);
+            background: var(--card-inner);
             color: var(--accent);
             border: 1px solid var(--accent);
-            padding: 6px 10px;
+            padding: 8px 16px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 13px;
             text-decoration: none;
+            transition: all 0.3s;
+        }
+        .top-btn:hover {
+            background: var(--accent);
+            color: #000;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        @media(max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
         }
         .list-item-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .list-item-card:hover {
+            border-color: rgba(255, 152, 0, 0.5);
+            transform: translateY(-2px);
         }
         .list-item-header {
-            padding: 18px 20px;
+            padding: 20px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
+            text-align: center;
             cursor: pointer;
-            background: #25252d;
+            background: #181822;
             transition: background 0.2s;
+            gap: 12px;
+            flex-grow: 1;
         }
         .list-item-header:hover {
-            background: #2c2c38;
+            background: #1f1f2b;
+        }
+        .tool-icon-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--card-inner);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tool-icon-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .list-item-header h2 {
             color: var(--accent);
             margin: 0;
             font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .arrow-icon {
-            color: var(--text-muted);
-            font-size: 14px;
             font-weight: bold;
-            transition: transform 0.3s;
         }
-        .list-item-card.active .arrow-icon {
-            transform: rotate(180deg);
-            color: var(--accent);
+        .list-item-header p {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin: 0;
         }
         .list-item-body {
             display: none;
-            padding: 20px;
+            padding: 25px;
             border-top: 1px solid var(--border-color);
             background: var(--card-bg);
+            grid-column: span 2;
+        }
+        @media(max-width: 768px) {
+            .list-item-body { grid-column: span 1; }
+        }
+        .list-item-card.active {
+            grid-column: span 2;
+        }
+        @media(max-width: 768px) {
+            .list-item-card.active { grid-column: span 1; }
         }
         .list-item-card.active .list-item-body {
             display: block;
         }
         .section-title {
             color: var(--success);
-            margin: 16px 0 8px 0;
+            margin: 20px 0 12px 0;
             font-size: 15px;
             font-weight: bold;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 4px;
+            padding-bottom: 6px;
         }
         .grid-inputs {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
         .input-group {
-            background: #2c2c35;
-            padding: 10px;
-            border-radius: 8px;
+            background: var(--card-inner);
+            padding: 14px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
         .input-row-flex {
             display: flex;
@@ -134,133 +179,412 @@
             align-items: center;
         }
         .input-group label {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-muted);
             font-weight: bold;
         }
         .info-btn {
-            background: #3a3a45;
+            background: #22222c;
             color: var(--warning);
             border: 1px solid var(--warning);
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             font-size: 10px;
             font-weight: bold;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
         }
         .info-btn:hover {
             background: var(--warning);
             color: #000;
         }
         input, select, textarea {
-            padding: 10px;
-            background: #1e1e24;
+            padding: 12px;
+            background: #111116;
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 13px;
             box-sizing: border-box;
             width: 100%;
+            font-family: 'Vazirmatn', Arial, sans-serif;
+        }
+        input:focus, select:focus {
+            border-color: var(--accent);
+            outline: none;
         }
         .action-btn {
             background: var(--accent);
-            color: #ffffff;
+            color: #000;
             border: none;
             padding: 14px 20px;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 900;
             font-size: 15px;
             width: 100%;
-            margin-top: 10px;
-        }
-        .action-btn:hover {
-            opacity: 0.9;
-        }
-        .result-box {
             margin-top: 15px;
-            padding: 20px;
-            background: #1e1e24;
-            color: #ffffff;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            display: none;
-            line-height: 1.6;
+            font-family: 'Vazirmatn', Arial, sans-serif;
+            transition: opacity 0.2s;
         }
-        .metric-row {
+        .action-btn:hover { opacity: 0.9; }
+        
+        .elite-dashboard-panel {
+            background: linear-gradient(135deg, #181822 0%, #0b0b0e 100%);
+            border: 1px solid var(--accent);
+            border-radius: 14px;
+            padding: 22px;
+            margin-top: 22px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .matrix-header {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
+            align-items: center;
             border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
         }
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+        .matrix-card {
+            background: var(--card-inner);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .matrix-card span { font-size: 11px; color: var(--text-muted); font-weight: bold; }
+        .matrix-card b { font-size: 18px; color: var(--success); margin: 8px 0; display: block; }
+        .matrix-card small { font-size: 10px; color: var(--accent); }
+        .badge { display: inline-block; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .result-box {
+            margin-top: 15px; padding: 20px; background: #ffffff; color: #000000;
+            border-radius: 12px; border: 1px solid var(--border-color); display: none; line-height: 1.6;
+        }
+        .metric-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 13px; }
         .disclaimer {
-            background: #252015;
-            border: 1px solid var(--warning);
-            padding: 12px 15px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #ffd54f;
-            margin-bottom: 15px;
-            line-height: 1.6;
+            background: #1f1a10; border: 1px solid var(--warning); padding: 14px 16px;
+            border-radius: 10px; font-size: 12px; color: #fde047; margin-bottom: 18px; line-height: 1.6;
         }
+        .upload-preview-box {
+            width: 100%; height: 160px; border: 2px dashed var(--border-color); border-radius: 10px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: var(--card-inner); margin-bottom: 10px; overflow: hidden; position: relative;
+        }
+        .upload-preview-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        @media(max-width: 768px) { .matrix-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
 
     <header>
         <div class="top-controls">
-            <a href="index.html" class="top-btn">← Back</a>
+            <a href="index.html" class="top-btn">← خانه / Home</a>
         </div>
-        <h1>FITNESS PRO CLINICAL & LAB SUITE</h1>
-        <p style="color: var(--text-muted); font-size: 12px;">Advanced Blood Analysis & Prescription Tools</p>
+        <h1>FITNESS PRO ELITE SUITE</h1>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">ابزارهای پیشرفته بیومتریک، تغذیه، خون‌شناسی و نسخه‌نویس بالینی</p>
     </header>
 
-    <div class="container">
+    <div class="container" id="toolsContainer">
 
-        <!-- TOOL 1: CLINICAL BLOOD ANALYZER LIST ITEM -->
-        <div class="list-item-card" id="cardBloodAnalyzer">
-            <div class="list-item-header" onclick="toggleToolCard('cardBloodAnalyzer')">
-                <h2>🩸 1. Clinical Blood Analyzer (آنالیز جامع خون)</h2>
-                <span class="arrow-icon">▼</span>
+        <!-- TOOL 1: ACCURATE BIOMETRIC & BODY COMPOSITION SCANNER -->
+        <div class="list-item-card" id="cardBodyScanner">
+            <div class="list-item-header" onclick="toggleToolCard('cardBodyScanner')">
+                <div class="tool-icon-box">
+                    <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=150" alt="Body Scanner">
+                </div>
+                <h2>🧬 اسکنر بیومتریک و ترکیب بدنی</h2>
+                <p>محاسبه درصد چربی، متابولیسم و توده عضلانی با فرمول Navy</p>
             </div>
             <div class="list-item-body">
                 <div class="disclaimer">
-                    <b>🛡️ Important Medical Notice:</b> This tool is designed exclusively for fitness tracking, educational awareness, and self-evaluation. It <b>does not replace a professional medical doctor</b>, clinical diagnosis, or specialized laboratory interpretation. Always consult a qualified physician for health decisions.
+                    <b>🛡️ استاندارد علمی کلینیکی:</b> این ابزار با فاکتورهای قد، وزن، دور کمر و گردن درصد چربی و انرژی مصرفی روزانه را به دقت محاسبه می‌کند.
                 </div>
 
-                <div class="grid-inputs" style="grid-template-columns: 2fr 1fr; margin-bottom: 10px;">
+                <div class="grid-inputs" style="grid-template-columns: 2fr 1fr 1fr; margin-bottom: 10px;">
                     <div class="input-group">
-                        <label>Patient Full Name / نام و نام خانوادگی بیمار</label>
-                        <input type="text" id="etUserName" placeholder="e.g., John Doe">
+                        <label>نام و نام خانوادگی کاربر</label>
+                        <input type="text" id="etScanName" placeholder="مثال: علی رضایی">
                     </div>
                     <div class="input-group">
-                        <label>Age / سن</label>
-                        <input type="number" id="etUserAge" placeholder="Age">
+                        <label>وزن (کیلوگرم)</label>
+                        <input type="number" id="etScanWeight" placeholder="78" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label>قد (سانتی‌متر)</label>
+                        <input type="number" id="etScanHeight" placeholder="180">
+                    </div>
+                </div>
+
+                <div class="grid-inputs" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 10px;">
+                    <div class="input-group">
+                        <label>جنسیت</label>
+                        <select id="spinnerScanGender">
+                            <option value="male">مرد (Male)</option>
+                            <option value="female">زن (Female)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>دور کمر (cm - ناف)</label>
+                        <input type="number" id="etWaist" placeholder="85" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label>دور گردن (cm)</label>
+                        <input type="number" id="etNeck" placeholder="38" step="0.5">
                     </div>
                 </div>
 
                 <div class="input-group" style="margin-bottom: 15px;">
-                    <label>Gender / جنسیت</label>
+                    <label>آپلود عکس فیزیک (اختیاری جهت آرشیو)</label>
+                    <div class="upload-preview-box">
+                        <span id="uploadPlaceholderText" style="color:var(--text-muted); font-size:12px;">📷 کلیک برای انتخاب تصویر فیزیک</span>
+                        <img id="imgBodyPreview" alt="Body Preview">
+                    </div>
+                    <input type="file" id="inputBodyPhoto" accept="image/*" onchange="previewBodyImage(event)">
+                </div>
+
+                <button class="action-btn" style="background:var(--success); color:#000;" onclick="processAccurateBodyScan()">محاسبه دقیق ترکیب بدنی و متابولیسم</button>
+
+                <div id="eliteBodyScanResult" class="elite-dashboard-panel">
+                    <div class="matrix-header">
+                        <b style="color:var(--accent); font-size:16px;">📊 داشبورد تخصصی بیومتریک و ترکیب بدنی</b>
+                        <span class="badge" style="background:#1a3a2a; color:var(--success);">تایید شد</span>
+                    </div>
+
+                    <p style="margin-bottom:15px; font-size:13px;"><b>کاربر:</b> <span id="resUserName" style="color:var(--accent);">--</span> | <b>وضعیت متابولیک:</b> <span style="color:var(--success);">بهینه</span></p>
+
+                    <div class="matrix-grid">
+                        <div class="matrix-card">
+                            <span>شاخص توده بدنی (BMI)</span>
+                            <b id="resBmiVal">--</b>
+                            <small id="resBmiStatus">--</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>درصد چربی (Navy BF)</span>
+                            <b id="resFatVal" style="color:#ff5722;">-- %</b>
+                            <small>بالینی</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>توده عضلانی خالص</span>
+                            <b id="resLeanVal">-- kg</b>
+                            <small>LBM</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>تیپ بدنی</span>
+                            <b id="resSomatotypeVal" style="color:#64b5f6;">--</b>
+                            <small>اسکلتی</small>
+                        </div>
+                    </div>
+
+                    <div class="section-title" style="margin-top:20px;">🔥 انرژی مصرفی روزانه</div>
+                    <div class="metric-row">
+                        <span><b>متابولیسم پایه (BMR):</b></span>
+                        <span id="resBmrVal" style="color:var(--success); font-weight:bold;">-- kcal</span>
+                    </div>
+                    <div class="metric-row">
+                        <span><b>کل انرژی مصرفی (TDEE):</b></span>
+                        <span id="resTdeeVal" style="color:var(--success); font-weight:bold;">-- kcal</span>
+                    </div>
+                    <div class="metric-row">
+                        <span><b>پروتئین پیشنهادی روزانه:</b></span>
+                        <span id="resProteinVal" style="color:var(--accent); font-weight:bold;">-- g</span>
+                    </div>
+
+                    <div class="section-title">💡 توصیه‌های هوشمند تمرینی</div>
+                    <p id="resBodyAdvice" style="font-size:12px; background:var(--card-inner); padding:14px; border-radius:8px; color:var(--text-muted); border:1px solid var(--border-color); line-height:1.6;">
+                        نتایج آنالیز پس از ورود اطلاعات نمایش داده خواهد شد.
+                    </p>
+
+                    <button class="action-btn" id="btnSaveScanImage" style="background:#008cba; color:#fff; margin-top:15px;" onclick="saveCardAsImage('eliteBodyScanResult', 'Biometric_Report.png')">📥 ذخیره گزارش به عنوان تصویر</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOOL 2: EXACT MEAL & PLATE MACRO CALCULATOR -->
+        <div class="list-item-card" id="cardPlateAnalyzer">
+            <div class="list-item-header" onclick="toggleToolCard('cardPlateAnalyzer')">
+                <div class="tool-icon-box">
+                    <img src="https://images.unsplash.com/photo-1543353071-10c8ba85a904?w=150" alt="Nutrition Plate">
+                </div>
+                <h2>🥗 محاسبه‌گر دقیق ماکروهای بشقاب</h2>
+                <p>انتخاب از بین بیش از ۵۰ ماده غذایی استاندارد و محاسبه دقیق کالری</p>
+            </div>
+            <div class="list-item-body">
+                <div class="disclaimer">
+                    <b>🛡️ دقت مطلق تغذیه:</b> اقلام غذایی بشقاب خود را با وزن دقیق (گرم یا عدد) از لیست زیر انتخاب کنید تا ماکروها به‌صورت ریاضی جمع شوند.
+                </div>
+
+                <div class="grid-inputs" style="grid-template-columns: 2fr 1fr; margin-bottom: 12px;">
+                    <div class="input-group">
+                        <label>انتخاب ماده غذایی (بیش از ۵۰ آیتم)</label>
+                        <select id="selectFoodItem">
+                            <optgroup label="🥩 پروتئین‌ها">
+                                <option value="chicken_breast">سینه مرغ پخته (هر ۱۰۰ گرم: ۱۶۵ کالری، ۳۱g پروتئین)</option>
+                                <option value="chicken_thigh">ران مرغ پخته (هر ۱۰۰ گرم: ۲۰۹ کالری، ۲۶g پروتئین)</option>
+                                <option value="beef_lean">گوشت گوساله بدون چربی (هر ۱۰۰ گرم: ۲۵۰ کالری، ۲۶g پروتئین)</option>
+                                <option value="beef_minced">گوشت چرخ‌کرده متوسط (هر ۱۰۰ گرم: ۲۷۲ کالری، ۲۵g پروتئین)</option>
+                                <option value="turkey_breast">سینه بوقلمون پخته (هر ۱۰۰ گرم: ۱۳۵ کالری، ۳۰g پروتئین)</option>
+                                <option value="tuna_fish">تن ماهی در آب نمک (هر ۱۰۰ گرم: ۱۱۶ کالری، ۲۶g پروتئین)</option>
+                                <option value="salmon_fish">ماهی سالمون گریل (هر ۱۰۰ گرم: ۲۰۶ کالری، ۲۲g پروتئین)</option>
+                                <option value="shrimp">میگو پخته (هر ۱۰۰ گرم: ۹۹ کالری، ۲۴g پروتئین)</option>
+                                <option value="egg_whole">تخم‌مرغ کامل پخته (هر عدد متوسط: ۷۴ کالری، ۶g پروتئین)</option>
+                                <option value="egg_white">سفیده تخم‌مرغ پخته (هر عدد: ۱۷ کالری، ۳.۶g پروتئین)</option>
+                            </optgroup>
+                            <optgroup label="🍚 کربوهیدرات‌ها و غلات">
+                                <option value="rice_cooked">برنج سفید پخته (هر ۱۰۰ گرم: ۱۳۰ کالری، ۲۸g کربوهیدرات)</option>
+                                <option value="brown_rice_cooked">برنج قهوه‌ای پخته (هر ۱۰۰ گرم: ۱۱۲ کالری، ۲۴g کربوهیدرات)</option>
+                                <option value="pasta_cooked">پاستا و ماکارونی پخته (هر ۱۰۰ گرم: ۱۵۸ کالری، ۳۱g کربوهیدرات)</option>
+                                <option value="potato_boiled">سیب‌زمینی آب‌پز/تنوری (هر ۱۰۰ گرم: ۸۷ کالری، ۲۰g کربوهیدرات)</option>
+                                <option value="sweet_potato">سیب‌زمینی شیرین پخته (هر ۱۰۰ گرم: ۸۶ کالری، ۲۰g کربوهیدرات)</option>
+                                <option value="oats">جو دوسر پرک خشک (هر ۱۰۰ گرم: ۳۸۹ کالری، ۶۶g کربوهیدرات)</option>
+                                <option value="barley_cooked">جو پخته (هر ۱۰۰ گرم: ۱۲۳ کالری، ۲۸g کربوهیدرات)</option>
+                                <option value="quinoa_cooked">کینوآ پخته (هر ۱۰۰ گرم: ۱۲۰ کالری، ۲۱g کربوهیدرات)</option>
+                                <option value="bread_sangak">نان سنگک سنتی (هر ۱۰۰ گرم: ۲۵۰ کالری، ۵۰g کربوهیدرات)</option>
+                                <option value="bread_barbari">نان بربری (هر ۱۰۰ گرم: ۲۶۰ کالری، ۵۲g کربوهیدرات)</option>
+                                <option value="bread_toast">نان تست جو (هر ۱۰۰ گرم: ۲۶۵ کالری، ۴۶g کربوهیدرات)</option>
+                                <option value="corn">ذرت پخته / بلال (هر ۱۰۰ گرم: ۹۶ کالری، ۲۱g کربوهیدرات)</option>
+                            </optgroup>
+                            <optgroup label="🥑 چربی‌ها و مغزیجات">
+                                <option value="olive_oil">روغن زیتون (هر ۱۰ گرم / یک قاشق: ۸۸ کالری، ۱۰g چربی)</option>
+                                <option value="butter">کره حیوانی (هر ۱۰ گرم: ۷۱ کالری، ۸g چربی)</option>
+                                <option value="peanut_butter">کره بادام‌زمینی (هر ۱۰۰ گرم: ۵۸۸ کالری، ۲۵g پروتئین، ۵۰g چربی)</option>
+                                <option value="avocado">آووکادو تازه (هر ۱۰۰ گرم: ۱۶۰ کالری، ۱۵g چربی)</option>
+                                <option value="almonds">بادام درختی (هر ۱۰۰ گرم: ۵۷۹ کالری، ۲۱g پروتئین، ۵۰g چربی)</option>
+                                <option value="walnuts">گردو (هر ۱۰۰ گرم: ۶۵۴ کالری، ۱۵g پروتئین، ۶۵g چربی)</option>
+                                <option value="pistachio">پسته (هر ۱۰۰ گرم: ۵۶۲ کالری، ۲۰g پروتئین، ۴۵g چربی)</option>
+                            </optgroup>
+                            <optgroup label="🥛 لبنیات">
+                                <option value="milk_low_fat">شیر کم‌چرب ۱.۵٪ (هر ۱۰۰ میلی‌لیتر: ۴۲ کالری، ۳.۴g پروتئین)</option>
+                                <option value="yogurt_greek">ماست یونانی پر پروتئین (هر ۱۰۰ گرم: ۹۷ کالری، ۱۰g پروتئین)</option>
+                                <option value="cottage_cheese">پنیر کاتج (هر ۱۰۰ گرم: ۹۸ کالری، ۱۱g پروتئین)</option>
+                                <option value="feta_cheese">پنیر فتا (هر ۱۰۰ گرم: ۲۶۴ کالری، ۱۴g پروتئین)</option>
+                            </optgroup>
+                            <optgroup label="🥦 سبزیجات و میوه‌ها">
+                                <option value="mixed_salad">سالاد سبزیجات تازه بدون سس (هر ۱۰۰ گرم: ۲۵ کالری)</option>
+                                <option value="broccoli">کلم بروکلی بخارپز (هر ۱۰۰ گرم: ۳۴ کالری، ۷g کربوهیدرات)</option>
+                                <option value="spinach">اسفناج تازه (هر ۱۰۰ گرم: ۲۳ کالری، ۲.۹g پروتئین)</option>
+                                <option value="cucumber">خیار (هر ۱۰۰ گرم: ۱۵ کالری)</option>
+                                <option value="tomato">گوجه فرنگی (هر ۱۰۰ گرم: ۱۸ کالری)</option>
+                                <option value="banana">موز (هر ۱۰۰ گرم: ۸۹ کالری، ۲۳g کربوهیدرات)</option>
+                                <option value="apple">سیب درختی (هر ۱۰۰ گرم: ۵۲ کالری، ۱۴g کربوهیدرات)</option>
+                                <option value="date">رطب / خرما (هر ۱۰۰ گرم: ۲۸۲ کالری، ۷۵g کربوهیدرات)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>وزن / مقدار (گرم یا عدد)</label>
+                        <input type="number" id="inputFoodWeight" placeholder="مثال: ۲۰۰" value="100">
+                    </div>
+                </div>
+
+                <button class="action-btn" style="background:#64b5f6; color:#000; margin-bottom:12px;" onclick="addFoodItemToMeal()">➕ افزودن ماده غذایی به بشقاب</button>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>آپلود عکس بشقاب غذا (اختیاری جهت آرشیو)</label>
+                    <div class="upload-preview-box" style="height: 120px;">
+                        <span id="uploadPlatePlaceholderText" style="color:var(--text-muted); font-size:12px;">🍽️ کلیک برای انتخاب عکس بشقاب غذا</span>
+                        <img id="imgPlatePreview" alt="Plate Preview">
+                    </div>
+                    <input type="file" id="inputPlatePhoto" accept="image/*" onchange="previewPlateImage(event)">
+                </div>
+
+                <div style="background:var(--card-inner); border:1px solid var(--border-color); border-radius:10px; padding:15px; margin-bottom:15px;">
+                    <b style="font-size:13px; color:var(--accent); display:block; margin-bottom:10px;">📋 اقلام اضافه شده به این وعده:</b>
+                    <div id="mealItemsList" style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">هنوز ماده غذایی اضافه نشده است.</div>
+                    <button class="action-btn" style="background:var(--success); color:#000; padding:10px; font-size:13px; margin-top:0;" onclick="calculateMealTotals()">محاسبه مجموع کالری و ماکروها</button>
+                </div>
+
+                <div id="elitePlateResult" class="elite-dashboard-panel">
+                    <div class="matrix-header">
+                        <b style="color:var(--accent); font-size:16px;">🥗 گزارش نهایی ماکروها و کالری وعده غذایی</b>
+                        <span class="badge" style="background:#3a2a1a; color:var(--accent);">محاسبه دقیق ریاضی</span>
+                    </div>
+
+                    <div class="matrix-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="matrix-card">
+                            <span>کالری کل وعده</span>
+                            <b id="resMealCalories" style="color:#ff5722;">0 kcal</b>
+                            <small>انرژی کل</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>پروتئین خالص</span>
+                            <b id="resMealProtein" style="color:var(--success);">0 g</b>
+                            <small>عضله‌ساز</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>کربوهیدرات</span>
+                            <b id="resMealCarbs" style="color:#64b5f6;">0 g</b>
+                            <small>انرژی</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>چربی‌های سالم</span>
+                            <b id="resMealFat" style="color:var(--warning);">0 g</b>
+                            <small>هورمونی</small>
+                        </div>
+                    </div>
+
+                    <div class="section-title" style="margin-top:20px;">💡 ارزیابی ورزشی این وعده</div>
+                    <p id="resMealBreakdown" style="font-size:12px; color:var(--text-muted); line-height:1.6; background:var(--card-inner); padding:14px; border-radius:8px; border:1px solid var(--border-color);">
+                        اطلاعات پس از محاسبه نمایش داده می‌شود.
+                    </p>
+
+                    <button class="action-btn" id="btnSavePlateImage" style="background:#008cba; color:#fff; margin-top:15px;" onclick="saveCardAsImage('elitePlateResult', 'Meal_Macro_Report.png')">📥 ذخیره گزارش به عنوان تصویر</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOOL 3: CLINICAL BLOOD ANALYZER -->
+        <div class="list-item-card" id="cardBloodAnalyzer">
+            <div class="list-item-header" onclick="toggleToolCard('cardBloodAnalyzer')">
+                <div class="tool-icon-box">
+                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=150" alt="Blood Analyzer">
+                </div>
+                <h2>🩸 آنالیزور جامع خون</h2>
+                <p>بررسی تخصصی فاکتورهای خونی، کبدی، کلیوی و هورمونی با جزئیات کامل</p>
+            </div>
+            <div class="list-item-body">
+                <div class="disclaimer">
+                    <b>🛡️ نکته پزشکی:</b> این ابزار جهت پایش فیتنس و آگاهی از فاکتورهای خونی طراحی شده و جایگزین پزشک نیست[cite: 3]. روی دکمه (i) هر آزمایش کلیک کنید تا جزئیات علمی دقیق آن را بخوانید.
+                </div>
+
+                <div class="grid-inputs" style="grid-template-columns: 2fr 1fr; margin-bottom: 10px;">
+                    <div class="input-group">
+                        <label>نام و نام خانوادگی بیمار</label>
+                        <input type="text" id="etUserName" placeholder="مثال: علی رضایی">
+                    </div>
+                    <div class="input-group">
+                        <label>سن</label>
+                        <input type="number" id="etUserAge" placeholder="سن">
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>جنسیت</label>
                     <select id="spinnerUserGender">
-                        <option value="Male">Male / مرد</option>
-                        <option value="Female">Female / زن</option>
+                        <option value="Male">مرد (Male)</option>
+                        <option value="Female">زن (Female)</option>
                     </select>
                 </div>
 
-                <div class="section-title">1. General & Hematology (خون‌شناسی)</div>
+                <div class="section-title">1. خون‌شناسی عمومی (Hematology)</div>
                 <div class="grid-inputs" id="groupHgb"></div>
                 <div class="grid-inputs" id="groupHct"></div>
                 <div class="grid-inputs" id="groupWbc"></div>
                 <div class="grid-inputs" id="groupPlt"></div>
                 <div class="grid-inputs" id="groupGlucose"></div>
 
-                <div class="section-title">2. Liver & Kidney Function (کبد و کلیه)</div>
+                <div class="section-title">2. کبد و کلیه (Liver & Kidney)</div>
                 <div class="grid-inputs" id="groupAlt"></div>
                 <div class="grid-inputs" id="groupAst"></div>
                 <div class="grid-inputs" id="groupGgt"></div>
@@ -268,7 +592,7 @@
                 <div class="grid-inputs" id="groupBun"></div>
                 <div class="grid-inputs" id="groupCystatin"></div>
 
-                <div class="section-title">3. Hormonal Axis (محور هورمونی)</div>
+                <div class="section-title">3. هورمون‌ها (Hormonal Axis)</div>
                 <div class="grid-inputs" id="groupTesto"></div>
                 <div class="grid-inputs" id="groupShbg"></div>
                 <div class="grid-inputs" id="groupEstro"></div>
@@ -278,7 +602,7 @@
                 <div class="grid-inputs" id="groupFai"></div>
                 <div class="grid-inputs" id="groupDheas"></div>
 
-                <div class="section-title">4. Metabolism & Vitamins (متابولیسم و ویتامین‌ها)</div>
+                <div class="section-title">4. متابولیسم و ویتامین‌ها (Metabolism & Vitamins)</div>
                 <div class="grid-inputs" id="groupHba1c"></div>
                 <div class="grid-inputs" id="groupHomair"></div>
                 <div class="grid-inputs" id="groupCortisol"></div>
@@ -287,52 +611,54 @@
                 <div class="grid-inputs" id="groupFolate"></div>
                 <div class="grid-inputs" id="groupFerr"></div>
 
-                <div class="section-title">5. Cardiovascular & Lipids (قلب و عروق و چربی‌ها)</div>
+                <div class="section-title">5. قلب و عروق و چربی‌ها (Cardiovascular & Lipids)</div>
                 <div class="grid-inputs" id="groupLdl"></div>
                 <div class="grid-inputs" id="groupHdl"></div>
                 <div class="grid-inputs" id="groupApob"></div>
                 <div class="grid-inputs" id="groupHscrp"></div>
 
-                <button class="action-btn" style="margin-top: 15px;" onclick="processBloodAnalysis()">GENERATE FULL BLOOD ANALYSIS</button>
-                <button class="action-btn" style="background:#3a3a3c; color:#ffffff;" onclick="showBloodHistory()">VIEW HISTORY LOGS</button>
+                <button class="action-btn" style="background:var(--success); color:#000; margin-top: 15px;" onclick="processBloodAnalysis()">تولید گزارش کامل خون‌شناسی</button>
 
-                <div id="bloodResultContainer" class="result-box" style="background:#ffffff; color:#000000;"></div>
-                <button class="action-btn" id="btnSaveImage" style="background:#00e676; color:#000; display:none; margin-top:10px;" onclick="saveCardAsImage('bloodResultContainer', 'Clinical_Report.png')">SAVE REPORT AS IMAGE</button>
+                <div id="bloodResultContainer" class="result-box"></div>
+                <button class="action-btn" id="btnSaveImage" style="background:#00e676; color:#000; display:none; margin-top:10px;" onclick="saveCardAsImage('bloodResultContainer', 'Clinical_Report.png')">ذخیره گزارش به عنوان تصویر</button>
             </div>
         </div>
 
-        <!-- TOOL 2: LAB PRESCRIPTION REQUISITION LIST ITEM -->
+        <!-- TOOL 4: LAB PRESCRIPTION REQUISITION -->
         <div class="list-item-card" id="cardPrescription">
             <div class="list-item-header" onclick="toggleToolCard('cardPrescription')">
-                <h2>📝 2. Prescription & Lab Requisition Tool (نسخه‌نویس آزمایشگاه)</h2>
-                <span class="arrow-icon">▼</span>
+                <div class="tool-icon-box">
+                    <img src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=150" alt="Prescription">
+                </div>
+                <h2>📝 نسخه‌نویس و درخواست آزمایشگاه</h2>
+                <p>تهیه برگه رسمی درخواست تست‌های تخصصی بدنسازی و هورمونی</p>
             </div>
             <div class="list-item-body">
                 <div class="disclaimer">
-                    <b>🛡️ Clinical Supervision Notice:</b> This requisition slip generator is an informational template for educational guidance. It <b>does not replace an official prescription by a certified physician</b>. Laboratory tests must be ordered and interpreted by a medical professional.
+                    <b>🛡️ راهنما:</b> این ابزار یک قالب استاندارد جهت تهیه لیست آزمایش‌های تخصصی بدنسازی و هورمونی است[cite: 3].
                 </div>
 
                 <div class="grid-inputs" style="grid-template-columns: 2fr 1fr; margin-bottom: 10px;">
                     <div class="input-group">
-                        <label>Patient Full Name / نام و نام خانوادگی بیمار</label>
-                        <input type="text" id="etRxName" placeholder="e.g., John Doe">
+                        <label>نام و نام خانوادگی بیمار</label>
+                        <input type="text" id="etRxName" placeholder="مثال: علی رضایی">
                     </div>
                     <div class="input-group">
-                        <label>Age / سن</label>
-                        <input type="number" id="etRxAge" placeholder="Age">
+                        <label>سن</label>
+                        <input type="number" id="etRxAge" placeholder="سن">
                     </div>
                 </div>
 
                 <div class="input-group" style="margin-bottom: 15px;">
-                    <label>Gender / جنسیت</label>
+                    <label>جنسیت</label>
                     <select id="spinnerRxGender">
-                        <option value="Male">Male / مرد</option>
-                        <option value="Female">Female / زن</option>
+                        <option value="Male">مرد (Male)</option>
+                        <option value="Female">زن (Female)</option>
                     </select>
                 </div>
 
                 <div class="input-group" style="margin-bottom: 15px;">
-                    <label>Prescription Requisition Protocol / پروتکل نسخه آزمایشگاه</label>
+                    <label>پروتکل نسخه آزمایشگاه</label>
                     <select id="spinnerTestType">
                         <option value="0">1. Full Bodybuilding Protocol / چکاپ جامع بدنسازی</option>
                         <option value="1">2. Hormonal Axis & Fertility / آنالیز هورمون‌های جنسی</option>
@@ -345,10 +671,10 @@
                     </select>
                 </div>
 
-                <button class="action-btn" style="background:#008cba;" onclick="generatePrescriptionSlip()">CREATE OFFICIAL LAB REQUISITION</button>
+                <button class="action-btn" style="background:#008cba; color:#fff;" onclick="generatePrescriptionSlip()">ایجاد برگه رسمی نسخه آزمایشگاه</button>
 
-                <div id="prescriptionResultContainer" class="result-box" style="background:#ffffff; color:#000000;"></div>
-                <button class="action-btn" id="btnSavePrescriptionImage" style="background:#00e676; color:#000; display:none; margin-top:10px;" onclick="saveCardAsImage('prescriptionResultContainer', 'Lab_Requisition_Slip.png')">SAVE REQUISITION SLIP AS IMAGE</button>
+                <div id="prescriptionResultContainer" class="result-box"></div>
+                <button class="action-btn" id="btnSavePrescriptionImage" style="background:#00e676; color:#000; display:none; margin-top:10px;" onclick="saveCardAsImage('prescriptionResultContainer', 'Lab_Requisition_Slip.png')">ذخیره نسخه به عنوان تصویر</button>
             </div>
         </div>
 
@@ -357,44 +683,250 @@
     <script>
         function toggleToolCard(cardId) {
             const card = document.getElementById(cardId);
-            card.classList.toggle('active');
+            const isActive = card.classList.contains('active');
+            
+            document.querySelectorAll('.list-item-card').forEach(c => {
+                c.classList.remove('active');
+            });
+
+            if (!isActive) {
+                card.classList.add('active');
+            }
         }
 
+        function previewBodyImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('imgBodyPreview');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    document.getElementById('uploadPlaceholderText').style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewPlateImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('imgPlatePreview');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    document.getElementById('uploadPlatePlaceholderText').style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function processAccurateBodyScan() {
+            const name = document.getElementById('etScanName').value.trim() || "کاربر گرامی";
+            const weight = parseFloat(document.getElementById('etScanWeight').value);
+            const height = parseFloat(document.getElementById('etScanHeight').value);
+            const gender = document.getElementById('spinnerScanGender').value;
+            const waist = parseFloat(document.getElementById('etWaist').value);
+            const neck = parseFloat(document.getElementById('etNeck').value);
+
+            if (!weight || !height || !waist || !neck) {
+                alert("لطفاً فاکتورهای قد، وزن، دور کمر و دور گردن را به صورت دقیق وارد کنید.");
+                return;
+            }
+
+            let bodyFat = 0;
+            if (gender === 'male') {
+                bodyFat = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+            } else {
+                let hip = waist + 10;
+                bodyFat = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450;
+            }
+            bodyFat = Math.max(5, Math.min(50, bodyFat)).toFixed(1);
+
+            let fatMass = ((weight * bodyFat) / 100).toFixed(1);
+            let leanMass = (weight - fatMass).toFixed(1);
+
+            let heightM = height / 100;
+            let bmi = (weight / (heightM * heightM)).toFixed(1);
+            let bmiStatus = bmi < 18.5 ? "کم‌وزن" : (bmi < 25 ? "وزن نرمال و ایده‌آل" : (bmi < 30 ? "اضافه وزن" : "چاقی مفرط"));
+
+            let bmr = (10 * weight) + (6.25 * height) - (5 * 25);
+            bmr = gender === 'female' ? bmr - 161 : bmr + 5;
+            let tdee = Math.round(bmr * 1.55);
+            let targetProtein = Math.round(weight * 2.0);
+
+            let somatotype = bmi < 19.5 ? "اکتومورف (لاغراندام)" : (bmi < 26.5 ? "مزومورف (عضلانی و ورزشی)" : "اندومورف (درشت و چربی‌پذیر)");
+
+            document.getElementById('resUserName').innerText = name;
+            document.getElementById('resBmiVal').innerText = bmi;
+            document.getElementById('resBmiStatus').innerText = bmiStatus;
+            document.getElementById('resFatVal').innerText = bodyFat + " %";
+            document.getElementById('resLeanVal').innerText = leanMass + " kg";
+            document.getElementById('resSomatotypeVal').innerText = somatotype;
+
+            document.getElementById('resBmrVal').innerText = Math.round(bmr) + " kcal";
+            document.getElementById('resTdeeVal').innerText = tdee + " kcal";
+            document.getElementById('resProteinVal').innerText = targetProtein + " g";
+
+            document.getElementById('resBodyAdvice').innerHTML = `
+                • محاسبات بر اساس فرمول استاندارد کلینیکی Navy انجام شد. درصد چربی شما <b>${bodyFat}%</b> و توده عضلانی خالص شما <b>${leanMass} کیلوگرم</b> است.<br>
+                • برای ساخت یا حفظ توده عضلانی، مصرف روزانه حداقل <b>${targetProtein} گرم پروتئین</b> و انرژی معادل <b>${tdee} کیلوکالری</b> توصیه می‌گردد.
+            `;
+
+            document.getElementById('eliteBodyScanResult').style.display = 'block';
+        }
+
+        const foodDatabase = {
+            chicken_breast: { name: "سینه مرغ پخته", calPer100: 165, proPer100: 31, carbPer100: 0, fatPer100: 3.6 },
+            chicken_thigh: { name: "ران مرغ پخته", calPer100: 209, proPer100: 26, carbPer100: 0, fatPer100: 10.9 },
+            beef_lean: { name: "گوشت گوساله بدون چربی", calPer100: 250, proPer100: 26, carbPer100: 0, fatPer100: 15 },
+            beef_minced: { name: "گوشت چرخ‌کرده متوسط", calPer100: 272, proPer100: 25, carbPer100: 0, fatPer100: 18 },
+            turkey_breast: { name: "سینه بوقلمون پخته", calPer100: 135, proPer100: 30, carbPer100: 0, fatPer100: 1.5 },
+            tuna_fish: { name: "تن ماهی در آب نمک", calPer100: 116, proPer100: 26, carbPer100: 0, fatPer100: 1 },
+            salmon_fish: { name: "ماهی سالمون گریل", calPer100: 206, proPer100: 22, carbPer100: 0, fatPer100: 12.3 },
+            shrimp: { name: "میگو پخته", calPer100: 99, proPer100: 24, carbPer100: 0.2, fatPer100: 0.3 },
+            egg_whole: { name: "تخم‌مرغ کامل پخته", calPer100: 148, proPer100: 12.6, carbPer100: 0.8, fatPer100: 10 },
+            egg_white: { name: "سفیده تخم‌مرغ پخته", calPer100: 52, proPer100: 10.9, carbPer100: 0.7, fatPer100: 0.2 },
+            
+            rice_cooked: { name: "برنج سفید پخته", calPer100: 130, proPer100: 2.7, carbPer100: 28, fatPer100: 0.3 },
+            brown_rice_cooked: { name: "برنج قهوه‌ای پخته", calPer100: 112, proPer100: 2.6, carbPer100: 24, fatPer100: 0.9 },
+            pasta_cooked: { name: "پاستا و ماکارونی پخته", calPer100: 158, proPer100: 5.8, carbPer100: 31, fatPer100: 0.9 },
+            potato_boiled: { name: "سیب‌زمینی آب‌پز/تنوری", calPer100: 87, proPer100: 1.9, carbPer100: 20, fatPer100: 0.1 },
+            sweet_potato: { name: "سیب‌زمینی شیرین پخته", calPer100: 86, proPer100: 1.6, carbPer100: 20, fatPer100: 0.1 },
+            oats: { name: "جو دوسر پرک خشک", calPer100: 389, proPer100: 16.9, carbPer100: 66, fatPer100: 6.9 },
+            barley_cooked: { name: "جو پخته", calPer100: 123, proPer100: 2.3, carbPer100: 28, fatPer100: 0.4 },
+            quinoa_cooked: { name: "کینوآ پخته", calPer100: 120, proPer100: 4.4, carbPer100: 21.3, fatPer100: 1.9 },
+            bread_sangak: { name: "نان سنگک سنتی", calPer100: 250, proPer100: 8.5, carbPer100: 50, fatPer100: 1.5 },
+            bread_barbari: { name: "نان بربری", calPer100: 260, proPer100: 8.8, carbPer100: 52, fatPer100: 2 },
+            bread_toast: { name: "نان تست جو", calPer100: 265, proPer100: 9, carbPer100: 46, fatPer100: 3.5 },
+            corn: { name: "ذرت پخته / بلال", calPer100: 96, proPer100: 3.4, carbPer100: 21, fatPer100: 1.5 },
+
+            olive_oil: { name: "روغن زیتون", calPer100: 884, proPer100: 0, carbPer100: 0, fatPer100: 100 },
+            butter: { name: "کره حیوانی", calPer100: 717, proPer100: 0.8, carbPer100: 0.1, fatPer100: 81 },
+            peanut_butter: { name: "کره بادام‌زمینی", calPer100: 588, proPer100: 25, carbPer100: 20, fatPer100: 50 },
+            avocado: { name: "آووکادو تازه", calPer100: 160, proPer100: 2, carbPer100: 8.5, fatPer100: 14.7 },
+            almonds: { name: "بادام درختی", calPer100: 579, proPer100: 21.1, carbPer100: 21.6, fatPer100: 49.9 },
+            walnuts: { name: "گردو", calPer100: 654, proPer100: 15.2, carbPer100: 13.7, fatPer100: 65.2 },
+            pistachio: { name: "پسته", calPer100: 562, proPer100: 20.2, carbPer100: 27.5, fatPer100: 45.3 },
+
+            milk_low_fat: { name: "شیر کم‌چرب ۱.۵٪", calPer100: 42, proPer100: 3.4, carbPer100: 5, fatPer100: 1.5 },
+            yogurt_greek: { name: "ماست یونانی پر پروتئین", calPer100: 97, proPer100: 10, carbPer100: 3.6, fatPer100: 5 },
+            cottage_cheese: { name: "پنیر کاتج", calPer100: 98, proPer100: 11, carbPer100: 3.4, fatPer100: 4.3 },
+            feta_cheese: { name: "پنیر فتا", calPer100: 264, proPer100: 14.2, carbPer100: 4.1, fatPer100: 21.3 },
+
+            mixed_salad: { name: "سالاد سبزیجات تازه", calPer100: 25, proPer100: 1.5, carbPer100: 5, fatPer100: 0.3 },
+            broccoli: { name: "کلم بروکلی بخارپز", calPer100: 34, proPer100: 2.8, carbPer100: 7, fatPer100: 0.4 },
+            spinach: { name: "اسفناج تازه", calPer100: 23, proPer100: 2.9, carbPer100: 3.6, fatPer100: 0.4 },
+            cucumber: { name: "خیار", calPer100: 15, proPer100: 0.7, carbPer100: 3.6, fatPer100: 0.1 },
+            tomato: { name: "گوجه فرنگی", calPer100: 18, proPer100: 0.9, carbPer100: 3.9, fatPer100: 0.2 },
+            banana: { name: "موز", calPer100: 89, proPer100: 1.1, carbPer100: 22.8, fatPer100: 0.3 },
+            apple: { name: "سیب درختی", calPer100: 52, proPer100: 0.3, carbPer100: 13.8, fatPer100: 0.2 },
+            date: { name: "رطب / خرما", calPer100: 282, proPer100: 2.5, carbPer100: 75, fatPer100: 0.4 }
+        };
+
+        let currentMealItems = [];
+
+        function addFoodItemToMeal() {
+            const foodKey = document.getElementById('selectFoodItem').value;
+            const weight = parseFloat(document.getElementById('inputFoodWeight').value);
+
+            if (!weight || weight <= 0) {
+                alert("لطفاً وزن معتبری وارد کنید.");
+                return;
+            }
+
+            const foodInfo = foodDatabase[foodKey];
+            currentMealItems.push({ key: foodKey, name: foodInfo.name, weight: weight, info: foodInfo });
+
+            renderMealItemsList();
+        }
+
+        function renderMealItemsList() {
+            const listContainer = document.getElementById('mealItemsList');
+            if (currentMealItems.length === 0) {
+                listContainer.innerHTML = "هنوز ماده غذایی اضافه نشده است.";
+                return;
+            }
+
+            let html = '<ul style="margin:0; padding-right:15px;">';
+            currentMealItems.forEach((item, index) => {
+                html += `<li><b>${item.name}:</b> ${item.weight} گرم <span style="cursor:pointer; color:var(--danger); margin-right:10px;" onclick="removeMealItem(${index})">[حذف]</span></li>`;
+            });
+            html += '</ul>';
+            listContainer.innerHTML = html;
+        }
+
+        function removeMealItem(index) {
+            currentMealItems.splice(index, 1);
+            renderMealItemsList();
+        }
+
+        function calculateMealTotals() {
+            if (currentMealItems.length === 0) {
+                alert("ابتدا حداقل یک ماده غذایی به بشقاب اضافه کنید.");
+                return;
+            }
+
+            let totalCal = 0, totalPro = 0, totalCarb = 0, totalFat = 0;
+
+            currentMealItems.forEach(item => {
+                let ratio = item.weight / 100;
+                totalCal += item.info.calPer100 * ratio;
+                totalPro += item.info.proPer100 * ratio;
+                totalCarb += item.info.carbPer100 * ratio;
+                totalFat += item.info.fatPer100 * ratio;
+            });
+
+            document.getElementById('resMealCalories').innerText = Math.round(totalCal) + " kcal";
+            document.getElementById('resMealProtein').innerText = Math.round(totalPro) + " g";
+            document.getElementById('resMealCarbs').innerText = Math.round(totalCarb) + " g";
+            document.getElementById('resMealFat').innerText = Math.round(totalFat) + " g";
+
+            document.getElementById('resMealBreakdown').innerHTML = `
+                • محاسبه دقیق بر اساس وزن گرمی اقلام ثبت شده انجام شد.<br>
+                • سهم پروتئین این وعده <b>${Math.round(totalPro)} گرم</b> است که برای ریکاوری و سنتز عضلانی بسیار مناسب می‌باشد.
+            `;
+
+            document.getElementById('elitePlateResult').style.display = 'block';
+        }
+
+        // Detailed Blood Markers with Exact Medical Info for (i) buttons
         const bloodMarkers = [
-            { id: "Hgb", cat: "General", name: "Hemoglobin (HGB)", unit: "g/dL", min: 13.5, max: 17.5, desc: "Measures oxygen-carrying protein in red blood cells." },
-            { id: "Hct", cat: "General", name: "Hematocrit (HCT)", unit: "%", min: 41.0, max: 50.0, desc: "Percentage of red blood cells in total blood volume." },
-            { id: "Wbc", cat: "General", name: "White Blood Cells (WBC)", unit: "10^3/uL", min: 4.5, max: 11.0, desc: "Core component of immune defense." },
-            { id: "Plt", cat: "General", name: "Platelets (PLT)", unit: "k/uL", min: 150, max: 450, desc: "Responsible for blood clotting and vascular repair." },
-            { id: "Glucose", cat: "General", name: "Fasting Glucose", unit: "mg/dL", min: 70, max: 99, desc: "Measures blood sugar levels after overnight fasting." },
+            { id: "Hgb", cat: "General", name: "Hemoglobin (HGB)", unit: "g/dL", min: 13.5, max: 17.5, desc: "هموگلوبین پروتئین غنی از آهن در گلبول‌های قرمز است که وظیفه انتقال اکسیژن از ریه‌ها به بافت‌ها و عضلات را بر عهده دارد. مقادیر پایین آن باعث افت شدید استقامت هوازی، خستگی مزمن و کاهش اکسیژن‌رسانی به عضله می‌شود." },
+            { id: "Hct", cat: "General", name: "Hematocrit (HCT)", unit: "%", min: 41.0, max: 50.0, desc: "هماتوکریت درصد حجم خون را که از گلبول‌های قرمز تشکیل شده نشان می‌دهد. مقادیر بسیار بالا خطر غلظت خون و فشار قلبی را به همراه دارد و مقادیر پایین نشان‌دهنده کم‌خونی است." },
+            { id: "Wbc", cat: "General", name: "White Blood Cells (WBC)", unit: "10^3/uL", min: 4.5, max: 11.0, desc: "گلبول‌های سفید هسته اصلی سیستم ایمنی بدن در برابر عفونت‌ها و التهاب‌ها هستند. تمرینات فوق‌سنگین و زدودن التهاب عضلانی می‌تواند نوسانات موقتی در این فاکتور ایجاد کند." },
+            { id: "Plt", cat: "General", name: "Platelets (PLT)", unit: "k/uL", min: 150, max: 450, desc: "پلاکت‌ها مسئول اصلی انعقاد خون و ترمیم دیواره عروق آسیب‌دیده هستند که در هنگام صدمات و پارگی‌های بافتی نقش حیاتی دارند." },
+            { id: "Glucose", cat: "General", name: "Fasting Glucose", unit: "mg/dL", min: 70, max: 99, desc: "قند خون ناشتا میزان گلوکز آزاد در گردش خون پس از حداقل ۸ ساعت ناشتایی را می‌سنجد که شاخص کلیدی در تامین انرژی گلیکوژن و حساسیت به انسولین است." },
 
-            { id: "Alt", cat: "Organ", name: "ALT Liver Enzyme", unit: "U/L", min: 0, max: 44, desc: "Primary hepatic enzyme." },
-            { id: "Ast", cat: "Organ", name: "AST Liver Enzyme", unit: "U/L", min: 0, max: 40, desc: "Enzyme found in liver and skeletal muscle." },
-            { id: "Ggt", cat: "Organ", name: "GGT Biliary Enzyme", unit: "U/L", min: 8, max: 61, desc: "Sensitive marker for bile duct and liver tissue integrity." },
-            { id: "Creat", cat: "Organ", name: "Creatinine", unit: "mg/dL", min: 0.7, max: 1.3, desc: "Waste product filtered by kidneys." },
-            { id: "Bun", cat: "Organ", name: "Blood Urea Nitrogen", unit: "mg/dL", min: 7, max: 20, desc: "Evaluates renal filtration." },
-            { id: "Cystatin", cat: "Organ", name: "Cystatin-C", unit: "mg/L", min: 0.6, max: 1.0, desc: "Precise marker of renal function." },
+            { id: "Alt", cat: "Organ", name: "ALT Liver Enzyme", unit: "U/L", min: 0, max: 44, desc: "آلانین آمینوترانسفراز (ALT) آنزیم اختصاصی کبد است. بدنسازان سنگین‌کار و مصرف‌کنندگان مکمل‌های خاص یا داروهای هورمونی باید این فاکتور را جهت پایش سلامت کبدی به دقت رصد کنند." },
+            { id: "Ast", cat: "Organ", name: "AST Liver Enzyme", unit: "U/L", min: 0, max: 40, desc: "آسپارتات آمینوترانسفراز (AST) آنزیمی است که علاوه بر کبد، در بافت عضلات اسکلتی نیز به فراوانی یافت می‌شود. پاره‌شدن فیبرهای عضلانی در تمرین سنگین می‌تواند AST را به صورت موقت بالا ببرد." },
+            { id: "Ggt", cat: "Organ", name: "GGT Biliary Enzyme", unit: "U/L", min: 8, max: 61, desc: "گاما گلوتامیل ترانسفراز (GGT) حساس‌ترین مارکر مجاری صفراوی و سلامت سلولی کبد است که مقادیر بالای آن مسمومیت‌های دارویی یا کبدی را هشدار می‌دهد." },
+            { id: "Creat", cat: "Organ", name: "Creatinine", unit: "mg/dL", min: 0.7, max: 1.3, desc: "کراتینین محصول نهایی متابولیسم کراتین در عضلات است و توسط کلیه‌ها فیلتر می‌شود. در بدنسازان به دلیل توده عضلانی بالا و مصرف مکمل کراتین، معمولاً کمی بالاتر از افراد عادی است." },
+            { id: "Bun", cat: "Organ", name: "Blood Urea Nitrogen", unit: "mg/dL", min: 7, max: 20, desc: "نیتروژن اوره خون (BUN) نشان‌دهنده میزان کارایی فیلتراسیون کلیه و وضعیت تعادل دریافت پروتئین در رژیم غذایی است." },
+            { id: "Cystatin", cat: "Organ", name: "Cystatin-C", unit: "mg/L", min: 0.6, max: 1.0, desc: "سیستاتین-سی دقیق‌ترین پروتئین برای ارزیابی عملکرد کلیوی است که برخلاف کراتینین تحت تاثیر حجم توده عضلانی ورزشکاران قرار نمی‌گیرد." },
 
-            { id: "Testo", cat: "Hormone", name: "Total Testosterone", unit: "ng/dL", min: 300, max: 1100, desc: "Main male sex hormone." },
-            { id: "Shbg", cat: "Hormone", name: "SHBG", unit: "nmol/L", min: 16, max: 55, desc: "Sex hormone-binding globulin." },
-            { id: "Estro", cat: "Hormone", name: "Estradiol (E2)", unit: "pg/mL", min: 10, max: 40, desc: "Primary estrogen." },
-            { id: "Prol", cat: "Hormone", name: "Prolactin", unit: "ng/mL", min: 2, max: 18, desc: "Pituitary hormone." },
-            { id: "Lh", cat: "Hormone", name: "Luteinizing Hormone", unit: "mIU/mL", min: 1.7, max: 8.6, desc: "Pituitary signal stimulating testosterone." },
-            { id: "Fsh", cat: "Hormone", name: "FSH", unit: "mIU/mL", min: 1.5, max: 12.4, desc: "Follicle-stimulating hormone." },
-            { id: "Fai", cat: "Hormone", name: "Free Androgen Index", unit: "%", min: 30, max: 150, desc: "Ratio estimating free testosterone." },
-            { id: "Dheas", cat: "Hormone", name: "DHEA-S", unit: "ug/dL", min: 160, max: 440, desc: "Adrenal steroid precursor." },
+            { id: "Testo", cat: "Hormone", name: "Total Testosterone", unit: "ng/dL", min: 300, max: 1100, desc: "تستسترون کل اصلی‌ترین هورمون آندروژنیک و آنابولیک در مردان است که نقش مستقیم در هایپرتروفی عضلانی، چربی‌سوزی، میل جنسی و ریکاوری عصبی-عضلانی دارد." },
+            { id: "Shbg", cat: "Hormone", name: "SHBG", unit: "nmol/L", min: 16, max: 55, desc: "گلوبولین متصل‌شونده به هورمون‌های جنسی (SHBG) به تستسترون و استروژن متصل می‌شود. میزان تستسترون آزاد و قابل‌استفاده بدن به مقدار SHBG وابسته است." },
+            { id: "Estro", cat: "Hormone", name: "Estradiol (E2)", unit: "pg/mL", min: 10, max: 40, desc: "استرادیول (E2) فرم اصلی استروژن در مردان است. مقدار متعادل آن برای سلامت مفاصل، سیستم ایمنی و تراکم استخوان حیاتی است اما مقادیر بالا باعث احتباس آب و ژنیکوماستی می‌شود." },
+            { id: "Prol", cat: "Hormone", name: "Prolactin", unit: "ng/mL", min: 2, max: 18, desc: "پرولاکتین هورمون غده هیپوفیز است که مقادیر بالای آن باعث افت میل جنسی، اختلال در نعوظ و سرکوب محور هورمونی می‌شود." },
+            { id: "Lh", cat: "Hormone", name: "Luteinizing Hormone", unit: "mIU/mL", min: 1.7, max: 8.6, desc: "هورمون لوتئینیزه‌کننده (LH) سیگنال مغزی ارسال‌شده به بیضه‌ها برای ترشح تستسترون است." },
+            { id: "Fsh", cat: "Hormone", name: "FSH", unit: "mIU/mL", min: 1.5, max: 12.4, desc: "هورمون محرک فولیکول (FSH) نقش کلیدی در اسپرم‌اتوژنز و باروری دارد." },
+            { id: "Fai", cat: "Hormone", name: "Free Androgen Index", unit: "%", min: 30, max: 150, desc: "شاخص آندروژن آزاد (FAI) تخمینی دقیق از میزان تستسترون فعال و آزاد در دسترس بافت‌های بدن است." },
+            { id: "Dheas", cat: "Hormone", name: "DHEA-S", unit: "ug/dL", min: 160, max: 440, desc: "دی‌استروئید پیش‌ساز آدرنال که در تولید هورمون‌های جنسی و مدیریت استرس نقش دارد." },
 
-            { id: "Hba1c", cat: "Metabolic", name: "HbA1c", unit: "%", min: 4.0, max: 5.6, desc: "Average blood glucose glycation index." },
-            { id: "Homair", cat: "Metabolic", name: "HOMA-IR", unit: "idx", min: 0.5, max: 1.5, desc: "Calculates insulin resistance state." },
-            { id: "Cortisol", cat: "Metabolic", name: "Cortisol", unit: "ug/dL", min: 6, max: 23, desc: "Primary catabolic stress hormone." },
-            { id: "VitD", cat: "Metabolic", name: "Vitamin D3", unit: "ng/mL", min: 30, max: 100, desc: "Crucial for bone density and strength." },
-            { id: "B12", cat: "Metabolic", name: "Vitamin B12", unit: "pg/mL", min: 200, max: 900, desc: "Vital for nerve function and energy." },
-            { id: "Folate", cat: "Metabolic", name: "Folate (B9)", unit: "ng/mL", min: 4.5, max: 30, desc: "Essential coenzyme for DNA synthesis." },
-            { id: "Ferr", cat: "Metabolic", name: "Ferritin", unit: "ng/mL", min: 30, max: 400, desc: "Intracellular iron storage protein." },
+            { id: "Hba1c", cat: "Metabolic", name: "HbA1c", unit: "%", min: 4.0, max: 5.6, desc: "هموگلوبین گلیکوزیله میانگین قند خون ۳ ماه گذشته را نشان می‌دهد و طلایی‌ترین شاخص برای بررسی عدم مقاومت به انسولین است." },
+            { id: "Homair", cat: "Metabolic", name: "HOMA-IR", unit: "idx", min: 0.5, max: 1.5, desc: "شاخص HOMA-IR مقاومت بدن به انسولین را محاسبه می‌کند. مقادیر بالا مانع چربی‌سوزی بهینه و رشد عضلانی پاک می‌شود." },
+            { id: "Cortisol", cat: "Metabolic", name: "Cortisol", unit: "ug/dL", min: 6, max: 23, desc: "کورتیزول هورمون اصلی استرس و کاتابولیک (تخریب‌کننده بافت عضلانی) است که استرس تمرینی بیش از حد آن را به شدت بالا می‌برد." },
+            { id: "VitD", cat: "Metabolic", name: "Vitamin D3", unit: "ng/mL", min: 30, max: 100, desc: "ویتامین D3 در واقع یک پروhormon حیاتی برای جذب کلسیم، تقویت سیستم ایمنی و افزایش سطح تستسترون طبیعی بدن است." },
+            { id: "B12", cat: "Metabolic", name: "Vitamin B12", unit: "pg/mL", min: 200, max: 900, desc: "ویتامین B12 (کوبالامین) برای سنتز DNA، تشکیل گلبول‌های قرمز خون، عملکرد سیستم عصبی و تولید انرژی سلولی حیاتی است. کمبود آن باعث خستگی مبرم، ضعف عضلانی، گزگز اعصاب و افت شدید عملکرد ورزشی می‌شود." },
+            { id: "Folate", cat: "Metabolic", name: "Folate (B9)", unit: "ng/mL", min: 4.5, max: 30, desc: "فولات یا ویتامین B9 کوآنزیم ضروری برای تقسیم سلولی، خون‌سازی و ترمیم بافت‌ها است." },
+            { id: "Ferr", cat: "Metabolic", name: "Ferritin", unit: "ng/mL", min: 30, max: 400, desc: "فریتین پروتئین ذخیره‌کننده آهن در سلول‌ها است. مقادیر پایین فریتین عامل اصلی خستگی زودرس در تمرینات هوازی و قدرتی است." },
 
-            { id: "Ldl", cat: "Cardio", name: "LDL Cholesterol", unit: "mg/dL", min: 0, max: 100, desc: "Atherogenic lipoprotein." },
-            { id: "Hdl", cat: "Cardio", name: "HDL Cholesterol", unit: "mg/dL", min: 40, max: 150, desc: "Cardioprotective cholesterol." },
-            { id: "Apob", cat: "Cardio", name: "Apolipoprotein B", unit: "mg/dL", min: 40, max: 90, desc: "Cardiovascular risk predictor." },
-            { id: "Hscrp", cat: "Cardio", name: "hs-CRP Inflammation", unit: "mg/L", min: 0, max: 1.0, desc: "Marker detecting inflammation." }
+            { id: "Ldl", cat: "Cardio", name: "LDL Cholesterol", unit: "mg/dL", min: 0, max: 100, desc: "کلسترول بد (LDL) مسئول انتقال چربی به دیواره عروق است که مقادیر بالای آن خطر بیماری‌های قلبی را بالا می‌برد." },
+            { id: "Hdl", cat: "Cardio", name: "HDL Cholesterol", unit: "mg/dL", min: 40, max: 150, desc: "کلسترول خوب (HDL) نقش محافظتی قلب را دارد و چربی‌های مازاد را به کبد بازمی‌گرداند. در ورزشکاران مقادیر بالا بسیار مطلوب است." },
+            { id: "Apob", cat: "Cardio", name: "Apolipoprotein B", unit: "mg/dL", min: 40, max: 90, desc: "آپولیپوپروتئین B تعداد کل ذرات پلاک‌ساز خطرناک در عروق را می‌سنجد و از LDL دقیق‌تر است." },
+            { id: "Hscrp", cat: "Cardio", name: "hs-CRP Inflammation", unit: "mg/L", min: 0, max: 1.0, desc: "پروتئین واکنش‌گر C با حساسیت بالا (hs-CRP) نشانگر التهاب سیستمیک عروقی و قلبی است." }
         ];
 
         function renderBloodInputs() {
@@ -406,20 +938,20 @@
                 div.innerHTML = `
                     <div class="input-row-flex">
                         <label>${m.name} (${m.unit})</label>
-                        <button type="button" class="info-btn" onclick="showMarkerInfo('${m.name}', '${m.min}', '${m.max}', '${m.unit}', '${m.desc}')" title="What is this?">i</button>
+                        <button type="button" class="info-btn" onclick="showMarkerInfo('${m.name}', '${m.min}', '${m.max}', '${m.unit}', '${m.desc}')" title="جزئیات پزشکی">i</button>
                     </div>
-                    <input type="number" step="any" id="val_${m.id}" placeholder="Normal: ${m.min} - ${m.max}">
+                    <input type="number" step="any" id="val_${m.id}" placeholder="نرمال: ${m.min} - ${m.max}">
                 `;
                 container.appendChild(div);
             });
         }
 
         function showMarkerInfo(name, min, max, unit, desc) {
-            alert(`📌 Test: ${name}\n📊 Normal Reference Range: ${min} - ${max} ${unit}\n\n📖 Description & Clinical Context:\n${desc}`);
+            alert(`📌 تست تخصصی: ${name}\n📊 محدوده مرجع نرمال: ${min} - ${max} ${unit}\n\n📖 اطلاعات بالینی و ورزشی دقیق:\n${desc}`);
         }
 
         function processBloodAnalysis() {
-            const name = document.getElementById('etUserName').value.trim() || "Patient / بیمار";
+            const name = document.getElementById('etUserName').value.trim() || "بیمار / کاربر";
             const age = document.getElementById('etUserAge').value || "--";
             const gender = document.getElementById('spinnerUserGender').value;
             const resBox = document.getElementById('bloodResultContainer');
@@ -430,40 +962,59 @@
                 if (valStr !== "") {
                     const val = parseFloat(valStr);
                     let color = "#000000";
-                    let status = "Normal";
-                    if (val > m.max) { color = "#d32f2f"; status = "High (بالا)"; }
-                    else if (val < m.min) { color = "#1976d2"; status = "Low (پایین)"; }
-                    rows += `<div class="metric-row"><span><b>${m.name}:</b></span><span style="color:${color}; font-weight:bold;">${val} ${m.unit} [${status}] (Ref: ${m.min}-${m.max})</span></div>`;
+                    let status = "نرمال (Normal)";
+                    if (val > m.max) { color = "#d32f2f; font-weight:bold;"; status = "بالا (High)"; }
+                    else if (val < m.min) { color = "#1976d2; font-weight:bold;"; status = "پایین (Low)"; }
+                    rows += `<div class="metric-row"><span><b>${m.name}:</b></span><span style="color:${color}">${val} ${m.unit} [${status}] (رنج: ${m.min}-${m.max})</span></div>`;
                 }
             });
 
             resBox.style.display = 'block';
             resBox.innerHTML = `
                 <div style="font-size:20px; font-weight:bold; margin-bottom:5px;">FITNESS PRO CLINICAL SUITE</div>
-                <div style="font-size:12px; color:#555; margin-bottom:15px;">Biomedical Blood Analysis Report</div>
+                <div style="font-size:12px; color:#555; margin-bottom:15px;">گزارش جامع آنالیز بیومتریک خون[cite: 3]</div>
                 <hr style="border-color:#000;">
-                <p><b>Patient Name:</b> ${name} | <b>Age:</b> ${age} | <b>Gender:</b> ${gender}</p>
-                <p style="font-size:11px; color:#d32f2f; background:#ffebee; padding:6px; border-radius:4px;"><b>Disclaimer:</b> Informational tracker only.</p>
+                <p><b>نام بیمار:</b> ${name} | <b>سن:</b> ${age} | <b>جنسیت:</b> ${gender}</p>
+                <p style="font-size:11px; color:#d32f2f; background:#ffebee; padding:6px; border-radius:4px;"><b>سلب مسئولیت:</b> این گزارش صرفاً جهت پایش ورزشی است[cite: 3].</p>
                 <hr style="border-color:#ccc;">
-                ${rows || '<p>No markers entered.</p>'}
+                ${rows || '<p>هیچ فاکتوری وارد نشده است.</p>'}
             `;
             document.getElementById('btnSaveImage').style.display = 'block';
         }
 
+        // Fixed Lab Requisition Protocol Generator
         function generatePrescriptionSlip() {
-            const name = document.getElementById('etRxName').value.trim() || "Patient / بیمار";
+            const name = document.getElementById('etRxName').value.trim() || "بیمار / کاربر";
             const age = document.getElementById('etRxAge').value || "--";
             const gender = document.getElementById('spinnerRxGender').value;
+            const protocolIndex = document.getElementById('spinnerTestType').value;
             const resBox = document.getElementById('prescriptionResultContainer');
+
+            const protocols = [
+                { title: "1. چکاپ جامع بدنسازی و متابولیک", tests: "CBC, Fasting Glucose, HbA1c, AST, ALT, GGT, Creatinine, BUN, Lipid Profile (LDL, HDL, Triglycerides), Total Testosterone, TSH" },
+                { title: "2. آنالیز تخصصی هورمون‌های جنسی و باروری", tests: "Total Testosterone, Free Testosterone, SHBG, Estradiol (E2), Prolactin, LH, FSH, DHEA-S" },
+                { title: "3. ارزیابی پیشرفته کبد، کلیه و الکترولیت‌ها", tests: "AST, ALT, GGT, Bilirubin (Total/Direct), Creatinine, BUN, Cystatin-C, Uric Acid, Sodium, Potassium" },
+                { title: "4. پنل سلامت قلب و عروق و التهاب", tests: "Lipid Profile, Apolipoprotein B (ApoB), Lipoprotein(a), hs-CRP, Homocysteine" },
+                { title: "5. غده تیروئید و نرخ متابولیسم", tests: "TSH, Free T3, Free T4, Anti-TPO" },
+                { title: "6. پنل مواد مغذی، ویتامین‌ها و املاح", tests: "Vitamin D3, Vitamin B12, Folate (B9), Ferritin, Serum Iron, TIBC, Zinc, Magnesium" },
+                { title: "7. مدیریت قند، انسولین و مقاومت متابولیک", tests: "Fasting Glucose, Fasting Insulin, HbA1c, HOMA-IR Index" },
+                { title: "8. فاکتورهای ریکاوری، استرس و التهاب بافتی", tests: "Cortisol (Morning), hs-CRP, Creatine Kinase (CK), ESR" }
+            ];
+
+            const selectedProtocol = protocols[protocolIndex];
 
             resBox.style.display = 'block';
             resBox.innerHTML = `
                 <div style="font-size:20px; font-weight:bold; margin-bottom:5px;">FITNESS PRO CLINICAL SUITE</div>
-                <div style="font-size:12px; color:#555; margin-bottom:15px;">Official Laboratory Requisition Slip</div>
+                <div style="font-size:12px; color:#555; margin-bottom:15px;">برگه رسمی درخواست آزمایشگاه بالینی[cite: 3]</div>
                 <hr style="border-color:#000;">
-                <p><b>PATIENT NAME:</b> ${name.toUpperCase()} | <b>AGE:</b> ${age} | <b>SEX:</b> ${gender.toUpperCase()}</p>
-                <div style="text-align:right; margin-top:30px;">
-                    <div style="display:inline-block; border-top:1px solid #000; padding-top:4px; font-size:11px;">Physician / Coach Signature</div>
+                <p><b>نام بیمار:</b> ${name.toUpperCase()} | <b>سن:</b> ${age} | <b>جنسیت:</b> ${gender.toUpperCase()}</p>
+                <p><b>پروتکل انتخابی:</b> ${selectedProtocol.title}</p>
+                <div style="background:#f9f9f9; border:1px solid #ddd; padding:10px; border-radius:6px; margin-top:10px; font-size:13px;">
+                    <b>تست‌های درخواستی:</b><br>${selectedProtocol.tests}
+                </div>
+                <div style="text-align:right; margin-top:40px;">
+                    <div style="display:inline-block; border-top:1px solid #000; padding-top:4px; font-size:11px;">مهر و امضای پزشک / مربی متخصص</div>
                 </div>
             `;
             document.getElementById('btnSavePrescriptionImage').style.display = 'block';
@@ -471,7 +1022,7 @@
 
         function saveCardAsImage(elementId, filename) {
             const el = document.getElementById(elementId);
-            html2canvas(el, { backgroundColor: '#ffffff' }).then(canvas => {
+            html2canvas(el, { backgroundColor: '#181822' }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = filename;
                 link.href = canvas.toDataURL('image/png');

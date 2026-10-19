@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro - User Account & Custom Plans</title>
+    <title>Fitness Pro - User Account & Elite Biometrics</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #121212;
             --card-bg: #1e1e1e;
+            --card-inner: #161616;
             --accent: #ff9800;
+            --success: #00e676;
             --danger: #f44336;
             --text-main: #ffffff;
             --text-muted: #b0b0b0;
@@ -53,7 +55,7 @@
         }
         .top-btn:hover { background: var(--accent); color: #000; }
         .container {
-            max-width: 1000px;
+            max-width: 1050px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -66,6 +68,35 @@
             border: 1px solid var(--border);
         }
         .card h2 { color: var(--accent); margin-top: 0; }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+        input, select {
+            padding: 10px;
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            width: 100%;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
         button.action-btn {
             background: #4caf50;
             color: white;
@@ -76,6 +107,7 @@
             font-weight: bold;
             width: 100%;
             font-family: 'Vazirmatn', sans-serif;
+            margin-top: 15px;
         }
         .badge {
             display: inline-block;
@@ -85,20 +117,144 @@
             font-weight: bold;
         }
         .routine-box {
-            background: #161616;
+            background: var(--card-inner);
             border: 1px solid var(--accent);
             padding: 15px;
             border-radius: 8px;
             margin-top: 15px;
         }
         .routine-box h3 { color: #4caf50; margin-top: 0; }
+
+        /* PROFILE PHOTO & AVATAR UPLOAD */
+        .profile-header-flex {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .avatar-preview-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--card-inner);
+            border: 2px solid var(--accent);
+            object-fit: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .avatar-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ELITE DASHBOARD MATRIX VISUAL PANEL */
+        .elite-dashboard-panel {
+            background: linear-gradient(135deg, #181822 0%, #111116 100%);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .matrix-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .matrix-card {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .matrix-card span {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .matrix-card b {
+            font-size: 16px;
+            color: var(--success);
+            margin: 6px 0;
+            display: block;
+        }
+        .matrix-card small {
+            font-size: 10px;
+            color: var(--accent);
+        }
+
+        /* MACRO BREAKDOWN & AI ADVICE ROW */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .insight-box {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .insight-box h4 {
+            color: var(--accent);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 14px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 6px;
+        }
+        .macro-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+            background: #121215;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .stat-badge {
+            background: var(--card-inner);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .stat-badge span { display: block; font-size: 11px; color: var(--text-muted); }
+        .stat-badge b { font-size: 15px; color: var(--success); margin-top: 4px; display: block; }
+
+        @media(max-width: 850px) {
+            .form-grid, .matrix-grid, .insights-grid, .stats-grid { grid-template-columns: 1fr; }
+            .profile-header-flex { flex-direction: column; align-items: flex-start; }
+        }
     </style>
 
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAilAXYxno9aywWxqy7ji52Dq-xvneKf5U",
@@ -115,7 +271,7 @@
         const db = getFirestore(app);
 
         let currentUser = null;
-        let currentLang = 'en';
+        let currentLang = 'fa'; // Default to Farsi
 
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
@@ -133,18 +289,33 @@
 
         async function loadUserData(uid, email) {
             try {
-                // Load membership info
                 const userSnap = await getDoc(doc(db, "users", uid));
                 if (userSnap.exists()) {
                     const data = userSnap.data();
                     const isProActive = data.isPro && (!data.proExpiresAt || new Date(data.proExpiresAt) > new Date());
                     const statusBadge = document.getElementById('membershipBadge');
-                    statusBadge.innerText = isProActive ? 'PRO MEMBER' : 'FREE USER';
+                    statusBadge.innerText = isProActive ? 'عضو ویژه (PRO)' : 'کاربر عادی';
                     statusBadge.style.background = isProActive ? '#1a3a2a' : '#3a2a1a';
                     statusBadge.style.color = isProActive ? '#4caf50' : '#ff9800';
+
+                    if(data.weight) document.getElementById('profWeight').value = data.weight;
+                    if(data.height) document.getElementById('profHeight').value = data.height;
+                    if(data.age) document.getElementById('profAge').value = data.age;
+                    if(data.sex) document.getElementById('profSex').value = data.sex;
+                    if(data.bodyFat) document.getElementById('profFat').value = data.bodyFat;
+                    if(data.bodyType) document.getElementById('profBodyType').value = data.bodyType;
+                    if(data.bloodType) document.getElementById('profBloodType').value = data.bloodType;
+                    if(data.goal) document.getElementById('profGoal').value = data.goal;
+
+                    if(data.photoUrl) {
+                        document.getElementById('avatarImg').src = data.photoUrl;
+                        document.getElementById('avatarPlaceholder').style.display = 'none';
+                        document.getElementById('avatarImg').style.display = 'block';
+                    }
+
+                    calculateAdvancedMetrics(data);
                 }
 
-                // Load custom trainer routines assigned to this user's email
                 const programsSnap = await getDocs(collection(db, "trainer_programs"));
                 const routinesContainer = document.getElementById('assignedRoutinesContainer');
                 let html = '';
@@ -155,7 +326,7 @@
                         html += `
                             <div class="routine-box">
                                 <h3>${prog.title}</h3>
-                                <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;"><b>Trainer:</b> ${prog.trainerEmail}</p>
+                                <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;"><b>مربی:</b> ${prog.trainerEmail}</p>
                                 <hr style="border:0; border-top:1px solid #333; margin:8px 0;">
                                 <p style="white-space: pre-line; line-height:1.6; font-size:14px;">${prog.details}</p>
                             </div>
@@ -163,31 +334,130 @@
                     }
                 });
 
-                routinesContainer.innerHTML = html || `<p style="color:var(--text-muted); text-align:center;">No custom routines assigned yet. Purchase a plan from the Trainers Marketplace to get started!</p>`;
+                routinesContainer.innerHTML = html || `<p style="color:var(--text-muted); text-align:center;">هنوز برنامه اختصاصی برای شما ثبت نشده است.</p>`;
             } catch(e) {
                 console.error(e);
             }
         }
 
-        window.toggleLang = () => {
-            currentLang = currentLang === 'en' ? 'fa' : 'en';
-            const root = document.getElementById('accountRoot');
-            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
-            root.setAttribute('lang', currentLang);
+        window.handlePhotoUpload = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Img = e.target.result;
+                document.getElementById('avatarImg').src = base64Img;
+                document.getElementById('avatarPlaceholder').style.display = 'none';
+                document.getElementById('avatarImg').style.display = 'block';
+                window.tempPhotoUrl = base64Img;
+            };
+            reader.readAsDataURL(file);
+        };
 
-            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'English / EN' : 'فارسی / FA';
-            document.getElementById('homeLink').innerText = currentLang === 'fa' ? '🏠 خانه / Home' : '🏠 Home / خانه';
-            document.getElementById('mainTitle').innerText = currentLang === 'fa' ? 'حساب کاربری و برنامه‌های من' : 'My Account & Custom Plans';
-            document.getElementById('mainSub').innerText = currentLang === 'fa' ? 'مشاهده برنامه‌های اختصاصی مربی و وضعیت عضویت' : 'View your assigned trainer routines and membership status';
-            
-            document.getElementById('profileTitle').innerText = currentLang === 'fa' ? 'اطلاعات حساب کاربری' : 'Account Profile';
-            document.getElementById('plansTitle').innerText = currentLang === 'fa' ? 'برنامه‌های تمرینی و تغذیه اختصاصی مربی' : 'Assigned Trainer Workout & Nutrition Plans';
-            document.getElementById('signOutBtn').innerText = currentLang === 'fa' ? 'خروج از حساب' : 'Sign Out';
+        function calculateAdvancedMetrics(data) {
+            const weight = parseFloat(data.weight) || 0;
+            const height = parseFloat(data.height) || 0;
+            const age = parseFloat(data.age) || 0;
+            const sex = data.sex || 'male';
+            const bodyFat = parseFloat(data.bodyFat) || 15;
+            const goal = data.goal || 'maintenance';
+            const bodyType = data.bodyType || 'mesomorph';
+            const bloodType = data.bloodType || 'O+';
+
+            if (weight > 0 && height > 0 && age > 0) {
+                const heightM = height / 100;
+                const bmi = (weight / (heightM * heightM)).toFixed(1);
+                const fatMass = (weight * (bodyFat / 100)).toFixed(1);
+                const leanMass = (weight - fatMass).toFixed(1);
+
+                let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+                bmr = sex === 'female' ? bmr - 161 : bmr + 5;
+                let tdee = Math.round(bmr * 1.55);
+
+                let targetCalories = tdee;
+                let goalText = "ثبات وزن";
+                if (goal === 'bulking') {
+                    targetCalories += 400;
+                    goalText = "مازاد کالری (حجم عضلانی)";
+                } else if (goal === 'cutting') {
+                    targetCalories -= 500;
+                    goalText = "کسر کالری (کات و چربی‌سوزی)";
+                }
+
+                const waterLiters = (weight * 0.033).toFixed(1);
+
+                const proteinGrams = Math.round(weight * 2.0);
+                const fatGrams = Math.round(weight * 0.9);
+                const proteinCals = proteinGrams * 4;
+                const fatCals = fatGrams * 9;
+                const carbCals = Math.max(0, targetCalories - (proteinCals + fatCals));
+                const carbGrams = Math.round(carbCals / 4);
+
+                document.getElementById('matrixLean').innerText = leanMass + " کیلوگرم";
+                document.getElementById('matrixFatMass').innerText = fatMass + " کیلوگرم";
+                document.getElementById('matrixBmi').innerText = bmi;
+                document.getElementById('matrixBmiStatus').innerText = bmi < 18.5 ? 'کم‌وزن' : (bmi < 25 ? 'وزن نرمال' : (bmi < 30 ? 'اضافه وزن' : 'چاق'));
+                document.getElementById('matrixWater').innerText = waterLiters + " لیتر";
+                document.getElementById('matrixBmr').innerText = Math.round(bmr) + " کیلوکالری";
+                document.getElementById('matrixTdee').innerText = tdee + " کیلوکالری";
+                document.getElementById('matrixTargetCal').innerText = targetCalories + " کیلوکالری";
+                document.getElementById('matrixGoalLabel').innerText = goalText;
+
+                document.getElementById('resBmi').innerText = bmi;
+                document.getElementById('resLeanMass').innerText = leanMass + " kg";
+                document.getElementById('resBmr').innerText = Math.round(bmr) + " kcal";
+                document.getElementById('resTdee').innerText = tdee + " kcal";
+                document.getElementById('resTargetCal').innerText = targetCalories + " kcal";
+                document.getElementById('resWater').innerText = waterLiters + " L";
+
+                document.getElementById('macroProtein').innerText = proteinGrams + " گرم (" + proteinCals + " کالری)";
+                document.getElementById('macroCarb').innerText = carbGrams + " گرم (" + carbCals + " کالری)";
+                document.getElementById('macroFat').innerText = fatGrams + " گرم (" + fatCals + " کالری)";
+
+                let somatotypeText = bodyType === 'ectomorph' ? 'اکتومورف (نیازمند کالری بالا و کربوهیدرات بیشتر)' : (bodyType === 'mesomorph' ? 'مزومورف (پاسخ‌دهی عالی به تمرینات و ساختار عضلانی مناسب)' : 'اندومورف (نیازمند مدیریت کربوهیدرات و هوازی منظم)');
+                let bloodText = bloodType.startsWith('O') ? 'گروه خونی O: سازگار با پروتئین‌های حیوانی و رژیم‌های کم‌غله' : 'گروه خونی A/B/AB: سازگار با پروتئین‌های گیاهی و رژیم‌های متعادل‌تر';
+                
+                document.getElementById('aiSomatotypeAdvice').innerText = somatotypeText;
+                document.getElementById('aiBloodAdvice').innerText = bloodText;
+            }
+        }
+
+        window.saveAdvancedProfile = async () => {
+            if(!currentUser) return;
+            const weight = parseFloat(document.getElementById('profWeight').value) || null;
+            const height = parseFloat(document.getElementById('profHeight').value) || null;
+            const age = parseInt(document.getElementById('profAge').value) || null;
+            const sex = document.getElementById('profSex').value;
+            const bodyFat = parseFloat(document.getElementById('profFat').value) || null;
+            const bodyType = document.getElementById('profBodyType').value;
+            const bloodType = document.getElementById('profBloodType').value;
+            const goal = document.getElementById('profGoal').value;
+
+            const profileData = { 
+                weight, 
+                height, 
+                age, 
+                sex, 
+                bodyFat, 
+                bodyType, 
+                bloodType, 
+                goal,
+                photoUrl: window.tempPhotoUrl || document.getElementById('avatarImg').src || ""
+            };
+
+            try {
+                const userRef = doc(db, "users", currentUser.uid);
+                await setDoc(userRef, profileData, { merge: true });
+                calculateAdvancedMetrics(profileData);
+                alert('اطلاعات بیومتریک، تصویر پروفایل و گراف تحلیل حرفه‌ای با موفقیت ذخیره شد!');
+            } catch(err) {
+                alert("خطا در ذخیره اطلاعات: " + err.message);
+            }
         };
 
         window.signOutUser = () => {
             signOut(auth).then(() => {
-                alert(currentLang === 'fa' ? 'با موفقیت خارج شدید.' : 'Signed out successfully.');
+                alert('با موفقیت خارج شدید.');
                 window.location.href = 'index.html';
             });
         };
@@ -197,40 +467,221 @@
 
     <header>
         <div class="top-controls">
-            <a href="index.html" class="top-btn" id="homeLink">🏠 Home / خانه</a>
-            <button class="top-btn" onclick="toggleLang()" id="langBtn">فارسی / FA</button>
+            <a href="index.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
+            <button class="top-btn" onclick="window.location.reload()">فارسی / FA</button>
         </div>
-        <h1 id="mainTitle">My Account & Custom Plans</h1>
-        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">View your assigned trainer routines and membership status</p>
+        <h1 id="mainTitle">حساب کاربری و داشبورد حرفه‌ای بیومتریک</h1>
+        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">آنالیز کامل ترکیب بدنی، تصویر پروفایل، محاسبات هوشمند ماکروها و وضعیت سلامت</p>
     </header>
 
     <div class="container">
 
         <!-- LOGGED OUT NOTICE -->
         <div id="loggedOutView" class="card" style="text-align:center; padding:40px;">
-            <h2 style="color:var(--danger);">Please Sign In</h2>
-            <p style="color:var(--text-muted); margin-bottom:20px;">You must be signed in to your Fitness Pro account to view your profile and assigned trainer plans.</p>
-            <a href="index.html" class="action-btn" style="display:inline-block; text-decoration:none; max-width:200px;">Go to Home & Sign In</a>
+            <h2 style="color:var(--danger);">لطفاً وارد حساب کاربری خود شوید</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;">برای مشاهده پروفایل و برنامه‌های تمرینی باید وارد حساب کاربری فیتنس پرو شوید.</p>
+            <a href="index.html" class="action-btn" style="display:inline-block; text-decoration:none; max-width:200px;">بازگشت به صفحه اصلی</a>
         </div>
 
         <!-- LOGGED IN DASHBOARD -->
         <div id="loggedInView" style="display:none; display:flex; flex-direction:column; gap:25px;">
             
-            <!-- Profile Card -->
+            <!-- Profile Card with Photo Upload -->
             <div class="card">
-                <h2 id="profileTitle">Account Profile</h2>
-                <p><b>Email:</b> <span id="userEmailDisplay" style="color:var(--accent);"></span></p>
-                <p><b>Membership Status:</b> <span id="membershipBadge" class="badge">LOADING...</span></p>
-                <button class="action-btn" style="background:var(--danger); margin-top:15px; max-width:200px;" onclick="signOutUser()" id="signOutBtn">Sign Out</button>
+                <h2 id="profileTitle">اطلاعات حساب کاربری و تصویر پروفایل</h2>
+                
+                <div class="profile-header-flex">
+                    <div class="avatar-preview-box">
+                        <span id="avatarPlaceholder" style="font-size:11px; color:var(--text-muted); text-align:center;">بدون تصویر</span>
+                        <img id="avatarImg" src="" alt="Profile Photo" style="display:none;">
+                    </div>
+                    <div style="flex-grow:1;">
+                        <p style="margin:0 0 8px 0;"><b>ایمیل:</b> <span id="userEmailDisplay" style="color:var(--accent);"></span></p>
+                        <p style="margin:0 0 12px 0;"><b>وضعیت اشتراک:</b> <span id="membershipBadge" class="badge">در حال بارگذاری...</span></p>
+                        <div class="form-group" style="max-width:300px;">
+                            <label>آپلود یا تغییر تصویر پروفایل:</label>
+                            <input type="file" accept="image/*" onchange="handlePhotoUpload(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="action-btn" style="background:var(--danger); margin-top:15px; max-width:200px;" onclick="signOutUser()" id="signOutBtn">خروج از حساب</button>
+            </div>
+
+            <!-- Advanced Biometrics Form & Elite Matrix Card -->
+            <div class="card">
+                <h2 id="biometricsTitle">📊 مشخصات بدنی و داشبورد تحلیل پیشرفته</h2>
+                <p style="font-size:13px; color:var(--text-muted);">اطلاعات دقیق خود را وارد کنید تا وضعیت توده عضلانی، متابولیسم، ماکروهای پیشنهادی و توصیه‌های هوشمند نمایش داده شوند.</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>وزن (کیلوگرم)</label>
+                        <input type="number" id="profWeight" placeholder="مثال: 75" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>قد (سانتی‌متر)</label>
+                        <input type="number" id="profHeight" placeholder="مثال: 180">
+                    </div>
+                    <div class="form-group">
+                        <label>سن (سال)</label>
+                        <input type="number" id="profAge" placeholder="مثال: 25">
+                    </div>
+                    <div class="form-group">
+                        <label>جنسیت</label>
+                        <select id="profSex">
+                            <option value="male">مرد (Male)</option>
+                            <option value="female">زن (Female)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>درصد چربی بدن (%)</label>
+                        <input type="number" id="profFat" placeholder="مثال: 14" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>هدف اصلی تمرین</label>
+                        <select id="profGoal">
+                            <option value="bulking">افزایش حجم عضله (Bulking)</option>
+                            <option value="cutting">کاهش چربی و کات (Cutting)</option>
+                            <option value="maintenance">ثبات و ریکاوری (Maintenance)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>تیپ بدنی (Somatotype)</label>
+                        <select id="profBodyType">
+                            <option value="ectomorph">اکتومورف (لاغراندام و سخت‌رشد)</option>
+                            <option value="mesomorph">مزومورف (ورزشی و عضلانی)</option>
+                            <option value="endomorph">اندومورف (چربی‌پذیر و درشت)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>گروه خونی (تغذیه)</label>
+                        <select id="profBloodType">
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ELITE DASHBOARD MATRIX PANEL -->
+                <div class="elite-dashboard-panel">
+                    <div class="matrix-header">
+                        <b style="color:var(--accent); font-size:15px;">دیتا سنتر و وضعیت آنالیز پیشرفته بدن</b>
+                        <span class="badge" style="background:#222; color:var(--success);">بروزرسانی زنده</span>
+                    </div>
+
+                    <div class="matrix-grid">
+                        <div class="matrix-card">
+                            <span>توده عضلانی خالص</span>
+                            <b id="matrixLean">-- kg</b>
+                            <small>عضله بدون چربی</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>جرم توده چربی</span>
+                            <b id="matrixFatMass" style="color:#ff5722;">-- kg</b>
+                            <small>حجم کل چربی بدن</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>شاخص توده بدنی (BMI)</span>
+                            <b id="matrixBmi">--</b>
+                            <small id="matrixBmiStatus">محاسبه نشده</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>نیاز روزانه به آب</span>
+                            <b id="matrixWater" style="color:#64b5f6;">-- L</b>
+                            <small>هیدراتاسیون مطلوب</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>متابولیسم پایه (BMR)</span>
+                            <b id="matrixBmr">-- kcal</b>
+                            <small>کالری استراحت مطلق</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>مصرف روزانه (TDEE)</span>
+                            <b id="matrixTdee">-- kcal</b>
+                            <small>کل کالری مصرفی روزانه</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>کالری هدف هدفمند</span>
+                            <b id="matrixTargetCal" style="color:var(--accent);">-- kcal</b>
+                            <small id="matrixGoalLabel">تعیین‌شده بر اساس هدف</small>
+                        </div>
+                        <div class="matrix-card">
+                            <span>وضعیت سیستم ایمنی</span>
+                            <b style="color:var(--success);">بهینه</b>
+                            <small>سازگار با گروه خونی</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MACROS & AI INSIGHTS ROW -->
+                <div class="insights-grid">
+                    <div class="insight-box">
+                        <h4>🎯 پیشنهاد تفکیک درشت‌مغذی‌ها (Macros)</h4>
+                        <div class="macro-row">
+                            <span>پروتئین خالص (عضله‌سازی):</span>
+                            <b id="macroProtein" style="color:var(--success);">-- گرم</b>
+                        </div>
+                        <div class="macro-row">
+                            <span>کربوهیدرات (انرژی تمرین):</span>
+                            <b id="macroCarb" style="color:var(--accent);">-- گرم</b>
+                        </div>
+                        <div class="macro-row">
+                            <span>چربی‌های سالم (هورمون‌ها):</span>
+                            <b id="macroFat" style="color:#64b5f6;">-- گرم</b>
+                        </div>
+                    </div>
+
+                    <div class="insight-box">
+                        <h4>💡 توصیه‌های هوشمند بر اساس تیپ و خون</h4>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;"><b>تیپ بدنی:</b> <span id="aiSomatotypeAdvice" style="color:#fff;">هنوز محاسبه نشده است.</span></p>
+                        <p style="font-size:12px; color:var(--text-muted); margin:0;"><b>تغذیه گروه خونی:</b> <span id="aiBloodAdvice" style="color:#fff;">هنوز محاسبه نشده است.</span></p>
+                    </div>
+                </div>
+
+                <!-- CALCULATED METRICS SUMMARY GRID -->
+                <div class="stats-grid">
+                    <div class="stat-badge">
+                        <span>شاخص توده بدنی (BMI)</span>
+                        <b id="resBmi">--</b>
+                    </div>
+                    <div class="stat-badge">
+                        <span>توده بدون چربی (Lean Mass)</span>
+                        <b id="resLeanMass">-- kg</b>
+                    </div>
+                    <div class="stat-badge">
+                        <span>متابولیسم پایه (BMR)</span>
+                        <b id="resBmr">-- kcal</b>
+                    </div>
+                    <div class="stat-badge">
+                        <span>مجموع مصرف روزانه (TDEE)</span>
+                        <b id="resTdee">-- kcal</b>
+                    </div>
+                    <div class="stat-badge">
+                        <span>کالری هدف بر اساس هدف</span>
+                        <b id="resTargetCal" style="color:var(--accent);">-- kcal</b>
+                    </div>
+                    <div class="stat-badge">
+                        <span>نیاز روزانه به آب</span>
+                        <b id="resWater" style="color:#64b5f6;">-- L</b>
+                    </div>
+                </div>
+
+                <button class="action-btn" style="background:#34d399; color:#000;" onclick="window.saveAdvancedProfile()"><span>ذخیره مشخصات و بروزرسانی داشبورد</span></button>
             </div>
 
             <!-- Assigned Trainer Routines Card -->
             <div class="card">
-                <h2 id="plansTitle">Assigned Trainer Workout & Nutrition Plans</h2>
-                <p style="font-size:13px; color:var(--text-muted);">Here are the custom workout and diet routines published specifically for you by your certified trainers.</p>
+                <h2 id="plansTitle">برنامه‌های تمرینی و تغذیه اختصاصی مربی</h2>
+                <p style="font-size:13px; color:var(--text-muted);">برنامه‌های تخصصی تمرین و رژیم غذایی که مربیان شما به صورت اختصاصی ثبت کرده‌اند در این بخش نمایش داده می‌شود.</p>
                 
                 <div id="assignedRoutinesContainer">
-                    <p style="color:var(--text-muted); text-align:center;">Loading routines...</p>
+                    <p style="color:var(--text-muted); text-align:center;">در حال بارگذاری برنامه‌ها...</p>
                 </div>
             </div>
 
