@@ -34,6 +34,11 @@
             padding: 0;
             display: flex;
             min-height: 100vh;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+        * {
+            box-sizing: border-box;
         }
 
         /* SIDEBAR NAVIGATION (DESKTOP) */
@@ -44,12 +49,11 @@
             display: flex;
             flex-direction: column;
             padding: 20px 15px;
-            gap: 15px;
+            gap: 12px;
             position: sticky;
             top: 0;
             height: 100vh;
             overflow-y: auto;
-            box-sizing: border-box;
             flex-shrink: 0;
         }
         .sidebar-logo {
@@ -57,7 +61,7 @@
             font-weight: bold;
             color: var(--accent);
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 12px;
         }
@@ -87,6 +91,7 @@
             text-align: left;
             display: block;
             font-family: 'Vazirmatn', sans-serif;
+            width: 100%;
         }
         [dir="rtl"] .tab-btn {
             text-align: right;
@@ -97,12 +102,55 @@
             border-color: var(--accent);
         }
 
+        /* Dropdown Sub-menu for Science & Reference Library */
+        .dropdown-container {
+            position: relative;
+            width: 100%;
+        }
+        .dropdown-btn {
+            background: #1a2b3c;
+            color: #64b5f6;
+            border: 1px solid #64b5f6;
+        }
+        .dropdown-menu {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: #121824;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #2a3a50;
+            margin-top: 6px;
+        }
+        .dropdown-container.open .dropdown-menu {
+            display: flex;
+        }
+        .sub-link {
+            background: #182230;
+            color: #93c5fd;
+            border: 1px solid #2a3a50;
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-decoration: none;
+            display: block;
+            transition: 0.2s;
+            text-align: left;
+        }
+        [dir="rtl"] .sub-link {
+            text-align: right;
+        }
+        .sub-link:hover {
+            background: #64b5f6;
+            color: #000;
+        }
+
         /* MAIN CONTENT AREA */
         main.app-main {
             flex-grow: 1;
             padding: 20px;
-            max-width: calc(100vw - 260px);
-            box-sizing: border-box;
+            width: calc(100% - 260px);
+            max-width: calc(100% - 260px);
             overflow-x: hidden;
         }
 
@@ -175,7 +223,6 @@
             flex-direction: column;
             gap: 8px;
             transition: opacity 0.5s ease-in-out;
-            box-sizing: border-box;
         }
         .top-left-news-box img {
             width: 100%;
@@ -228,7 +275,6 @@
             font-size: 14px;
             color: var(--text-muted);
             transition: opacity 0.5s ease-in-out;
-            box-sizing: border-box;
             height: 100%;
         }
         .quotes-bar span {
@@ -279,7 +325,6 @@
             color: var(--text-main);
             border-radius: 6px;
             font-size: 15px;
-            box-sizing: border-box;
         }
         .category-header {
             color: var(--accent);
@@ -302,7 +347,6 @@
             color: var(--text-main);
             border-radius: 6px;
             font-size: 14px;
-            box-sizing: border-box;
         }
         button.action-btn {
             background: #4caf50;
@@ -358,7 +402,7 @@
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
         }
         .card {
@@ -370,7 +414,6 @@
             flex-direction: column;
             gap: 14px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-            box-sizing: border-box;
         }
         .card h3 {
             margin: 0;
@@ -405,7 +448,7 @@
         }
         .prop-box b { color: var(--accent); display: block; margin-bottom: 4px; font-size: 14px; }
 
-        /* Premium Routine & Diet Plan Styling (Exact Encyclopedia Style) */
+        /* Routine & Diet Plan Styling */
         .routine-container {
             background: var(--card-inner);
             border-radius: 10px;
@@ -420,18 +463,12 @@
             font-weight: bold;
             font-size: 14px;
             border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         .routine-body {
             padding: 12px;
             max-height: 240px;
             overflow-y: auto;
         }
-        .routine-body::-webkit-scrollbar { width: 5px; }
-        .routine-body::-webkit-scrollbar-thumb { background: #3a3a48; border-radius: 4px; }
-        
         .exercise-row {
             background: #121216;
             padding: 10px;
@@ -483,7 +520,6 @@
             font-size: 12px;
             border-left: 2px solid var(--accent);
         }
-
         .instructions-list {
             padding-left: 18px;
             margin: 5px 0 0 0;
@@ -492,12 +528,6 @@
         }
         .instructions-list li {
             margin-bottom: 4px;
-        }
-        .img-container {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            margin-top: 10px;
         }
         .card img, .card video {
             width: 100%;
@@ -522,6 +552,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 15px;
         }
         .modal {
             background: var(--card-bg);
@@ -530,7 +561,6 @@
             border: 1px solid var(--border);
             width: 100%;
             max-width: 480px;
-            box-sizing: border-box;
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -541,7 +571,7 @@
             background: none; border: none; color: var(--text-muted); float: right; cursor: pointer; font-size: 18px;
         }
 
-        /* RESPONSIVE BREAKPOINT FOR MOBILE PHONES */
+        /* RESPONSIVE BREAKPOINT FOR MOBILE PHONES & IOS */
         @media(max-width: 850px) {
             body {
                 flex-direction: column;
@@ -558,17 +588,32 @@
                 flex-direction: row;
                 overflow-x: auto;
                 padding-bottom: 5px;
+                -webkit-overflow-scrolling: touch;
             }
             .tab-btn {
                 white-space: nowrap;
                 flex-shrink: 0;
+                width: auto;
             }
             main.app-main {
                 max-width: 100%;
+                width: 100%;
                 padding: 12px;
             }
             .dashboard-top-grid {
                 grid-template-columns: 1fr;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .top-controls {
+                width: 100%;
+                justify-content: space-between;
             }
         }
     </style>
@@ -758,6 +803,18 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('exercises')" id="tabEx">Exercises</button>
             <a href="encyclopedia.html" class="tab-btn" style="background:#1a2b3c; color:#64b5f6; border-color:#64b5f6;" id="tabEnc">📖 Encyclopedia</a>
+            
+            <!-- Science & Reference Library Dropdown Menu -->
+            <div class="dropdown-container" id="scienceDropdownContainer">
+                <button class="tab-btn dropdown-btn" onclick="toggleScienceDropdown(event)" id="tabScienceLib">📚 کتابخانه علمی و مرجع</button>
+                <div class="dropdown-menu">
+                    <a href="schoenfeld_hypertrophy_science.html" class="sub-link" id="libSchoenfeld">🧬 دکتر برد شونفلد (هایپرتروفی)</a>
+                    <a href="rippetoe_starting_strength.html" class="sub-link" id="libRippetoe">🏋️ مارک ریپه‌تو (قدرت بنیادین)</a>
+                    <a href="israetel_scientific_principles.html" class="sub-link" id="libIsraetel">📊 دکتر مایک ایزراتل (پریودی‌زشن)</a>
+                    <a href="llewellyn_anabolics_compendium.html" class="sub-link" id="libAnabolics">💉 ویلیام لویولین (Anabolics & PCT)</a>
+                </div>
+            </div>
+
             <button class="tab-btn" onclick="switchTab('legends')" id="tabLegendsNav">🏆 Olympia Legends</button>
             <button class="tab-btn" onclick="switchTab('steroids')" id="tabSteroidsNav">💉 Steroids (Pharmacology)</button>
             <button class="tab-btn" onclick="switchTab('contest')" id="tabContestNav">🥇 Contest Secrets</button>
@@ -768,7 +825,7 @@
             <a href="gymandtrainers.html" class="tab-btn" style="background:#003322; color:#34d399; border-color:#003322;" id="tabGymsAndTrainers">🏋️ Gyms & Workouts</a>
             <a href="trainers.html" class="tab-btn" style="background:#3a1a3a; color:#e040fb; border-color:#e040fb;" id="tabTrainers">🏋️ Trainers Marketplace</a>
             <a href="news.html" class="tab-btn" style="background:#3a2a1a; color:#ff9800; border-color:#ff9800;" id="tabNews">📰 News & Articles</a>
-            <a href="account.html" class="tab-btn" style="background:#1a3a2a; color:#4caf50; border-color:#4caf50;" id="tabAccount">👤 My Account & Plans</a>
+            <a href="account.html" class="tab-btn" style="background:#1a3a2a; color:#4caf50; border-color:#1a3a2a;" id="tabAccount">👤 My Account & Plans</a>
             <a href="admin.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabAdmin">⚡ Admin Portal</a>
         </div>
     </aside>
@@ -1042,6 +1099,18 @@
             event.currentTarget.classList.add('active');
         }
 
+        function toggleScienceDropdown(evt) {
+            evt.stopPropagation();
+            const container = document.getElementById('scienceDropdownContainer');
+            container.classList.toggle('open');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', () => {
+            const container = document.getElementById('scienceDropdownContainer');
+            if(container) container.classList.remove('open');
+        });
+
         function switchExSubTab(category, evt) {
             currentExSubCategory = category;
             document.querySelectorAll('#exSubTabs .sub-tab-btn').forEach(el => el.classList.remove('active'));
@@ -1146,6 +1215,13 @@
             document.getElementById('uiHeaderSub').innerText = isFa ? 'مرجع تخصصی تمرین و بدنسازی' : 'Professional Training Hub';
             document.getElementById('tabEx').innerText = isFa ? 'تمرینات' : 'Exercises';
             document.getElementById('tabEnc').innerText = isFa ? '📖 دایره‌المعارف' : '📖 Encyclopedia';
+            
+            document.getElementById('tabScienceLib').innerText = isFa ? '📚 کتابخانه علمی و مرجع' : '📚 Science & Reference Library';
+            document.getElementById('libSchoenfeld').innerText = isFa ? '🧬 دکتر برد شونفلد (هایپرتروفی)' : '🧬 Dr. Schoenfeld (Hypertrophy)';
+            document.getElementById('libRippetoe').innerText = isFa ? '🏋️ مارک ریپه‌تو (قدرت بنیادین)' : '🏋️ Mark Rippetoe (Starting Strength)';
+            document.getElementById('libIsraetel').innerText = isFa ? '📊 دکتر مایک ایزراتل (پریودی‌زشن)' : '📊 Dr. Mike Israetel (Scientific Principles)';
+            document.getElementById('libAnabolics').innerText = isFa ? '💉 ویلیام لویولین (Anabolics & PCT)' : '💉 William Llewellyn (Anabolics Hub)';
+
             document.getElementById('tabLegendsNav').innerText = isFa ? '🏆 اسطوره‌های المپیا' : '🏆 Olympia Legends';
             document.getElementById('tabSteroidsNav').innerText = isFa ? '💉 استروئیدها (فارماکولوژی)' : '💉 Steroids (Pharmacology)';
             document.getElementById('tabContestNav').innerText = isFa ? '🥇 اسرار مسابقات' : '🥇 Contest Secrets';
@@ -1306,7 +1382,6 @@
             loadGitHubGifs();
         }
 
-        // --- ENCYCLOPEDIA STYLING RENDERERS FOR HOMEPAGE ---
         function renderStructuredRoutine(scheduleArr) {
             if (!Array.isArray(scheduleArr) || scheduleArr.length === 0) return '';
             let html = `

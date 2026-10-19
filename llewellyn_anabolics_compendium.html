@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="fa" id="anabolicsRoot" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Pro - William Llewellyn Anabolics Compendium & Safety Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #12091f 0%, #22153d 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-solid: #1e293b;
+            --accent: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.15);
+            --success: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.12);
+        }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        h1 { color: var(--accent); margin-bottom: 5px; font-weight: 900; font-size: 28px; }
+        .top-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 8px;
+        }
+        [dir="ltr"] .top-controls {
+            right: auto;
+            left: 0;
+        }
+        .top-btn {
+            background: var(--card-solid);
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none;
+            font-family: 'Vazirmatn', sans-serif;
+            backdrop-filter: blur(10px);
+        }
+        .top-btn:hover { background: var(--accent); color: #fff; }
+        
+        .danger-alert {
+            background: var(--danger-bg);
+            border: 2px solid var(--danger);
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            color: #fca5a5;
+            font-size: 13px;
+            line-height: 1.9;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);
+        }
+        .danger-alert h3 { color: var(--danger); margin-top: 0; font-size: 17px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+
+        .source-banner {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--accent);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-main);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .source-banner h2 { color: var(--accent); margin-top: 0; font-size: 20px; }
+        .source-banner b { color: var(--accent); }
+
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: var(--card-solid);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        .card h2, .card h3 { color: var(--accent); margin-top: 0; font-weight: 700; }
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 14px;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        button.action-btn {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
+            font-size: 15px;
+            font-family: 'Vazirmatn', sans-serif;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+            transition: transform 0.2s;
+        }
+        button.action-btn:hover { transform: translateY(-2px); }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        .detailed-article {
+            background: var(--card-solid);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .detailed-article h3 { color: var(--accent); margin: 0 0 5px 0; font-size: 17px; }
+        .detailed-article p { font-size: 13px; color: var(--text-muted); line-height: 1.8; margin: 0; }
+        .tool-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .result-box {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--accent);
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            line-height: 1.8;
+        }
+    </style>
+
+    <script>
+        // Master Database of all Steroids and book compounds
+        const masterDB = {
+            'test_prop': { name: 'تستوسترون پروپیونات', hl: '۰.۸ الی ۲ روز', risk: 'متوسط', liver: 'صفر', ar: 'متوسط', pctStart: '۳ الی ۵ روز بعد', detox: 'هیدراتاسیون بالا (۵ لیتر آب روزانه)، پایش سطح استرادیول خون و مصرف امگا ۳.' },
+            'test_enan': { name: 'تستوسترون انانتات', hl: '۴.۵ الی ۵ روز', risk: 'متوسط', liver: 'صفر', ar: 'متوسط به بالا', pctStart: '۱۴ روز بعد', detox: 'مدیریت استروژن با مهارکننده‌ها، پایش پروفایل چربی (HDL/LDL) و شروع کلومیفن.' },
+            'test_cyp': { name: 'تستوسترون سیپیونات', hl: '۵ الی ۸ روز', risk: 'متوسط', liver: 'صفر', ar: 'متوسط به بالا', pctStart: '۱۴ الی ۱۶ روز بعد', detox: 'کنترل احتباس آب، پایش تستوسترون آزاد و پاکسازی کامل محور طبیعی هورمون.' },
+            'sustanon': { name: 'سستانون ۲۵۰', hl: '۷ الی ۱۰ روز', risk: 'متوسط', liver: 'صفر', ar: 'بالا', pctStart: '۱۴ الی ۱۸ روز بعد', detox: 'شروع PCT با تاخیر به دلیل حضور استرهای بلند؛ پایش کامل کبد و کلیه.' },
+            'deca': { name: 'ناندرولون دکانوات (دکا)', hl: '۷ الی ۱۲ روز', risk: 'بالا', liver: 'پایین', ar: 'متوسط', pctStart: '۳ هفته بعد', detox: 'پایش دقیق پرولاکتین خون و مصرف ویتامین B6 جهت کنترل عوارض پروژسترونی.' },
+            'eq': { name: 'بولدنون (Equipoise)', hl: '۱۲ الی ۱۴ روز', risk: 'متوسط', liver: 'پایین', ar: 'پایین', pctStart: '۳ هفته بعد', detox: 'کنترل غلظت خون (RBC) از طریق آزمایش CBC و اهدای خون در صورت غلظت بالا.' },
+            'tren_ace': { name: 'ترنبولون استات', hl: '۱ روز', risk: 'بسیار بالا', liver: 'پایین', ar: 'صفر', pctStart: '۳ روز بعد', detox: 'پایش دقیق کلیه، کنترل پرولاکتین و قطع فوری در صورت بروز مشکلات قلبی یا عصبی.' },
+            'dianabol': { name: 'دیانابول (خوراکی)', hl: '۳ الی ۶ ساعت', risk: 'بسیار بالا', liver: 'بسیار بالا', ar: 'بالا', pctStart: '۳ الی ۵ روز بعد', detox: 'سمیت کبدی شدید! مصرف فوری TUDCA (۵۰۰ م‌گ) و NAC، قطع فوری دوره در صورت بالا رفتن آنزیم‌ها.' },
+            'anadrol': { name: 'آنادرول (خوراکی)', hl: '۸ الی ۹ ساعت', risk: 'بسیار بالا', liver: 'خطرناک', ar: 'متوسط', pctStart: '۳ روز بعد', detox: 'بالاترین سمیت کبدی در بین استروئیدها؛ استفاده اجباری از محافظ کبد قوی و مانیتورینگ پزشکی.' },
+            'winstrol': { name: 'وینسترول', hl: '۹ ساعت (خوراکی)', risk: 'بالا', liver: 'بالا', ar: 'صفر', pctStart: '۳ روز بعد', detox: 'تخریب شدید مفاصل و کلسترول؛ مصرف مکمل‌های گلوکوزامین، امگا ۳ و محافظ کبد الزامی است.' },
+            'anavar': { name: 'آناوار (اوکساندرولون)', hl: '۹ الی ۱۰ ساعت', risk: 'متوسط', liver: 'متوسط', ar: 'صفر', pctStart: '۳ روز بعد', detox: 'پایش پروفایل لیپیدی و هیدراتاسیون کامل برای حمایت از عملکرد کلیه.' },
+            'primobolan': { name: 'پریموبولان', hl: '۵ الی ۷ روز', risk: 'پایین', liver: 'صفر', ar: 'صفر', pctStart: '۱۴ روز بعد', detox: 'یکی از امن‌ترین‌ها؛ با این حال پایش دوره‌ای تست‌های خون و محافظت پایه ارگان‌ها توصیه می‌شود.' },
+            'masteron': { name: 'مسترون', hl: '۱ الی ۲ روز', risk: 'متوسط', liver: 'صفر', ar: 'صفر', pctStart: '۴ روز بعد', detox: 'بررسی سلامت مفاصل، پایش پروفایل چربی و کنترل استروژن‌های محیطی.' },
+            'hgh': { name: 'هورمون رشد (HGH)', hl: 'چند ساعت', risk: 'متوسط', liver: 'صفر', ar: 'صفر', pctStart: 'بدون نیاز به PCT', detox: 'پایش قند خون ناشتا (FBS) و هورمون تیروئید (TSH) به طور منظم.' },
+            'insulin': { name: 'انسولین ورزشی', hl: 'چند دقیقه الی ساعت', risk: 'مرگبار', liver: 'صفر', ar: 'صفر', pctStart: 'بدون نیاز به PCT', detox: 'خطرناک‌ترین ماده؛ حضور همیشه کربوهیدرات ساده و همراه برای جلوگیری از شوک هایپوگلیسمی.' }
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Working tool functions
+        function runTool(num) {
+            const selectId = 't' + num + 'Select';
+            const resId = 'r' + num;
+            const selectEl = document.getElementById(selectId);
+            const resEl = document.getElementById(resId);
+            
+            if(!selectEl || !resEl) return;
+            const key = selectEl.value;
+            const item = masterDB[key];
+            if(!item) return;
+
+            resEl.style.display = 'block';
+
+            if(num === 1) {
+                resEl.innerHTML = `💊 <b>${item.name}</b><br>• نیمه‌عمر بالینی: <b>${item.hl}</b><br>• توضیح کتاب: زمان لازم برای کاهش غلظت پلاسمایی دارو به نصف مقدار اولیه.`;
+            } else if(num === 2) {
+                resEl.innerHTML = `🔄 <b>زمان‌بندی پاکسازی (PCT) برای ${item.name}:</b><br>• زمان دقیق شروع: <b>${item.pctStart}</b> از آخرین دوز مصرفی.`;
+            } else if(num === 3) {
+                resEl.innerHTML = `📊 <b>پروفایل ریسک ${item.name}:</b><br>• سطح ریسک کلی: <b>${item.risk}</b><br>• سمیت کبدی: <b>${item.liver}</b>`;
+            } else if(num === 4) {
+                resEl.innerHTML = `🎯 <b>فرکانس تزریق برای ${item.name}:</b><br>• با توجه به نیمه‌عمر ${item.hl}، تزریقات باید طبق برنامه منظم انجام شود تا نوسانات خونی کنترل گردد.`;
+            } else if(num === 5) {
+                resEl.innerHTML = `🩸 <b>چکاپ آزمایشگاهی برای ${item.name}:</b><br>• انجام پنل کامل CBC، LFT (کبد) و Lipid Profile قبل، حین و بعد از دوره برای این ترکیب حیاتی است.`;
+            } else if(num === 6) {
+                resEl.innerHTML = `💊 <b>پشته دفاع ارگان‌ها برای ${item.name}:</b><br>• ${item.detox}`;
+            } else if(num === 7) {
+                resEl.innerHTML = `⚖️ <b>تحلیل نیاز به مهارکننده استروژن (AI) برای ${item.name}:</b><br>• قدرت آروماتیزاسیون: <b>${item.ar}</b><br>• در صورت افزایش استرادیول یا احتباس آب، مصرف داروهای کنترل استروژن زیر نظر پزشک لازم است.`;
+            } else if(num === 8) {
+                resEl.innerHTML = `💧 <b>ریسک احتباس آب و ژنیکوماستی برای ${item.name}:</b><br>• پتانسیل استروژنی: <b>${item.ar}</b><br>• کنترل سدیم و پایش علائم اولیه حساسیت بافت سینه الزامی است.`;
+            } else if(num === 9) {
+                resEl.innerHTML = `🔄 <b>زمان تخمینی ریکاوری محور غدد (HTPA) برای ${item.name}:</b><br>• مدت سرکوب: <b>${item.risk === 'بسیار بالا' ? 'طولانی‌مدت و عمیق' : 'متوسط'}</b><br>• نیازمند اجرای دقیق دوره پاکسازی (PCT).`;
+            } else if(num === 10) {
+                resEl.innerHTML = `🚨 <b>علائم هشدار اورژانسی برای ${item.name}:</b><br>• در صورت بروز درد قفسه سینه، زردی پوست (یرقان) یا تنگی نفس شدید، مصرف را قطع و فوراً به اورژانس مراجعه کنید!`;
+            }
+        }
+
+        function searchDetox() {
+            const key = document.getElementById('detoxSearchSelect').value;
+            const res = document.getElementById('detoxSearchResult');
+            res.style.display = 'block';
+            const item = masterDB[key];
+            res.innerHTML = `🛡️ <b>راهنمای سم‌زدایی و بازگشت ارگان‌ها برای: ${item.name}</b><br>` +
+                          `• <b>سطح ریسک:</b> ${item.risk} (سمیت کبدی: ${item.liver})<br>` +
+                          `• <b>پروتکل سم‌زدایی بالینی:</b> ${item.detox}<br>` +
+                          `• <b>زمان شروع پاکسازی:</b> ${item.pctStart}`;
+        }
+    </script>
+</head>
+<body>
+
+    <header>
+        <div class="top-controls">
+            <a href="index.html" class="top-btn">🏠 خانه / Home</a>
+        </div>
+        <h1>دایره‌المعارف فارماکولوژی ورزشی (William Llewellyn Anabolics)</h1>
+        <p style="color:var(--text-muted); font-size:14px;">سامانه جامع آموزش فارماکولوژی، نیمه‌عمر تمام استروئیدها و راهنمای ایمنی و سم‌زدایی</p>
+    </header>
+
+    <div class="container">
+        <!-- CRITICAL DANGER WARNING -->
+        <div class="danger-alert">
+            <h3>🚨 هشدار پزشکی بسیار مهم و حیاتی (CRITICAL MEDICAL WARNING)</h3>
+            استفاده از استروئیدهای آنابولیک-آندروژنیک (AAS)، هورمون‌ها و پپتیدها بدون نظارت مستقیم پزشک غدد درون‌ریز یا متخصص پزشکی ورزشی، خطرات جانی و جبران‌ناپذیری به همراه دارد. این ترکیبات می‌توانند باعث <b>سکته قلبی، نارسایی مزمن کبد و کلیه، هایپرتروفی خطرناک بطن چپ قلب، ناباروری دائمی، ترومبوآمبولی و فروپاشی کامل محور طبیعی هورمونی (HTPA)</b> شوند. هدف از این سامانه صرفاً آگاهی‌بخشی علمی، کاهش آسیب (Harm Reduction) و نجات جان افراد بر اساس کتاب مرجع لویولین است.
+        </div>
+
+        <div class="source-banner">
+            <h2>درباره مرجع تخصصی Anabolics</h2>
+            <p style="margin: 0; line-height: 1.8;">
+                کتاب <b>"Anabolics"</b> اثر <b>ویلیام لویولین</b> معتبرترین و علمی‌ترین دایره‌المعارف فارماکولوژی استروئیدهای آنابولیک در جهان است. تمامی استروئیدها و ترکیبات حرفه‌ای در ابزارها و بخش‌های زیر با جزئیات کامل گنجانده شده‌اند.
+            </p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('tabTools')">🛠️ ابزارهای محاسباتی دارویی</button>
+            <button class="tab-btn" onclick="switchTab('tabMaster')">🧪 دایره‌المعارف کامل ترکیبات</button>
+            <button class="tab-btn" onclick="switchTab('tabArticles')">📚 مقالات آموزشی تشریحی (۱۲ مقاله)</button>
+            <button class="tab-btn" onclick="switchTab('tabPct')">🔄 مرکز سم‌زدایی و پاکسازی (PCT & Detox)</button>
+            <button class="tab-btn" onclick="switchTab('tabHealth')">🛡️ سلامت ارگان‌ها و آزمایش‌ها</button>
+        </div>
+
+        <!-- TAB 1: ALL TOOLS -->
+        <div id="tabTools" class="tab-content active">
+            <div class="grid">
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۱. پایگاه محاسبه نیمه‌عمر استروئیدها</h3>
+                    <div class="tool-desc">محاسبه نیمه‌عمر بالینی و زمان پایداری در خون برای تمام ترکیبات کتاب.</div>
+                    <select id="t1Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(1)">محاسبه نیمه‌عمر بالینی</button>
+                    <div id="r1" class="result-box"></div>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۲. ماشین‌حساب زمان شروع پاکسازی (PCT)</h3>
+                    <div class="tool-desc">تعیین روز دقیق شروع داروهای بازگشتی برای هر استر مصرفی.</div>
+                    <select id="t2Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(2)">تعیین زمان شروع PCT</button>
+                    <div id="r2" class="result-box"></div>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۳. ماتریس ریسک و خطر داروها</h3>
+                    <div class="tool-desc">ارزیابی سطح خطر و فشار ارگان‌های هر ترکیب دارویی.</div>
+                    <select id="t3Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(3)">تحلیل سطح ریسک دارو</button>
+                    <div id="r3" class="result-box"></div>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۴. بهینه‌ساز فرکانس تزریق</h3>
+                    <div class="tool-desc">بررسی نیاز به تنظیم فواصل تزریق برای پیشگیری از نوسان.</div>
+                    <select id="t4Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(4)">بررسی پایداری خونی</button>
+                    <div id="r4" class="result-box"></div>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۵. راهنمای چکاپ آزمایشگاهی خون</h3>
+                    <div class="tool-desc">بررسی ضرورت‌های آزمایشگاهی هر ترکیب برای رصد کبد و کلیه.</div>
+                    <select id="t5Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(5)">دریافت راهنمای پایش</button>
+                    <div id="r5" class="result-box"></div>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۶. برنامه‌ریز پشته دفاع ارگان‌ها</h3>
+                    <div class="tool-desc">تعیین مکمل‌های محافظتی کبد و قلب متناسب با داروی انتخابی.</div>
+                    <select id="t6Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(6)">دریافت پشته ارگان</button>
+                    <div id="r6" class="result-box"></div>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۷. تخمین‌گر نیاز به مهارکننده استروژن (AI)</h3>
+                    <div class="tool-desc">تحلیل نرخ تبدیل آروماتاز و ریسک عوارض استروژنی.</div>
+                    <select id="t7Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(7)">تحلیل نیاز به AI</button>
+                    <div id="r7" class="result-box"></div>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۸. ارزیاب ریسک ژنیکوماستی و احتباس آب</h3>
+                    <div class="tool-desc">بررسی احتمال بروز عوارض احتباس مایعات و بافت سینه.</div>
+                    <select id="t8Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(8)">بررسی ریسک ژنیکوماستی</button>
+                    <div id="r8" class="result-box"></div>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۹. زمان تخمینی ریکاوری محور غدد (HTPA)</h3>
+                    <div class="tool-desc">تخمین مدت زمان لازم برای بازگشت سطح طبیعی تستوسترون.</div>
+                    <select id="t9Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(9)">تخمین ریکاوری هورمونی</button>
+                    <div id="r9" class="result-box"></div>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۱۰. چک‌لیست اورژانسی علائم خطر (Red Flags)</h3>
+                    <div class="tool-desc">بررسی علائم حیاتی هشداردهنده برای اورژانس پزشکی.</div>
+                    <select id="t10Select">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="runTool(10)">بررسی علائم اورژانسی</button>
+                    <div id="r10" class="result-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: FULL COMPOUND LIBRARY -->
+        <div id="tabMaster" class="tab-content">
+            <div class="card">
+                <h2>🧪 دایره‌المعارف کامل و تفکیک‌شده ترکیبات بدنسازی حرفه‌ای</h2>
+                <div class="grid" style="margin-top: 20px;">
+                    <div class="detailed-article">
+                        <h3>۱. تستوسترون‌ها (Testosterone Esters)</h3>
+                        <p>پایه اصلی تمام دوره‌ها. شامل استرهای پروپیونات، انانتات، سیپیونات و سستانون؛ دارای بالاترین تعادل آنابولیک به آندروژنی و قابلیت تبدیل به استروژن.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۲. ناندرولون دکانوات (Deca-Durabolin)</h3>
+                        <p>استروئید تزریقی کلاسیک برای حجم باکیفیت و ترمیم مفاصل. فعالیت پروژسترونی متوسط، احتباس آب کنترل‌شده و سرکوب عمیق محور هورمونی.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۳. بولدنون آنده‌سیلنیت (Equipoise)</h3>
+                        <p>مشتق تستوسترون با اثر ملایم‌تر. افزایش اشتها، افزایش تولید گلبول‌های قرمز خون (RBC) و ایجاد حجم خشک و پایدار در بلندمدت.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۴. ترنبولون (Trenbolone Acetate / Enanthate)</h3>
+                        <p>قوی‌ترین استروئید تزریقی دنیا بدون تبدیل به استروژن. تفکیک عضلانی فوق‌العاده، سختی بافت و چربی‌سوزی عمقی، همراه با عوارض عصبی و تعریق.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۵. متاندینون / دیانابول (Dianabol)</h3>
+                        <p>پادشاه استروئیدهای خوراکی حجم. قدرت اثر انفجاری در هفته‌های اول، ساخت سریع گلیکوژن، همراه با سمیت کبدی (17-alpha) و آروماتیزاسیون.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۶. اکسی‌موتولون / آنادرول (Anadrol)</h3>
+                        <p>قوی‌ترین و سنگین‌ترین قرص افزایش وزن و قدرت. نیازمند کنترل دقیق استروژن و محافظت کامل از کبد با TUDCA.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۷. استانوبرول / وینسترول (Winstrol)</h3>
+                        <p>استروئید تخصصی دوره‌های کات و تفکیک. بدون تبدیل به استروژن، خشک‌کننده مفاصل و تاندون‌ها، با سمیت کبدی بالا در فرم خوراکی.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۸. اوکساندرولون (Anavar)</h3>
+                        <p>ملایم‌ترین استروئید خوراکی با حداقل عوارض، محبوب در دوره‌های کات بانوان و آقایان برای حفظ بافت عضلانی در کسری کالری.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۹. متولون / پریموبولان (Primobolan)</h3>
+                        <p>یکی از امن‌ترین استروئیدهای تزریقی برای حجم خشک و کیفی با حداقل احتباس آب و عدم تبدیل به استروژن.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۰. درۆستانولون / مسترون (Masteron)</h3>
+                        <p>استروئید ضد‌استروژنی ملایم برای هفته‌های پایانی دوره کات جهت ایجاد سختی و رگه‌داری عضلات.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۱. هورمون رشد انسانی (Somatropin / HGH)</h3>
+                        <p>پپتید آنابولیک اصلی برای هایپرپلازی (افزایش تعداد سلول‌های عضلانی)، جوانه‌زنی بافت‌های پیوندی و چربی‌سوزی عمقی.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۲. انسولین و داروهای کمکی</h3>
+                        <p>شامل انسولین ورزشی (با ریسک مرگبار هایپوگلیسمی)، مهارکننده‌های آروماتاز (Arimidex, Aromasin) و داروهای پاکسازی.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: 12 DETAILED CLINICAL ARTICLES -->
+        <div id="tabArticles" class="tab-content">
+            <div class="card">
+                <h2>📚 مقالات آموزشی تشریحی فارماکولوژی (متون کامل کتاب)</h2>
+                <div class="grid" style="margin-top: 20px;">
+                    <div class="detailed-article">
+                        <h3>۱. مکانیسم اتصال سلولی و فعال‌سازی گیرنده آندروژن (AR)</h3>
+                        <p>استروئیدهای آنابولیک مولکول‌های لیپوفیل (چربی‌دوست) هستند که به راحتی از غشای سلولی عبور می‌کنند. در داخل سلول، آن‌ها به گیرنده‌های آندروژن (AR) متصل شده و کمپلکس هورمون-گیرنده وارد هسته سلول می‌شود. این فرایند مستقیماً نسخه برداری DNA را تحریک کرده و سنتز پروتئین (ساخت بافت عضلانی جدید) را به شدت افزایش می‌دهد.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۲. فارماکوکینتیک و تفاوت استرهای کوتاه و بلند</h3>
+                        <p>اتصال یک اسید چرب (مانند پروپیونات یا انانتات) به مولکول پایه هورمون، سرعت آزاد شدن آن در جریان خون را کنترل می‌کند. استرهای کوتاه (پروپیونات) به سرعت جذب و دفع می‌شوند و قله‌های سریعی ایجاد می‌کنند، در حالی که استرهای بلند (انانتات و دکانوات) در بافت چربی ذخیره شده و به آرامی طی روزهای متوالی آزاد می‌شوند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۳. بیوشیمی آروماتیزاسیون و کنترل استروژن</h3>
+                        <p>آنزیم آروماتاز مسئول تبدیل تستوسترون به استروژن (استرادیول) در بافت‌های محیطی و چربی است. مقداری از استروژن برای رشد و سلامت مفاصل ضروری است، اما مقدار بیش از حد آن باعث احتباس شدید آب، فشار خون و ژنیکوماستی (بزرگ شدن بافت سینه) می‌شود که با داروهای مهارکننده کنترل می‌گردد.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۴. مدیریت عوارض آندروژنی و نقش آنزیم ۵-آلفا ردوکتاز</h3>
+                        <p>برخی آندروژن‌ها توسط آنزیم ۵-آلفا ردوکتاز به دی‌هیدروتستوسترون (DHT) تبدیل می‌شوند که محرک اصلی ریزش موی ارثی و بزرگی پروستات است. داروهایی مانند فیناستراید این آنزیم را مهار کرده و عوارض آندروژنی پوست و مو را کاهش می‌دهند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۵. تخریب پروفایل کلسترول (HDL و LDL) و عروق</h3>
+                        <p>ترکیبات استروئیدی، به‌ویژه استروئیدهای خوراکی 17-alpha alkylated، باعث تحریک آنزیم لیپاز کبدی شده و کلسترول خوب (HDL) را به شدت کاهش و کلسترول بد (LDL) را افزایش می‌دهند. مصرف امگا ۳، کاردیو منظم و پایش آزمایشگاهی برای حفظ سلامت قلب الزامی است.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۶. مکانیسم دقیق سرکوب محور غدد (HTPA Suppression)</h3>
+                        <p>ورود هورمون‌های خارجی به بدن، سیستم عصبی مرکزی را فریب داده و ترشح گنادوتروپین‌ها (LH و FSH) از غده هیپوفیز متوقف می‌شود. این فیدبک منفی باعث خاموش شدن تولید طبیعی تستوسترون توسط بیضه‌ها می‌گردد که پس از دوره نیازمند پاکسازی است.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۷. اصول بالینی پاکسازی و احیای هورمونی (PCT)</h3>
+                        <p>هدف از پاکسازی (Post Cycle Therapy)، تحریک دوباره محور هیپوتالاموس-هیپوفیز با استفاده از داروهای تعدیل‌کننده انتخابی گیرنده استروژن (SERM) مانند کلومیفن و تاموکسیفن است تا سیگنال ترشح LH و FSH صادر شده و بیضه‌ها تولید تستوسترون طبیعی را از سر بگیرند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۸. فیزیولوژی هورمون رشد (GH) و هایپرپلازی</h3>
+                        <p>هورمون رشد برخلاف استروئیدها که حجم سلول‌های موجود را بزرگ می‌کنند (ایپرتروفی)، روند تقسیم سلولی و ایجاد سلول‌های عضلانی جدید (هایپرپلازی) را تحریک کرده و در چربی‌سوزی عمقی و ترمیم تاندون‌ها نقش کلیدی دارد.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۹. خطر مرگبار انسولین و مدیریت گلیکوژن</h3>
+                        <p>انسولین قوی‌ترین هورمون آنابولیک بدن است که گلوکز و آمینو اسیدها را به سرعت وارد سلول‌ها می‌کند. مصرف خودسرانه آن بسیار خطرناک بوده و می‌تواند باعث افت ناگهانی قند خون (شوک هایپوگلیسمی)، کما یا مرگ فوری شود.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۰. سمیت کبدی ترکیبات ۱۷-آلفا آلکیله (خوراکی‌ها)</h3>
+                        <p>افزودن گروه متیل در کربن ۱۷ به استروئیدهای خوراکی اجازه می‌دهد تا از تخریب توسط کبد عبور کنند، اما این فرآیند استرس هپاتیک شدیدی ایجاد کرده و آنزیم‌های کبد را بالا می‌برد که نیازمند مصرف مکمل‌های محافظ کبد است.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۱. اهمیت حیاتی پایش آزمایشگاهی خون (CBC & LFT)</h3>
+                        <p>انجام آزمایش‌های خون پیش، حین و پس از دوره (شامل شمارش سلول‌های خونی CBC، آنزیم‌های کبد LFT و چربی‌ها) تنها راه امن برای رصد و پیشگیری از آسیب‌های پنهان ارگان‌های داخلی است.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۲. واقعیت حفظ دستاوردها و حافظه عضلانی پس از دوره</h3>
+                        <p>پس از قطع داروها و اتمام پاکسازی، مقداری افت آب و گلیکوژن طبیعی رخ می‌دهد. حفظ حجم واقعی عضلات به کیفیت تغذیه، تمرین هوشمندانه و بازگشت کامل محور طبیعی هورمون‌ها بستگی دارد.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: DETAILED PCT & DETOX HUB WITH INTERACTIVE SEARCH -->
+        <div id="tabPct" class="tab-content">
+            <div class="card">
+                <h2>🔄 مرکز تخصصی سم‌زدایی، پاکسازی ارگان‌ها و احیای هورمونی (Detox & PCT Hub)</h2>
+                <p style="color:var(--text-muted); line-height: 1.8; margin-bottom: 20px;">
+                    این بخش حیاتی‌ترین راهنمای بالینی برای سم‌زدایی کبد، کلیه و ری‌استارت محور هورمونی است. شما می‌توانید داروی خود را انتخاب کنید تا پروتکل اختصاصی سم‌زدایی آن را دریافت کنید:
+                </p>
+
+                <!-- Interactive Detox Search Tool -->
+                <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid var(--accent); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                    <h3 style="color: var(--accent); margin-top: 0;">🔍 ابزار هوشمند جستجوی پروتکل سم‌زدایی دارو</h3>
+                    <label style="font-size:12px; color:var(--text-muted);">انتخاب دارو برای دریافت راهنمای اختصاصی سم‌زدایی:</label>
+                    <select id="detoxSearchSelect">
+                        <option value="test_prop">تستوسترون پروپیونات</option>
+                        <option value="test_enan">تستوسترون انانتات</option>
+                        <option value="test_cyp">تستوسترون سیپیونات</option>
+                        <option value="sustanon">سستانون ۲۵۰</option>
+                        <option value="deca">ناندرولون دکانوات (دکا)</option>
+                        <option value="eq">بولدنون</option>
+                        <option value="tren_ace">ترنبولون استات</option>
+                        <option value="dianabol">دیانابول</option>
+                        <option value="anadrol">آنادرول</option>
+                        <option value="winstrol">وینسترول</option>
+                        <option value="anavar">آناوار</option>
+                        <option value="primobolan">پریموبولان</option>
+                        <option value="masteron">مسترون</option>
+                        <option value="hgh">هورمون رشد (HGH)</option>
+                        <option value="insulin">انسولین ورزشی</option>
+                    </select>
+                    <button class="action-btn" onclick="searchDetox()">دریافت راهنمای اختصاصی سم‌زدایی</button>
+                    <div id="detoxSearchResult" class="result-box"></div>
+                </div>
+
+                <div class="grid">
+                    <div class="detailed-article">
+                        <h3>گام اول: سم‌زدایی فوری کبد و ارگان‌ها (Liver Detox)</h3>
+                        <p>
+                            • مصرف مکمل <b>TUDCA</b> (تورسودی‌اچ‌ال) با دوز ۵۰۰ الی ۱۰۰۰ میلی‌گرم در روز برای پاکسازی سلول‌های کبد از سموم خوراکی‌ها.<br>
+                            • مصرف مکمل <b>NAC</b> (ان-استیل سیستئین) با دوز ۱۲۰۰ الی ۱۸۰۰ میلی‌گرم جهت افزایش سطح گلوتاتیون (قوی‌ترین آنتی‌اکسیدان کبد).<br>
+                            • نوشیدن روزانه حداقل ۵ الی ۶ لیتر آب جهت حمایت از فیلتراسیون کلیوی.
+                        </p>
+                    </div>
+
+                    <div class="detailed-article">
+                        <h3>گام دوم: دارودرمانی و احیای هورمونی (Pharmaceutical PCT)</h3>
+                        <p>
+                            • <b>کلومیفن سیترات (Clomid):</b> روزانه ۵۰ میلی‌گرم در دو هفته اول، سپس ۲۵ میلی‌گرم در دو هفته پایانی.<br>
+                            • <b>تاموکسیفن (Nolvadex):</b> روزانه ۴۰ میلی‌گرم در دو هفته اول، سپس ۲۰ میلی‌گرم در دو هفته پایانی.<br>
+                            • <i>مدت زمان کل دوره پاکسازی:</i> استاندارد پزشکی بین ۴ الی ۶ هفته است تا محور غدد کاملاً ری‌استارت شود.
+                        </p>
+                    </div>
+
+                    <div class="detailed-article">
+                        <h3>گام سوم: تغذیه و تنظیم تمرین در دوران پاکسازی</h3>
+                        <p>
+                            • کاهش حجم تمرینات به میزان ۳۰٪ (ست‌های کمتر) تا با ظرفیت پایین‌تر ریکاوری در دوران افت موقت تستوسترون همخوانی داشته باشد.<br>
+                            • افزایش مصرف پروتئین باکیفیت و چربی‌های سالم (امگا ۳ و روغن زیتون) جهت حمایت از سنتز طبیعی هورمون‌های جنسی در بدن.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: ORGAN HEALTH & BLOOD WORK -->
+        <div id="tabHealth" class="tab-content">
+            <div class="card">
+                <h2>🛡️ سلامت ارگان‌های حیاتی و راهنمای آزمایشگاه</h2>
+                <p style="color:var(--text-muted); line-height: 1.8;">
+                    حفاظت از سلامت قلب، عروق، کبد و کلیه بر هر دستاوردی مقدم است:
+                    <br><br>
+                    • <b>پایش فشار خون:</b> کنترل مستمر فشار به دلیل احتباس آب و افت کلسترول.
+                    <br>• <b>سلامت قلب و اکوکاردیوگرافی:</b> بررسی ضخامت دیواره بطن چپ به صورت سالانه.
+                    <br>• <b>مراقبت‌های کلیوی و پروتئین اوره:</b> پایش مداوم کراتینین و اوره خون.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="fa" id="israetelRoot" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Pro - Dr. Mike Israetel Scientific Principles Compendium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #09121f 0%, #17253d 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-solid: #1e293b;
+            --accent: #10b981;
+            --accent-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --info: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.12);
+        }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        h1 { color: var(--accent); margin-bottom: 5px; font-weight: 900; font-size: 28px; }
+        .top-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 8px;
+        }
+        [dir="ltr"] .top-controls {
+            right: auto;
+            left: 0;
+        }
+        .top-btn {
+            background: var(--card-solid);
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none;
+            font-family: 'Vazirmatn', sans-serif;
+            backdrop-filter: blur(10px);
+        }
+        .top-btn:hover { background: var(--accent); color: #fff; }
+        
+        .source-banner {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--accent);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-main);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .source-banner h2 { color: var(--accent); margin-top: 0; font-size: 20px; }
+        .source-banner b { color: var(--accent); }
+
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: var(--card-solid);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        .card h2, .card h3 { color: var(--accent); margin-top: 0; font-weight: 700; }
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 14px;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        button.action-btn {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
+            font-size: 15px;
+            font-family: 'Vazirmatn', sans-serif;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+            transition: transform 0.2s;
+        }
+        button.action-btn:hover { transform: translateY(-2px); }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        .detailed-article {
+            background: var(--card-solid);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .detailed-article h3 { color: var(--accent); margin: 0 0 5px 0; font-size: 17px; }
+        .detailed-article p { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin: 0; }
+        .result-box {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--accent);
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            line-height: 1.7;
+        }
+    </style>
+
+    <script>
+        let currentLang = 'fa';
+
+        window.toggleLang = () => {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            const root = document.getElementById('israetelRoot');
+            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+            root.setAttribute('lang', currentLang);
+
+            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'English / EN' : 'فارسی / FA';
+            document.getElementById('homeLink').innerText = currentLand === 'fa' ? '🏠 خانه / Home' : '🏠 Home / خانه';
+            
+            document.getElementById('mainTitle').innerText = currentLang === 'fa' ? 'اصول علمی برنامه‌نویسی قدرت و حجم (دکتر مایک ایزراتل)' : 'Scientific Principles of Strength Training (Dr. Mike Israetel)';
+            document.getElementById('mainSub').innerText = currentLang === 'fa' ? 'مرجع تخصصی اصول شش‌گانه ایزراتل، پریودی‌زشن و مدیریت حجم مفرط (MRV)' : 'The Definitive Guide to Periodization, MRV, and Training Principles';
+            
+            document.getElementById('introTitle').innerText = currentLang === 'fa' ? 'درباره کتاب و نویسندگان (Dr. Mike Israetel)' : 'About the Book & Authors (Dr. Mike Israetel)';
+            document.getElementById('introText').innerHTML = currentLang === 'fa' ? 
+                'کتاب <b>"Scientific Principles of Strength Training"</b> اثر برجسته دکتر مایک ایزراتل، چاد وسلی اسمیت و دکتر جیمز هافمن، پایه‌ای‌ترین و پیشرفته‌ترین مرجع جهان در زمینه برنامه‌نویسی علمی، پریودی‌زشن، مدیریت حجم‌های کاری (MEV و MRV) و اصول ساختاری بدنسازی است.' :
+                'The book <b>"Scientific Principles of Strength Training"</b> by Dr. Mike Israetel and colleagues is the premier international reference for scientific programming and periodization.';
+
+            document.getElementById('tabToolsText').innerText = currentLang === 'fa' ? '🛠️ ابزارهای محاسباتی ایزراتل (۶ ابزار)' : '🛠️ Israetel Tools (6)';
+            document.getElementById('tabMasterText').innerText = currentLang === 'fa' ? '📖 اصول شش‌گانه کلیدی' : '📖 6 Core Principles';
+            document.getElementById('tabArticlesText').innerText = currentLang === 'fa' ? '📚 دانشنامه مقالات (۱۲ مقاله)' : '📚 Knowledge Articles (12)';
+            document.getElementById('tabMesocycleText').innerText = currentLang === 'fa' ? '📋 طراحی مزوسیکل و MRV' : '📋 Mesocycle & MRV Hub';
+            document.getElementById('tabDietText').innerText = currentLang === 'fa' ? '🥗 مدیریت حجم و کات/حجم' : '🥗 Diet & Phase Transitions';
+        };
+
+        // Tool 1: MRV Calculator
+        window.calculateMRV = () => {
+            const exp = parseInt(document.getElementById('expSelect').value);
+            const res = document.getElementById('mrvResult');
+            res.style.display = 'block';
+
+            if(exp === 1) {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🟢 سطح مبتدی (Novice):<br>• حداقل حجم مؤثر (MEV): ۸ تا ۱۰ ست در هفته.<br>• حداکثر حجم قابل بازیابی (MRV): ۱۲ تا ۱۵ ست در هفته در هر عضله.<br><i>توصیه ایزراتل: مبتدیان با کمترین حجم بیشترین رشد را تجربه می‌کنند.</i>' :
+                    '🟢 Novice: MEV 8-10 sets, MRV 12-15 sets per week.';
+            } else if(exp === 2) {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🟡 سطح متوسط (Intermediate):<br>• حداقل حجم مؤثر (MEV): ۱۲ تا ۱۴ ست در هفته.<br>• حداکثر حجم قابل بازیابی (MRV): ۱۸ تا ۲۲ ست در هفته در هر عضله.<br><i>توصیه ایزراتل: افزایش تدریجی ست‌ها در طول مزوسیکل.</i>' :
+                    '🟡 Intermediate: MEV 12-14 sets, MRV 18-22 sets per week.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🔴 سطح پیشرفته (Advanced):<br>• حداقل حجم مؤثر (MEV): ۱۶ تا ۱۸ ست در هفته.<br>• حداکثر حجم قابل بازیابی (MRV): ۲۵ تا ۳۰ ست در هفته در هر عضله.<br><i>توصیه ایزراتل: نیاز به تخصص بالا در مدیریت خستگی و ریکاوری.</i>' :
+                    '🔴 Advanced: MEV 16-18 sets, MRV 25-30 sets per week.';
+            }
+        };
+
+        // Tool 2: Mesocycle Progression Planner
+        window.calculateMeso = () => {
+            const startSets = parseInt(document.getElementById('startSets').value);
+            const res = document.getElementById('mesoResult');
+            res.style.display = 'block';
+
+            if(isNaN(startSets)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً تعداد ست‌های هفته اول را وارد کنید.' : 'Please enter starting sets.';
+                return;
+            }
+
+            const w2 = startSets + 2;
+            const w3 = w2 + 2;
+            const w4 = w3 + 2;
+
+            res.innerHTML = currentLang === 'fa' ? 
+                `📈 برنامه افزایش تدریجی حجم (Overreaching Mesocycle):<br>• هفته ۱ (شروع با MEV): <b>${startSets} ست</b><br>• هفته ۲ (افزایش بار): <b>${w2} ست</b><br>• هفته ۳ (نزدیک به MRV): <b>${w3} ست</b><br>• هفته ۴ (پیک خستگی / قبل از دلود): <b>${w4} ست</b><br><i>سپس هفته ۵ حتماً دلود (Deload) اجرا شود.</i>` :
+                `📈 Mesocycle volume progression planned successfully across 4 weeks.`;
+        };
+
+        // Tool 3: Fatigue & RIR Estimator
+        window.calculateRIR = () => {
+            const rir = parseInt(document.getElementById('rirSelect').value);
+            const res = document.getElementById('rirResult');
+            res.style.display = 'block';
+
+            if(rir === 3) {
+                res.innerHTML = currentLang === 'fa' ? '🟢 شدت RIR 3 (۳ تکرار تا ناتوانی): مناسب برای هفته‌های اول مزوسیکل با فشار عصبی کنترل‌شده.' : '🟢 RIR 3: Low-moderate fatigue, great for week 1.';
+            } else if(rir === 2) {
+                res.innerHTML = currentLang === 'fa' ? '🟡 شدت RIR 2 (۲ تکرار تا ناتوانی): استاندارد طلایی برای ساخت حجم عضلانی با حداقل تخریب بیش از حد تاندون‌ها.' : '🟡 RIR 2: Optimal hypertrophic stimulus.';
+            } else if(rir === 0 || rir === 1) {
+                res.innerHTML = currentLang === 'fa' ? '🔴 شدت RIR 0-1 (نزدیک به ناتوانی کامل): بسیار پرفشار؛ فقط برای انتهای هفته‌های مزوسیکل یا آخرین ست‌ها استفاده شود.' : '🔴 RIR 0-1: Maximum stimulus, high fatigue accumulation.';
+            }
+        };
+
+        // Tool 4: Phase Selector (Bulking vs Cutting)
+        window.calculatePhase = () => {
+            const goal = document.getElementById('phaseSelect').value;
+            const res = document.getElementById('phaseResult');
+            res.style.display = 'block';
+
+            if(goal === 'bulk') {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🍔 اصول دوره حجم (Hypertrophy / Bulking):<br>• مازاد کالری ملایم (۳۰۰ تا ۵۰۰ کالری در روز).<br>• افزایش تدریجی حجم تمرین تا رسیدن به MRV.<br>• تمرکز روی حداکثر سنتز پروتئین عضلانی بدون انباشت چربی سریع.' :
+                    '🍔 Bulking phase guidelines: Slight caloric surplus, progressive volume increase.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🥗 اصول دوره کات (Fat Loss / Cutting):<br>• کسری کالری ملایم (۵۰۰ تا ۷۵۰ کالری در روز).<br>• <b>کاهش حجم تمرین به حدود ۲/۳ حالت عادی</b> (چون ریکاوری در کسری کالری افت می‌کند).<br>• حفظ سنگینی وزنه‌ها برای جلوگیری از کاتابولیسم عضلانی.' :
+                    '🥗 Cutting phase guidelines: Moderate deficit, reduce training volume to preserve muscle mass.';
+            }
+        };
+
+        // Tool 5: Frequency Distribution Analyzer
+        window.calculateFreq = () => {
+            const totalSets = parseInt(document.getElementById('totalSetsInput').value);
+            const res = document.getElementById('freqResult');
+            res.style.display = 'block';
+
+            if(isNaN(totalSets)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً تعداد کل ست‌های هفتگی را وارد کنید.' : 'Please enter total weekly sets.';
+                return;
+            }
+
+            const perSession = Math.round(totalSets / 3);
+            res.innerHTML = currentLang === 'fa' ? 
+                `📊 توزیع فرکانس ایزراتل:<br>برای اجرای ${totalSets} ست در هفته، ایزراتل توصیه می‌کند آن را در <b>۳ جلسه در هفته</b> تقسیم کنید (حدود <b>${perSession} ست در هر جلسه</b>) تا کیفیت ست‌ها افت نکند.` :
+                `📊 Split across 3 sessions per week (approx. ${perSession} sets per session).`;
+        };
+
+        // Tool 6: Peak & Taper Predictor
+        window.calculateTaper = () => {
+            const weeksOut = parseInt(document.getElementById('taperInput').value);
+            const res = document.getElementById('taperResult');
+            res.style.display = 'block';
+
+            if(isNaN(weeksOut)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً هفته‌های باقی‌مانده را وارد کنید.' : 'Please enter weeks out.';
+                return;
+            }
+
+            if(weeksOut > 2) {
+                res.innerHTML = currentLang === 'fa' ? '⚙️ وضعیت عادی: ادامه برنامه‌ریزی مزوسیکل با اضافه بار تدریجی.' : '⚙️ Normal training phase.';
+            } else {
+                res.innerHTML, res.innerHTML = currentLang === 'fa' ? '🏆 استراتژی تیپر (Tapering & Peaking):<br>در ۲ هفته پایانی مسابقه یا تست رکورد، حجم تمرین را ۵۰ درصد کاهش دهید اما شدت (وزنه‌ها) را بالا نگه دارید تا سوپرکامپنشن (Supercompensation) رخ دهد.' : '🏆 Tapering phase: Reduce volume by 50%, maintain intensity.';
+            }
+        };
+
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        };
+    </script>
+</head>
+<body>
+
+    <header>
+        <div class="top-controls">
+            <a href="index.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
+            <button class="top-btn" onclick="toggleLang()" id="langBtn">English / EN</button>
+        </div>
+        <h1 id="mainTitle">اصول علمی برنامه‌نویسی قدرت و حجم (دکتر مایک ایزراتل)</h1>
+        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">مرجع تخصصی اصول شش‌گانه ایزراتل، پریودی‌زشن و مدیریت حجم مفرط (MRV)</p>
+    </header>
+
+    <div class="container">
+        <!-- Book & Author Introduction -->
+        <div class="source-banner">
+            <h2 id="introTitle">درباره کتاب و نویسندگان (Dr. Mike Israetel)</h2>
+            <p id="introText" style="margin: 0; line-height: 1.8;">
+                کتاب <b>"Scientific Principles of Strength Training"</b> اثر برجسته دکتر مایک ایزراتل، چاد وسلی اسمیت و دکتر جیمز هافمن، پایه‌ای‌ترین و پیشرفته‌ترین مرجع جهان در زمینه برنامه‌نویسی علمی، پریودی‌زشن، مدیریت حجم‌های کاری (MEV و MRV) و اصول ساختاری بدنسازی است.
+            </p>
+        </div>
+
+        <!-- Navigation Tabs (5 Tabs) -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('tabTools')"><span id="tabToolsText">🛠️ ابزارهای محاسباتی ایزراتل (۶ ابزار)</span></button>
+            <button class="tab-btn" onclick="switchTab('tabMaster')"><span id="tabMasterText">📖 اصول شش‌گانه کلیدی</span></button>
+            <button class="tab-btn" onclick="switchTab('tabArticles')"><span id="tabArticlesText">📚 دانشنامه مقالات (۱۲ مقاله)</span></button>
+            <button class="tab-btn" onclick="switchTab('tabMesocycle')"><span id="tabMesocycleText">📋 طراحی مزوسیکل و MRV</span></button>
+            <button class="tab-btn" onclick="switchTab('tabDiet')"><span id="tabDietText">🥗 مدیریت حجم و کات/حجم</span></button>
+        </div>
+
+        <!-- TAB 1: 6 ISRAETEL STRENGTH TOOLS -->
+        <div id="tabTools" class="tab-content active">
+            <div class="grid">
+                <!-- Tool 1 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۱. محاسبه‌گر حجم مفرط (MRV & MEV)</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تعیین محدوده ست‌های مؤثر بر اساس سطح تجربه ورزشی.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">سطح تجربه ورزشی:</label>
+                    <select id="expSelect">
+                        <option value="1">مبتدی (Novice)</option>
+                        <option value="2">متوسط (Intermediate)</option>
+                        <option value="3">پیشرفته (Advanced)</option>
+                    </select>
+                    <button class="action-btn" onclick="calculateMRV()">محاسبه محدوده‌های حجم</button>
+                    <div id="mrvResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 2 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۲. طراح مزوسیکل افزایشی (Overreaching)</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">برنامه‌ریزی افزایش ست‌ها در طول ۴ هفته مزوسیکل.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">تعداد ست هفته اول (MEV):</label>
+                    <input type="number" id="startSets" placeholder="مثال: ۱۰">
+                    <button class="action-btn" onclick="calculateMeso()">طراحی روند مزوسیکل</button>
+                    <div id="mesoResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 3 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۳. ارزیاب خستگی و شدت (RIR Guide)</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تحلیل شاخص تکرار تا ناتوانی (Reps in Reserve).</p>
+                    <label style="font-size:12px; color:var(--text-muted);">شاخص RIR انتخابی در ست‌ها:</label>
+                    <select id="rirSelect">
+                        <option value="3">RIR 3 (سه تکرار مانده تا ناتوانی)</option>
+                        <option value="2">RIR 2 (دو تکرار مانده تا ناتوانی - بهینه)</option>
+                        <option value="1">RIR 1 (یک تکرار مانده تا ناتوانی)</option>
+                        <option value="0">RIR 0 (ناتوانی کامل)</option>
+                    </select>
+                    <button class="action-btn" onclick="calculateRIR()">تحلیل سطح فشار</button>
+                    <div id="rirResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 4 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۴. راهنمای انتقال فاز (Bulk vs Cut)</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تنظیمات حجم تمرین در دوره‌های حجم و کات.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">هدف تمرینی فعلی شما:</label>
+                    <select id="phaseSelect">
+                        <option value="bulk">دوره حجم (Hypertrophy / Bulking)</option>
+                        <option value="cut">دوره کات و چربی‌سوزی (Fat Loss / Cutting)</option>
+                    </select>
+                    <button class="action-btn" onclick="calculatePhase()">دریافت راهنمای فاز</button>
+                    <div id="phaseResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 5 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۵. تحلیل‌گر فرکانس و توزیع ست‌ها</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تقسیم‌بندی ست‌های هفتگی در جلسات تمرینی.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">مجموع ست‌های هفتگی برای عضله:</label>
+                    <input type="number" id="totalSetsInput" placeholder="مثال: ۱۸">
+                    <button class="action-btn" onclick="calculateFreq()">محاسبه توزیع فرکانس</button>
+                    <div id="freqResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 6 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۶. پیش‌بینی‌کننده تیپر و اوج‌گیری (Peaking)</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تنظیم حجم برای مسابقه یا تست رکورد نهایی.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">چند هفته تا تست رکورد یا مسابقه مانده است؟</label>
+                    <input type="number" id="taperInput" placeholder="مثال: ۲">
+                    <button class="action-btn" onclick="calculateTaper()">بررسی استراتژی تیپر</button>
+                    <div id="taperResult" class="result-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: 6 CORE PRINCIPLES (ISRAETEL FRAMEWORK) -->
+        <div id="tabMaster" class="tab-content">
+            <div class="card">
+                <h2>📖 اصول شش‌گانه بنیادین ایزراتل (The 6 Scientific Principles)</h2>
+                <div class="grid" style="margin-top: 20px;">
+                    <div class="detailed-article">
+                        <h3>۱. اصل اضافه‌بار (Overload)</h3>
+                        <p>بنیادی‌ترین قانون رشد. بدن تنها زمانی سازگار می‌شود که با باری فراتر از آستانه قبلی مواجه شود؛ در غیر این صورت هیچ سیگنالی برای هایپرتروفی صادر نخواهد شد.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۲. اصل ویژگی‌گرایی (Specificity)</h3>
+                        <p>سازگاری دقیقاً با نوع استرس اعمال‌شده مطابقت دارد. اگر به دنبال افزایش قدرت یا حجم عضلات خاصی هستید، حرکات و زاویه‌ها باید دقیقاً هدفمند انتخاب شوند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۳. اصل خستگی قابل مدیریت (Fatigue Management)</h3>
+                        <p>تمرین مداوم با حداکثر توان غیرممکن است. خستگی عصبی و بافتی باید در طول مزوسیکل مدیریت شده و در پایان با هفته‌های دلود (Deload) تخلیه شود.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۴. اصل تغییر محرک (Stimulus Variation)</h3>
+                        <p>تغییر هوشمندانه حرکات، زوایا یا رنج تکرارها در بلندمدت برای جلوگیری از عادت کردن سیستم عصبی و عضلانی به یک الگوی یکنواخت.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۵. اصل فازبندی (Phase Potentiation)</h3>
+                        <p>ساختاردهی به بلوک‌های تمرینی به‌گونه‌ای که هر فاز (پایه، قدرت، حجم) بستر و پایه قدرتمندی برای فاز بعدی و پیشرفت نهایی ایجاد کند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۶. اصل تفاوت‌های فردی (Individual Differences)</h3>
+                        <p>هیچ برنامه واحدی برای همه افراد عالی نیست. ژنتیک، ریکاوری، استرس روزمره و ساختار آناتومیک تعیین‌کننده پاسخ اختصاصی هر فرد به حجم و شدت است.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: 12 KNOWLEDGE ARTICLES -->
+        <div id="tabArticles" class="tab-content">
+            <div class="card">
+                <h2>📚 دانشنامه جامع مقالات برنامه‌نویسی و پریودی‌زشن</h2>
+                <div class="grid" style="margin-top: 20px;">
+                    <div class="detailed-article">
+                        <h3>۱. مفهوم دقیق حجم مؤثر (MEV) چیست؟</h3>
+                        <p>حداقل تعداد ست‌های هفتگی که برای ایجاد رشد عضلانی بالاتر از سطح پایه مورد نیاز است. کمتر از این مقدار، وقت تلف کردن است.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۲. سقف تحمل عضلات یا حجم مفرط (MRV)</h3>
+                        <p>حداکثر حجمی که بدن می‌تواند در یک هفته تحمل کرده و ریکاوری کند. عبور از MRV منجر به افت عملکرد و تمرین‌زدگی شدید می‌شود.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۳. فلسفه طراحی مزوسیکل‌های ۴ هفته‌ای</h3>
+                        <p>چرا مزوسیکل‌های کوتاه و متمرکز بهترین ابزار برای ثبت رکوردهای پایدار هستند؟ شروع از MEV و رسیدن پله به پله به MRV.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۴. هنر اجرای هفته‌های دلود (Deload)</h3>
+                        <p>چگونه بدون از دست دادن حجم عضلانی، خستگی مزمن سیستم عصبی را در یک هفته سبک پاکسازی کنیم؟</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۵. اهمیت شاخص RIR (تکرار تا ناتوانی)</h3>
+                        <p>چرا ناتوانی در تمام ست‌ها ضروری نیست و حفظ ۲ الی ۳ تکرار ذخیره بهترین تعادل را بین رشد و ریکاوری ایجاد می‌کند؟</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۶. مدیریت حجم تمرین در دوره‌های کات</h3>
+                        <p>چرا در کسری کالری باید حجم تمرین را کاهش دهیم؟ تحلیل دقیق کاهش ظرفیت گلیکوژن و ریکاوری.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۷. انتخاب هوشمندانه حرکات (Exercise Selection)</h3>
+                        <p>اولویت‌بندی حرکات چندمفصلی پایه در برابر حرکات ایزوله برای به حداکثر رساندن تنش مکانیکی و راندمان تمرین.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۸. فرکانس و توزیع حجم در طول هفته</h3>
+                        <p>بررسی مزایای تقسیم حجم یک عضله به جای یک جلسه سنگین، در چند جلسه باکیفیت‌تر در طول هفته.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۹. ساختار فازبندی بلوکی (Block Periodization)</h3>
+                        <p>ترتیب منطقی فازهای تمرینی از حجم‌سازی عمومی تا اوج‌گیری قدرتمند برای مسابقات یا تست‌های فردی.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۰. تشخیص پدیده استپ و فلات (Plateau Busters)</h3>
+                        <p>استراتژی‌های علمی ایزراتل برای مواجهه با توقف پیشرفت وزنه، شامل تغییر زاویه، ریست وزنه یا بازنگری ریکاوری.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۱. تعادل بین استرس تمرین و استرس زندگی</h3>
+                        <p>نقش خواب، استرس شغلی و تغذیه در جابجا شدن مرزهای MRV و چگونگی تعدیل برنامه در روزهای پرفشار.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۲. اصول بازگشت به تمرین پس از استراحت طولانی</h3>
+                        <p>چگونه پس از یک وقفه طولانی بدون آسیب‌دیدگی و با کمترین درد عضلانی به چرخه تمرینات حرفه‌ای برگردیم؟</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: MESOCYCLE & MRV HUB -->
+        <div id="tabMesocycle" class="tab-content">
+            <div class="card">
+                <h2>📋 راهنمای جامع طراحی مزوسیکل و مدیریت حجم (MRV Hub)</h2>
+                <p style="color:var(--text-muted); line-height: 1.8;">
+                    مزوسیکل (Mesocycle) قلب تپنده‌ی برنامه‌نویسی ایزراتل است. این بلوک‌های ۴ الی ۶ هفته‌ای به صورت زیر سازماندهی می‌شوند:
+                    <br><br>
+                    • <b>هفته اول (حجم پایه - MEV):</b> شروع با کمترین حجم مؤثر برای ایجاد بستر ریکاوری.
+                    <br>• <b>هفته دوم و سوم (اضافه بار تدریجی):</b> اضافه کردن ۲ الی ۳ ست به برنامه‌ی هر عضله برای همگام شدن با سازگاری بدن.
+                    <br>• <b>هفته چهارم (پیک خستگی - MRV):</b> رسیدن به سقف تحمل بدن؛ بالاترین فشار و حجم کاری.
+                    <br>• <b>هفته پنجم (دلود - Deload):</b> کاهش ۵۰ درصدی حجم و ۳۰ درصدی وزنه‌ها جهت بازسازی کامل فیبرها و سیستم عصبی.
+                </p>
+            </div>
+        </div>
+
+        <!-- TAB 5: DIET & PHASE TRANSITIONS -->
+        <div id="tabDiet" class="tab-content">
+            <div class="card">
+                <h2>🥗 تنظیمات تغذیه و انتقال فاز (Diet & Phase Transitions)</h2>
+                <p style="color:var(--text-muted); line-height: 1.8;">
+                    تغییرات فاز تمرینی (انتقال از حجم به کات یا برعکس) نیازمند انطباق دقیق تغذیه‌ای است:
+                    <br><br>
+                    • <b>دوره حجم (Bulking):</b> فراهم کردن انرژی مازاد برای سنتز حداکثری بافت عضلانی و رکوردشکنی‌های پیاپی.
+                    <br>• <b>دوره کات (Cutting):</b> مدیریت هوشمند افت کالری همراه با کاهش تدریجی حجم تمرین تا بدن دچار کاتابولیسم شدید و از دست رفتن عضلات نشود.
+                    <br>• <b>فاز نگهداری (Maintenance):</b> استراحت بین فازها برای تثبیت وزن بدن و بازنشانی حساسیت هورمونی.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

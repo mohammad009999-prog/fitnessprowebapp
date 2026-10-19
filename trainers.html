@@ -1,34 +1,37 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en" id="trainersRoot" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro - Trainers Marketplace & Portal</title>
+    <title>Fitness Pro - Trainers & Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --accent: #ff9800;
-            --danger: #f44336;
-            --text-main: #ffffff;
-            --text-muted: #b0b0b0;
-            --border: #333333;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-solid: #1e293b;
+            --accent: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
         }
         body {
             font-family: 'Vazirmatn', sans-serif;
-            background: var(--bg-color);
+            background: var(--bg-gradient);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
         }
         header {
             text-align: center;
             margin-bottom: 25px;
             position: relative;
         }
-        h1 { color: var(--accent); margin-bottom: 5px; }
+        h1 { color: var(--accent); margin-bottom: 5px; font-weight: 900; }
         .top-controls {
             position: absolute;
             top: 0;
@@ -41,18 +44,53 @@
             left: 0;
         }
         .top-btn {
-            background: var(--card-bg);
+            background: var(--card-solid);
             color: var(--accent);
-            border: 1px solid var(--accent);
+            border: 1px solid var(--border);
             padding: 8px 14px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
             font-size: 13px;
             text-decoration: none;
             font-family: 'Vazirmatn', sans-serif;
+            backdrop-filter: blur(10px);
         }
         .top-btn:hover { background: var(--accent); color: #000; }
+        
+        /* Navigation Tabs Styling */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: var(--card-solid);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px 22px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: #000;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
         .container {
             max-width: 1100px;
             margin: 0 auto;
@@ -62,65 +100,79 @@
         }
         .card {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 16px;
             border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
-        .card h2 { color: var(--accent); margin-top: 0; }
+        .card h2 { color: var(--accent); margin-top: 0; font-weight: 700; }
         input, textarea, select {
             width: 100%;
-            padding: 10px;
-            background: #111;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.8);
             border: 1px solid var(--border);
             color: var(--text-main);
-            border-radius: 6px;
+            border-radius: 10px;
             font-size: 14px;
             box-sizing: border-box;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             font-family: 'Vazirmatn', sans-serif;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
         }
         button.action-btn {
-            background: #4caf50;
-            color: white;
+            background: var(--accent-gradient);
+            color: #000;
             border: none;
-            padding: 12px 16px;
-            border-radius: 6px;
+            padding: 14px 20px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 800;
             width: 100%;
+            font-size: 15px;
             font-family: 'Vazirmatn', sans-serif;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+            transition: transform 0.2s, opacity 0.2s;
         }
+        button.action-btn:hover { transform: translateY(-2px); opacity: 0.95; }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
         .trainer-card {
-            background: #181818;
+            background: var(--card-solid);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            gap: 8px;
+            gap: 10px;
+            transition: transform 0.2s, border-color 0.2s;
         }
+        .trainer-card:hover { transform: translateY(-4px); border-color: var(--accent); }
         .trainer-card img {
             width: 90px;
             height: 90px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
-        .trainer-card h3 { margin: 5px 0 0 0; color: var(--accent); }
+        .trainer-card h3 { margin: 8px 0 0 0; color: var(--accent); font-size: 18px; }
         .badge {
-            background: #222;
-            color: #4caf50;
-            padding: 4px 10px;
-            border-radius: 4px;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
         }
         .prop-line {
             font-size: 13px;
@@ -132,12 +184,11 @@
             text-align: right;
         }
         .trainer-exclusive-panel {
-            display: none;
-            background: #162218;
-            border: 2px solid #4caf50;
-            border-radius: 10px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--success);
+            border-radius: 16px;
             padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         table.admin-table {
             width: 100%;
@@ -147,50 +198,77 @@
         }
         table.admin-table th, table.admin-table td {
             border: 1px solid var(--border);
-            padding: 10px;
+            padding: 12px;
             text-align: left;
         }
         [dir="rtl"] table.admin-table th, [dir="rtl"] table.admin-table td {
             text-align: right;
         }
-        table.admin-table th { background: #222; color: var(--accent); }
+        table.admin-table th { background: rgba(15, 23, 42, 0.6); color: var(--accent); }
         
-        /* Modal Popup Styles */
+        /* Modern Modal Popup Styles */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 15px;
+            box-sizing: border-box;
         }
         .modal {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            border: 1px solid var(--accent);
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
             width: 100%;
             max-width: 650px;
             box-sizing: border-box;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
         .close-modal {
-            background: none; border: none; color: var(--text-muted); float: right; cursor: pointer; font-size: 20px;
+            background: none; border: none; color: var(--text-muted); float: right; cursor: pointer; font-size: 24px; font-weight: bold;
         }
         [dir="rtl"] .close-modal { float: left; }
+        
+        /* Modern Compact Scrollable Checklist */
         .scrollable-checklist {
-            max-height: 160px;
+            max-height: 180px;
             overflow-y: auto;
-            background: #111;
+            background: rgba(15, 23, 42, 0.6);
             border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 10px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 8px;
             font-size: 13px;
+        }
+        .scrollable-checklist label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .scrollable-checklist label:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+        }
+        .scrollable-checklist input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            margin-bottom: 0;
+            cursor: pointer;
         }
     </style>
 
@@ -198,7 +276,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, setDoc, doc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, setDoc, doc, getDoc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAilAXYxno9aywWxqy7ji52Dq-xvneKf5U",
@@ -219,20 +297,24 @@
         const EX_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/free-exercise-db/main/';
 
         let currentUser = null;
-        let currentLang = 'en';
+        let currentLang = 'fa'; // Default to Farsi as preferred
         let allExercises = [];
         let selectedTrainerForOrder = null;
+        let approvedTrainersList = [];
 
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
+            const trainerPortalTab = document.getElementById('tabTrainerPortal');
             if(!user) {
                 document.getElementById('applySection').style.opacity = '0.5';
                 document.getElementById('authNotice').style.display = 'block';
-                document.getElementById('trainerPortalSection').style.display = 'none';
+                if(trainerPortalTab) trainerPortalTab.style.display = 'none';
             } else {
                 document.getElementById('applySection').style.opacity = '1';
                 document.getElementById('authNotice').style.display = 'none';
                 await checkTrainerStatus(user.uid);
+                setupRealtimeListeners(user.email);
+                loadUserTransactions(user.email);
             }
         });
 
@@ -240,17 +322,70 @@
             try {
                 const docRef = doc(db, "trainers", uid);
                 const docSnap = await getDoc(docRef);
-                const portal = document.getElementById('trainerPortalSection');
+                const portalSection = document.getElementById('trainerPortalSection');
+                const trainerPortalTab = document.getElementById('tabTrainerPortal');
                 
                 if (docSnap.exists() && docSnap.data().status === 'approved') {
-                    portal.style.display = 'block';
+                    if(portalSection) portalSection.style.display = 'block';
+                    if(trainerPortalTab) trainerPortalTab.style.display = 'inline-block';
                     document.getElementById('welcomeTrainerName').innerText = docSnap.data().name;
                     loadTrainerPaidOrders(currentUser.email);
                 } else {
-                    portal.style.display = 'none';
+                    if(portalSection) portalSection.style.display = 'none';
+                    if(trainerPortalTab) trainerPortalTab.style.display = 'none';
                 }
             } catch(e) {
                 console.error(e);
+            }
+        }
+
+        function setupRealtimeListeners(userEmail) {
+            try {
+                onSnapshot(collection(db, "trainer_orders"), (snapshot) => {
+                    let newOrdersCount = 0;
+                    snapshot.forEach(doc => {
+                        let data = doc.data();
+                        if(data.trainerEmail === userEmail) {
+                            newOrdersCount++;
+                        }
+                    });
+                    const badge = document.getElementById('liveNotificationBadge');
+                    if(badge && newOrdersCount > 0) {
+                        badge.style.display = 'inline-block';
+                        badge.innerText = `${newOrdersCount} ${currentLang === 'fa' ? 'سفارش فعال' : 'Active Orders'}`;
+                    }
+                });
+            } catch(e) {
+                console.error("Realtime listener error:", e);
+            }
+        }
+
+        async function loadUserTransactions(userEmail) {
+            const tbody = document.getElementById('transactionTableBody');
+            if(!tbody) return;
+            try {
+                const querySnap = await getDocs(collection(db, "trainer_orders"));
+                let html = '';
+                let totalSpent = 0;
+                querySnap.forEach(d => {
+                    let order = d.data();
+                    if(order.clientEmail === userEmail) {
+                        totalSpent += (order.amount || 40000);
+                        html += `
+                            <tr>
+                                <td>${order.createdAt ? order.createdAt.substring(0, 10) : 'N/A'}</td>
+                                <td><b>${order.planType}</b><br><small style="color:var(--text-muted)">مربی: ${order.trainerName || order.trainerEmail}</small></td>
+                                <td style="color:var(--accent);">${(order.amount || 40000).toLocaleString()} ${currentLang === 'fa' ? 'تومان' : 'Tomans'}</td>
+                                <td><span class="badge" style="background:rgba(16,185,129,0.15); color:var(--success);">موفق (زرین‌پال)</span></td>
+                            </tr>
+                        `;
+                    }
+                });
+                tbody.innerHTML = html || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">${currentLang === 'fa' ? 'هیچ تراکنشی یافت نشد.' : 'No transactions found.'}</td></tr>`;
+                const totalEl = document.getElementById('walletTotalSpent');
+                if(totalEl) totalEl.innerText = `${totalSpent.toLocaleString()} ${currentLang === 'fa' ? 'تومان' : 'Tomans'}`;
+            } catch(e) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Error loading transactions.</td></tr>`;
             }
         }
 
@@ -259,6 +394,7 @@
                 const res = await fetch(EX_BASE + 'dist/exercises.json');
                 allExercises = await res.json();
                 const select = document.getElementById('exerciseSelector');
+                if(!select) return;
                 let html = currentLang === 'fa' ? '<option value="">-- انتخاب تمرین از دیتابیس --</option>' : '<option value="">-- Select Exercise from Database --</option>';
                 allExercises.forEach(ex => {
                     html += `<option value="${ex.name}">${ex.name} (${ex.category || 'General'})</option>`;
@@ -285,6 +421,7 @@
 
         async function loadTrainerPaidOrders(trainerEmail) {
             const tableBody = document.getElementById('paidOrdersTableBody');
+            if(!tableBody) return;
             try {
                 const querySnap = await getDocs(collection(db, "trainer_orders"));
                 let html = '';
@@ -296,15 +433,15 @@
                                 <td>${order.clientEmail}</td>
                                 <td>
                                     <b>${order.planType}</b><br>
-                                    <small style="color:var(--text-muted);">Age: ${order.age} | Wt: ${order.weight}kg | Ht: ${order.height}cm | Exp: ${order.experience}</small><br>
-                                    <small style="color:var(--accent);">Goal Body: ${order.bodyGoal || 'N/A'}</small><br>
-                                    <small style="color:#ff5252;">Injuries: ${order.injuries || 'None'}</small><br>
-                                    <small style="color:#64b5f6;">Habits: ${order.habits || 'None'}</small>
-                                    ${order.clientImageUrl ? `<br><a href="${order.clientImageUrl}" target="_blank" style="color:#4caf50;">📷 View Physique Photo</a>` : ''}
+                                    <small style="color:var(--text-muted);">سن: ${order.age} | وزن: ${order.weight}kg | قد: ${order.height}cm | تجربه: ${order.experience}</small><br>
+                                    <small style="color:var(--accent);">هدف بدنی: ${order.bodyGoal || 'N/A'}</small><br>
+                                    <small style="color:#f87171;">آسیب‌ها: ${order.injuries || 'ندارد'}</small><br>
+                                    <small style="color:#60a5fa;">عادت‌ها: ${order.habits || 'ندارد'}</small>
+                                    ${order.clientImageUrl ? `<br><a href="${order.clientImageUrl}" target="_blank" style="color:var(--success);">📷 مشاهده عکس فیزیک</a>` : ''}
                                 </td>
-                                <td><span class="badge" style="background:#1a3a2a; color:#4caf50;">PAID</span></td>
+                                <td><span class="badge" style="background:rgba(16,185,129,0.15); color:var(--success);">پرداخت‌شده</span></td>
                                 <td>
-                                    <button class="action-btn" style="padding:4px 8px; font-size:11px;" onclick="selectClientForPlan('${order.clientEmail}')">${currentLang === 'fa' ? 'نوشتن برنامه' : 'Write Routine'}</button>
+                                    <button class="action-btn" style="padding:6px 12px; font-size:12px;" onclick="selectClientForPlan('${order.clientEmail}')">${currentLang === 'fa' ? 'نوشتن برنامه' : 'Write Routine'}</button>
                                 </td>
                             </tr>
                         `;
@@ -345,17 +482,15 @@
             const experience = document.getElementById('clientExperience').value;
             const bodyGoal = document.getElementById('clientBodyGoal').value;
 
-            // Collect Injuries
             const injuryCheckboxes = document.querySelectorAll('.injury-chk:checked');
             let injuriesList = Array.from(injuryCheckboxes).map(cb => cb.value).join(', ');
             const customInjuries = document.getElementById('clientCustomInjuries').value;
-            if(customInjuries) injuriesList = injuriesList ? injuriesList + ', ' + customInjuries : customInjuries;
+            if(customInjuries) injuriesList = injuriesList ? injuriesList + '، ' + customInjuries : customInjuries;
 
-            // Collect Habits
             const habitCheckboxes = document.querySelectorAll('.habit-chk:checked');
             let habitsList = Array.from(habitCheckboxes).map(cb => cb.value).join(', ');
             const customHabits = document.getElementById('clientCustomHabits').value;
-            if(customHabits) habitsList = habitsList ? habitsList + ', ' + customHabits : customHabits;
+            if(customHabits) habitsList = habitsList ? habitsList + '، ' + customHabits : customHabits;
 
             const fileInput = document.getElementById('clientImageFile');
             const progress = document.getElementById('orderProgress');
@@ -392,8 +527,8 @@
                     age: age,
                     experience: experience,
                     bodyGoal: bodyGoal,
-                    injuries: injuriesList || 'None',
-                    habits: habitsList || 'None',
+                    injuries: injuriesList || 'ندارد',
+                    habits: habitsList || 'ندارد',
                     clientImageUrl: clientImageUrl,
                     amount: 40000,
                     status: "paid",
@@ -403,11 +538,48 @@
                 progress.style.display = 'none';
                 alert(currentLang === 'fa' ? 'پرداخت موفقیت‌آمیز بود! مشخصات کامل شما برای مربی ارسال شد.' : 'Payment Successful! Your complete profile and consultation form have been sent to ' + selectedTrainerForOrder.name);
                 closeOrderModal();
+                if(currentUser) loadUserTransactions(currentUser.email);
             } catch(e) {
                 progress.style.display = 'none';
                 alert("Error: " + e.message);
             }
         };
+
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        };
+
+        window.filterTrainers = () => {
+            const query = document.getElementById('trainerSearchInput').value.toLowerCase();
+            const grid = document.getElementById('approvedTrainersGrid');
+            let html = '';
+            approvedTrainersList.forEach(t => {
+                if(t.name.toLowerCase().includes(query) || t.specialty.toLowerCase().includes(query) || t.gym.toLowerCase().includes(query)) {
+                    html += renderTrainerCard(t);
+                }
+            });
+            grid.innerHTML = html || `<p style="text-align:center; grid-column:1/-1; color:var(--text-muted);">${currentLang === 'fa' ? 'مربی با این مشخصات یافت نشد.' : 'No trainers found matching your search.'}</p>`;
+        };
+
+        function renderTrainerCard(t) {
+            return `
+                <div class="trainer-card">
+                    <img src="${t.imageUrl}" alt="${t.name}">
+                    <h3>${t.name}</h3>
+                    <span class="badge">${t.specialty}</span>
+                    <div class="prop-line"><b>${currentLang === 'fa' ? 'باشگاه:' : 'Gym:'}</b> ${t.gym || 'N/A'}</div>
+                    ${t.certificates ? `<div class="prop-line"><b>${currentLang === 'fa' ? 'مدارک:' : 'Certificates:'}</b> ${t.certificates}</div>` : ''}
+                    ${t.championships ? `<div class="prop-line"><b>${currentLang === 'fa' ? 'قهرمانی‌ها:' : 'Championships:'}</b> ${t.championships}</div>` : ''}
+                    <div class="prop-line"><b>${currentLang === 'fa' ? 'سابقه:' : 'Experience:'}</b> ${t.experience}</div>
+                    <p style="font-size:13px; color:var(--text-main); line-height:1.4; margin-top:4px;">${t.bio}</p>
+                    <button class="action-btn" style="margin-top:auto;" onclick="openOrderModal('${t.email}', '${t.name}')">${currentLang === 'fa' ? 'سفارش برنامه و مشاوره (۴۰ هزار تومان)' : 'Buy Plan & Pay (40k Tomans)'}</button>
+                </div>
+            `;
+        }
 
         window.toggleLang = () => {
             currentLang = currentLang === 'en' ? 'fa' : 'en';
@@ -415,46 +587,25 @@
             root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
             root.setAttribute('lang', currentLang);
 
-            // Header & Main Titles
             document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'English / EN' : 'فارسی / FA';
             document.getElementById('homeLink').innerText = currentLang === 'fa' ? '🏠 خانه / Home' : '🏠 Home / خانه';
-            document.getElementById('mainTitle').innerText = currentLang === 'fa' ? 'بازار مربیان فیتنس پرو' : 'Trainers Marketplace';
-            document.getElementById('mainSub').innerText = currentLang === 'fa' ? 'مشاهده مربیان تایید شده، انتخاب مربی یا پنل اختصاصی مربی' : 'Browse certified fitness trainers, choose your coach, or manage your trainer portal';
+            document.getElementById('mainTitle').innerText = currentLang === 'fa' ? 'مربیان فیتنس پرو' : 'Fitness Pro Trainers';
+            document.getElementById('mainSub').innerText = currentLang === 'fa' ? 'مشاهده مربیان تایید شده، انتخاب مربی یا مدیریت حساب' : 'Browse certified fitness trainers, choose your coach, or manage your account';
 
-            // Marketplace Section
-            document.getElementById('listTitle').innerText = currentLang === 'fa' ? 'مربیان تایید شده آماده همکاری' : 'Certified Trainers Available';
-            document.getElementById('listSub').innerText = currentLang === 'fa' ? 'یک مربی مجرب انتخاب کنید تا برنامه‌های اختصاصی تمرین و تغذیه را دریافت کنید.' : 'Select a verified coach to receive personalized workout plans and continuous guidance.';
-            
-            // Sign Up Section
-            document.getElementById('applyTitle').innerText = currentLang === 'fa' ? 'آیا مربی بدنسازی هستید؟ اینجا ثبت‌نام کنید' : 'Are You a Fitness Trainer? Sign Up Here';
-            document.getElementById('applySub').innerText = currentLang === 'fa' ? 'پروفایل تخصصی خود را تکمیل کرده و عکس خود را بارگذاری کنید. پس از بررسی ادمین، پروفایل شما فعال می‌شود.' : 'Fill out your professional profile and upload your photo. Once reviewed and approved by the admin, your profile will appear in the public marketplace above.';
-            document.getElementById('authNotice').innerText = currentLang === 'fa' ? '⚠️ لطفاً ابتدا در حساب کاربری خود وارد شوید تا درخواست به پروفایل شما متصل شود.' : '⚠️ Please sign in to your user account first so your application links to your profile.';
+            document.getElementById('tabMarketText').innerText = currentLang === 'fa' ? '🏋️‍♂️ بازار مربیان' : '🏋️‍♂️ Trainers Marketplace';
+            document.getElementById('tabApplyText').innerText = currentLang === 'fa' ? '📝 ثبت‌نام مربی' : '📝 Become a Trainer';
+            document.getElementById('tabWalletText').innerText = currentLang === 'fa' ? '💳 کیف پول و تراکنش‌ها' : '💳 Wallet & Transactions';
+            const portalTab = document.getElementById('tabTrainerPortal');
+            if(portalTab) portalTab.innerText = currentLang === 'fa' ? '📊 پنل مربی' : '📊 Trainer Portal';
 
-            document.getElementById('trName').placeholder = currentLang === 'fa' ? 'نام و نام خانوادگی' : 'Full Name';
-            document.getElementById('trGym').placeholder = currentLang === 'fa' ? 'باشگاه فعلی (مثال: باشگاه اکسیژن)' : 'Current Gym (e.g. Oxygen Gym)';
-            document.getElementById('trSpecialty').placeholder = currentLang === 'fa' ? 'تخصص (اختیاری - مثال: بدنسازی، چربی‌سوزی)' : 'Specialty (Optional - e.g. Bodybuilding, Weight Loss)';
-            document.getElementById('trCert').placeholder = currentLang === 'fa' ? 'مدارک و گواهینامه‌ها (اختیاری - مثال: مدرک درجه ۲ مربیگری)' : 'Certificates & Degrees (Optional - e.g. Second Degree Training Certificate)';
-            document.getElementById('trChamps').placeholder = currentLang === 'fa' ? 'قهرمانی‌ها و افتخارات (اختیاری - مثال: قهرمان استان)' : 'Championships (Optional - e.g. Provincial Champion)';
-            document.getElementById('trExp').placeholder = currentLang === 'fa' ? 'سابقه کار (مثال: ۵ سال)' : 'Years of Experience (e.g. 5 Years)';
-            document.getElementById('trBio').placeholder = currentLang === 'fa' ? 'بیوگرافی کوتاه و فلسفه مربیگری...' : 'Short Bio & Coaching Philosophy...';
-            document.getElementById('photoLabel').innerText = currentLang === 'fa' ? 'تصویر پروفایل (آپلود در کلادیناری):' : 'Profile Photo (Uploaded to Cloudinary):';
-            document.getElementById('submitBtn').innerText = currentLang === 'fa' ? 'ارسال درخواست مربیگری' : 'Submit Trainer Application';
+            document.getElementById('walletTitle').innerText = currentLang === 'fa' ? 'کیف پول و سابقه تراکنش‌های زرین‌پال' : 'Wallet & ZarinPal Transaction History';
+            document.getElementById('thDate').innerText = currentLang === 'fa' ? 'تاریخ' : 'Date';
+            document.getElementById('thTxDetails').innerText = currentLang === 'fa' ? 'جزئیات برنامه' : 'Plan Details';
+            document.getElementById('thAmount').innerText = currentLang === 'fa' ? 'مبلغ' : 'Amount';
+            document.getElementById('thTxStatus').innerText = currentLang === 'fa' ? 'وضعیت تراکنش' : 'Transaction Status';
+            document.getElementById('lblTotalSpent').innerText = currentLang === 'fa' ? 'مجموع پرداخت‌های انجام شده:' : 'Total Amount Paid:';
 
-            // Modal Form Translations
-            document.getElementById('modalTitleText').innerText = currentLang === 'fa' ? '📋 فرم مشاوره و ثبت سفارش برنامه' : '📋 Coaching Consultation Form';
-            document.getElementById('lblPlanType').innerText = currentLang === 'fa' ? 'انتخاب نوع برنامه:' : 'Select Plan Type:';
-            document.getElementById('lblWeight').innerText = currentLang === 'fa' ? 'وزن (کیلوگرم):' : 'Weight (kg):';
-            document.getElementById('lblHeight').innerText = currentLang === 'fa' ? 'قد (سانتی‌متر):' : 'Height (cm):';
-            document.getElementById('lblAge').innerText = currentLang === 'fa' ? 'سن:' : 'Age:';
-            document.getElementById('lblExp').innerText = currentLang === 'fa' ? 'سطح تجربه:' : 'Experience Level:';
-            document.getElementById('lblBodyGoal').innerText = currentLang === 'fa' ? 'هدف فیزیکی و فرم بدنی دلخواه (توضیح دهید):' : 'Describe your Desired Body Goal & Physique:';
-            document.getElementById('clientBodyGoal').placeholder = currentLang === 'fa' ? 'مثال: سیکس‌پک خشک، حجم بازو، کاهش چربی شکم...' : 'e.g. Shredded abs, massive arms, lean athletic build...';
-            document.getElementById('lblInjuriesHeader').innerText = currentLang === 'fa' ? 'انتخاب آسیب‌دیدگی‌ها (در صورت وجود):' : 'Select Any Existing Injuries:';
-            document.getElementById('clientCustomInjuries').placeholder = currentLang === 'fa' ? 'سایر جراحی‌ها، آسیب‌ها یا نکات پزشکی...' : 'Other injuries, surgeries, or medical notes...';
-            document.getElementById('lblHabitsHeader').innerText = currentLang === 'fa' ? 'عادت‌های روزانه و سبک زندگی:' : 'Lifestyle & Daily Habits:';
-            document.getElementById('clientCustomHabits').placeholder = currentLang === 'fa' ? 'سایر عادت‌ها (مثال: کار پشت میز، بی‌خوابی...)' : 'Other habits (e.g. Desk job, sleeping late...)';
-            document.getElementById('lblClientPhoto').innerText = currentLang === 'fa' ? 'آپلود عکس فیزیک بدنی (اختیاری برای تحلیل بهتر):' : 'Upload Body/Physique Photo (Optional):';
-            document.getElementById('payZarinBtnText').innerText = currentLang === 'fa' ? 'پرداخت با زرین‌پال و ارسال برای مربی (۴۰ هزار تومان)' : 'Pay with ZarinPal & Send to Trainer (40k Tomans)';
+            document.getElementById('trainerSearchInput').placeholder = currentLang === 'fa' ? 'جستجوی مربی بر اساس نام، تخصص یا باشگاه...' : 'Search trainers by name, specialty, or gym...';
 
             loadApprovedTrainers();
         };
@@ -530,26 +681,19 @@
 
         window.loadApprovedTrainers = async () => {
             const grid = document.getElementById('approvedTrainersGrid');
+            if(!grid) return;
             try {
                 const querySnap = await getDocs(collection(db, "trainers"));
-                let html = '';
+                approvedTrainersList = [];
                 querySnap.forEach(d => {
                     let t = d.data();
                     if(t.status === 'approved') {
-                        html += `
-                            <div class="trainer-card">
-                                <img src="${t.imageUrl}" alt="${t.name}">
-                                <h3>${t.name}</h3>
-                                <span class="badge">${t.specialty}</span>
-                                <div class="prop-line"><b>${currentLang === 'fa' ? 'باشگاه:' : 'Gym:'}</b> ${t.gym || 'N/A'}</div>
-                                ${t.certificates ? `<div class="prop-line"><b>${currentLang === 'fa' ? 'مدارک:' : 'Certificates:'}</b> ${t.certificates}</div>` : ''}
-                                ${t.championships ? `<div class="prop-line"><b>${currentLang === 'fa' ? 'قهرمانی‌ها:' : 'Championships:'}</b> ${t.championships}</div>` : ''}
-                                <div class="prop-line"><b>${currentLang === 'fa' ? 'سابقه:' : 'Experience:'}</b> ${t.experience}</div>
-                                <p style="font-size:13px; color:var(--text-main); line-height:1.4; margin-top:4px;">${t.bio}</p>
-                                <button class="action-btn" style="margin-top:auto; background:var(--accent); color:#000;" onclick="openOrderModal('${t.email}', '${t.name}')">${currentLang === 'fa' ? 'سفارش برنامه و مشاوره (زرین‌پال)' : 'Buy Plan & Pay with ZarinPal'}</button>
-                            </div>
-                        `;
+                        approvedTrainersList.push(t);
                     }
+                });
+                let html = '';
+                approvedTrainersList.forEach(t => {
+                    html += renderTrainerCard(t);
                 });
                 grid.innerHTML = html || `<p style="text-align:center; grid-column:1/-1; color:var(--text-muted);">${currentLang === 'fa' ? 'هنوز مربی تایید شده‌ای وجود ندارد.' : 'No approved trainers available right now.'}</p>`;
             } catch(e) {
@@ -619,1008 +763,223 @@
 
     <header>
         <div class="top-controls">
-            <a href="index.html" class="top-btn" id="homeLink">🏠 Home / خانه</a>
-            <button class="top-btn" onclick="toggleLang()" id="langBtn">فارسی / FA</button>
+            <a href="index.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
+            <button class="top-btn" onclick="toggleLang()" id="langBtn">English / EN</button>
         </div>
-        <h1 id="mainTitle">Trainers Marketplace</h1>
-        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">Browse certified fitness trainers, choose your coach, or manage your trainer portal</p>
+        <h1 id="mainTitle">مربیان فیتنس پرو</h1>
+        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">مشاهده مربیان تایید شده، انتخاب مربی یا مدیریت حساب</p>
     </header>
+
+    <!-- Navigation Tabs Bar -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="switchTab('tabMarketplace')"><span id="tabMarketText">🏋️‍♂️ بازار مربیان</span></button>
+        <button class="tab-btn" onclick="switchTab('tabBecomeTrainer')"><span id="tabApplyText">📝 ثبت‌نام مربی</span></button>
+        <button class="tab-btn" onclick="switchTab('tabWalletSection')"><span id="tabWalletText">💳 کیف پول و تراکنش‌ها</span></button>
+        <button class="tab-btn" id="tabTrainerPortal" style="display:none;" onclick="switchTab('tabPortalSection')"><span id="tabPortalText">📊 پنل مربی</span></button>
+    </div>
 
     <div class="container">
 
-        <!-- EXCLUSIVE TRAINER MANAGEMENT PANEL (Appears only when approved) -->
-        <div class="trainer-exclusive-panel" id="trainerPortalSection">
-            <h2 style="color:#4caf50; margin-top:0;">🏋️‍♂️ Trainer Dashboard Portal: <span id="welcomeTrainerName" style="color:var(--accent);"></span></h2>
-            <p style="font-size:13px; color:var(--text-muted);">Manage your paid client orders and build custom workouts or upload routine photos directly.</p>
-            
-            <!-- PAID CLIENT ORDERS LIST -->
-            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333; margin-top:15px;">
-                <h3 style="color:var(--accent); margin-top:0; font-size:16px;">Paid Client Orders & User Stats</h3>
+        <!-- TAB 1: MARKETPLACE & SEARCH -->
+        <div id="tabMarketplace" class="tab-content active">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <h2 style="margin: 0;" id="listTitle">مربیان تایید شده آماده همکاری</h2>
+                        <p style="font-size:13px; color:var(--text-muted); margin: 5px 0 0 0;" id="listSub">یک مربی مجرب انتخاب کنید تا برنامه‌های اختصاصی تمرین و تغذیه را دریافت کنید.</p>
+                    </div>
+                    <input type="text" id="trainerSearchInput" placeholder="جستجوی مربی بر اساس نام، تخصص یا باشگاه..." onkeyup="filterTrainers()" style="max-width: 320px; margin-bottom: 0;">
+                </div>
+                <div id="approvedTrainersGrid" class="grid">
+                    <p style="text-align:center; grid-column:1/-1;">در حال بارگذاری مربیان...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: BECOME A TRAINER (SIGN UP) -->
+        <div id="tabBecomeTrainer" class="tab-content">
+            <div class="card" id="applySection">
+                <h2 id="applyTitle">آیا مربی بدنسازی هستید؟ اینجا ثبت‌نام کنید</h2>
+                <p style="font-size:13px; color:var(--text-muted);" id="applySub">پروفایل تخصصی خود را تکمیل کرده و عکس خود را بارگذاری کنید. پس از بررسی ادمین، پروفایل شما فعال می‌شود.</p>
+                
+                <div id="authNotice" style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--accent); padding: 12px; border-radius: 10px; margin-bottom: 16px; display: none; font-size: 13px; color: var(--accent);">
+                    ⚠️ لطفاً ابتدا در حساب کاربری خود وارد شوید تا درخواست به پروفایل شما متصل شود.
+                </div>
+
+                <input type="text" id="trName" placeholder="نام و نام خانوادگی">
+                <input type="text" id="trGym" placeholder="باشگاه فعلی (مثال: باشگاه اکسیژن)">
+                <input type="text" id="trSpecialty" placeholder="تخصص (اختیاری - مثال: بدنسازی، چربی‌سوزی)">
+                <input type="text" id="trCert" placeholder="مدارک و گواهینامه‌ها (اختیاری - مثال: مدرک درجه ۲ مربیگری)">
+                <input type="text" id="trChamps" placeholder="قهرمانی‌ها و افتخارات (اختیاری - مثال: قهرمان استان)">
+                <input type="text" id="trExp" placeholder="سابقه کار (مثال: ۵ سال)">
+                <textarea id="trBio" placeholder="بیوگرافی کوتاه و فلسفه مربیگری..." rows="3"></textarea>
+                
+                <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:5px;" id="photoLabel">تصویر پروفایل (آپلود در کلادیناری):</label>
+                <input type="file" id="trImageFile" accept="image/*">
+                
+                <button class="action-btn" onclick="submitTrainerApplication()" id="submitBtn">ارسال درخواست مربیگری</button>
+                <div id="applyProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 3: WALLET & TRANSACTION HISTORY -->
+        <div id="tabWalletSection" class="tab-content">
+            <div class="card">
+                <h2 id="walletTitle">کیف پول و سابقه تراکنش‌های زرین‌پال</h2>
+                <p style="font-size:13px; color:var(--text-muted);">مشاهده تمام پرداخت‌های موفق، رسیدها و سفارش‌های مشاوره.</p>
+                
+                <div style="background:rgba(15, 23, 42, 0.6); padding:16px; border-radius:10px; border:1px solid var(--border); margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <span id="lblTotalSpent">مجموع پرداخت‌های انجام شده:</span>
+                    <span id="walletTotalSpent" style="color:var(--accent); font-weight:bold; font-size:16px;">۰ تومان</span>
+                </div>
+
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Client Email</th>
-                            <th>Plan & User Details</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th id="thDate">تاریخ</th>
+                            <th id="thTxDetails">جزئیات برنامه</th>
+                            <th id="thAmount">مبلغ</th>
+                            <th id="thTxStatus">وضعیت تراکنش</th>
                         </tr>
                     </thead>
-                    <tbody id="paidOrdersTableBody">
-                        <tr><td colspan="4" style="text-align:center;">Loading paid orders...</td></tr>
+                    <tbody id="transactionTableBody">
+                        <tr><td colspan="4" style="text-align:center;">در حال بارگذاری تراکنش‌ها...</td></tr>
                     </tbody>
                 </table>
             </div>
+        </div>
 
-            <!-- WORKOUT & NUTRITION ROUTINE BUILDER WITH EXERCISE SELECTOR & IMAGE UPLOAD -->
-            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333; margin-top:20px;">
-                <h3 style="color:var(--accent); margin-top:0; font-size:16px;">Create & Publish Routine to Client</h3>
-                <input type="email" id="clientEmail" placeholder="Client Email (Select from paid orders above)">
-                <input type="text" id="programTitle" placeholder="Program Title (e.g. 4-Week Hypertrophy & Diet)">
+        <!-- TAB 4: EXCLUSIVE TRAINER MANAGEMENT PANEL -->
+        <div id="tabPortalSection" class="tab-content">
+            <div class="trainer-exclusive-panel" id="trainerPortalSection" style="display:none;">
+                <h2 style="color:var(--success); margin-top:0;">🏋️‍♂️ پنل داشبورد مربی: <span id="welcomeTrainerName" style="color:var(--accent);"></span></h2>
+                <p style="font-size:13px; color:var(--text-muted);">مدیریت سفارشات پرداخت‌شده مشتریان و ساخت تمرینات سفارشی یا آپلود مستقیم عکس‌های برنامه.</p>
+                <div id="liveNotificationBadge" class="badge" style="background:var(--accent); color:#000; display:none; margin-bottom:10px;">۰ سفارش فعال</div>
                 
-                <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:5px;">Select Exercise from Database to Add (Optional):</label>
-                <div style="display:flex; gap:8px; margin-bottom:12px;">
-                    <select id="exerciseSelector" style="margin-bottom:0;"></select>
-                    <button class="action-btn" style="width:auto; padding:0 15px; background:var(--accent); color:#000;" onclick="appendSelectedExercise()">Add Exercise</button>
-                </div>
-
-                <textarea id="programDetails" placeholder="Type instructions or notes here..." rows="4"></textarea>
-
-                <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:5px;">Upload Routine Image (Handwritten plan, chart, or schedule):</label>
-                <input type="file" id="programImageFile" accept="image/*">
-
-                <button class="action-btn" onclick="publishTrainerProgram()">Publish Custom Plan & Image to Client's App Account</button>
-                <div id="programPublishProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
-            </div>
-        </div>
-
-        <!-- Approved Trainers Marketplace Grid -->
-        <div class="card">
-            <h2 id="listTitle">Certified Trainers Available</h2>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;" id="listSub">Select a verified coach to receive personalized workout plans and continuous guidance.</p>
-            <div id="approvedTrainersGrid" class="grid">
-                <p style="text-align:center; grid-column:1/-1;">Loading verified trainers...</p>
-            </div>
-        </div>
-
-        <!-- Trainer Sign Up Form -->
-        <div class="card" id="applySection">
-            <h2 id="applyTitle">Are You a Fitness Trainer? Sign Up Here</h2>
-            <p style="font-size:13px; color:var(--text-muted);" id="applySub">Fill out your professional profile and upload your photo. Once reviewed and approved by the admin, your profile will appear in the public marketplace above.</p>
-            
-            <div id="authNotice" style="background:#2c1a00; border:1px solid var(--accent); padding:10px; border-radius:6px; margin-bottom:12px; display:none; font-size:13px; color:var(--accent);">
-                ⚠️ Please sign in to your user account first so your application links to your profile.
-            </div>
-
-            <input type="text" id="trName" placeholder="Full Name">
-            <input type="text" id="trGym" placeholder="Current Gym (e.g. Oxygen Gym)">
-            <input type="text" id="trSpecialty" placeholder="Specialty (Optional - e.g. Bodybuilding, Weight Loss)">
-            <input type="text" id="trCert" placeholder="Certificates & Degrees (Optional - e.g. Second Degree Training Certificate)">
-            <input type="text" id="trChamps" placeholder="Championships (Optional - e.g. Provincial Champion)">
-            <input type="text" id="trExp" placeholder="Years of Experience (e.g. 5 Years)">
-            <textarea id="trBio" placeholder="Short Bio & Coaching Philosophy..." rows="3"></textarea>
-            
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:5px;" id="photoLabel">Profile Photo (Uploaded to Cloudinary):</label>
-            <input type="file" id="trImageFile" accept="image/*">
-            
-            <button class="action-btn" onclick="submitTrainerApplication()" id="submitBtn">Submit Trainer Application</button>
-            <div id="applyProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
-        </div>
-
-    </div>
-
-    <!-- CLIENT CONSULTATION & ORDER MODAL -->
-    <div id="orderModal" class="modal-overlay">
-        <div class="modal">
-            <button class="close-modal" onclick="closeOrderModal()">&times;</button>
-            <h2 style="color:var(--accent); margin-top:0;" id="modalTitleText">📋 Coaching Consultation Form</h2>
-            <p style="font-size:13px; color:var(--text-muted);">Ordering custom plan from: <b id="modalTrainerName" style="color:#fff;"></b> (40,000 Tomans)</p>
-            
-            <label style="font-size:13px; color:var(--text-muted);" id="lblPlanType">Select Plan Type:</label>
-            <select id="orderPlanType">
-                <option value="Workout Plan Only">Workout Plan Only (برنامه تمرینی)</option>
-                <option value="Nutrition Plan Only">Nutrition Plan Only (برنامه تغذیه)</option>
-                <option value="Both Workout & Nutrition">Both Workout & Nutrition (هر دو - تمرین و تغذیه)</option>
-            </select>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <div>
-                    <label style="font-size:12px; color:var(--text-muted);" id="lblWeight">Weight (kg):</label>
-                    <input type="number" id="clientWeight" placeholder="e.g. 75">
-                </div>
-                <div>
-                    <label style="font-size:12px; color:var(--text-muted);" id="lblHeight">Height (cm):</label>
-                    <input type="number" id="clientHeight" placeholder="e.g. 180">
-                </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <div>
-                    <label style="font-size:12px; color:var(--text-muted);" id="lblAge">Age:</label>
-                    <input type="number" id="clientAge" placeholder="e.g. 25">
-                </div>
-                <div>
-                    <label style="font-size:12px; color:var(--text-muted);" id="lblExp">Experience Level:</label>
-                    <select id="clientExperience">
-                        <option value="Beginner">Beginner (مبتدی)</option>
-                        <option value="Intermediate">Intermediate (متوسط)</option>
-                        <option value="Advanced">Advanced (پیشرفته)</option>
-                    </select>
-                </div>
-            </div>
-
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblBodyGoal">Describe your Desired Body Goal & Physique:</label>
-            <input type="text" id="clientBodyGoal" placeholder="e.g. Shredded abs, massive arms, lean athletic build...">
-
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblInjuriesHeader">Select Any Existing Injuries (30+ Common):</label>
-            <div class="scrollable-checklist">
-                <label><input type="checkbox" class="injury-chk" value="Lower Back Herniated Disc / دیسک کمر"> Lower Back / دیسک کمر</label>
-                <label><input type="checkbox" class="injury-chk" value="Knee Meniscus Tear / پارگی مینیسک زانو"> Knee Meniscus / مینیسک زانو</label>
-                <label><input type="checkbox" class="injury-chk" value="Anterior Cruciate Ligament (ACL) / پارگی رباط صلیبی"> ACL Tear / رباط صلیبی</label>
-                <label><input type="checkbox" class="injury-chk" value="Rotator Cuff Injury / آسیب روتاتور کاف"> Rotator Cuff / روتاتور کاف</label>
-                <label><input type="checkbox" class="injury-chk" value="Shoulder Impingement / گیر افتادگی شانه"> Shoulder Impingement</label>
-                <label><input type="checkbox" class="injury-chk" value="Tennis Elbow / تنیس باب"> Tennis Elbow / آرنج تنیس‌بازان</label>
-                <label><input type="checkbox" class="injury-chk" value="Golfer's Elbow / آرنج گلف‌بازان"> Golfer's Elbow</label>
-                <label><input type="checkbox" class="injury-chk" value="Carpal Tunnel Syndrome / سندرم تونل کارپال"> Carpal Tunnel</label>
-                <label><input type="checkbox" class="injury-chk" value="Wrist Sprain / پیچ‌خوردگی مچ دست"> Wrist Sprain / مچ دست</label>
-                <label><input type="checkbox" class="injury-chk" value="Neck Cervical Pain / درد مهره‌های گردن"> Neck Pain / گردن</label>
-                <label><input type="checkbox" class="injury-chk" value="Upper Back Pain / درد بالای کمر"> Upper Back Pain</label>
-                <label><input type="checkbox" class="injury-chk" value="Sciatica / سیاتیک"> Sciatica / سیاتیک</label>
-                <label><input type="checkbox" class="injury-chk" value="Hip Bursitis / بورسیت لگن"> Hip Bursitis / لگن</label>
-                <label><input type="checkbox" class="injury-chk" value="Hamstring Pull / کشیدگی همسترینگ"> Hamstring Pull</label>
-                <label><input type="checkbox" class="injury-chk" value="Quad Strain / کشیدگی چهارسر"> Quad Strain</label>
-                <label><input type="checkbox" class="injury-chk" value="Calf Tear / پارگی ساق پا"> Calf Tear / ساق پا</label>
-                <label><input type="checkbox" class="injury-chk" value="Achilles Tendonitis / تاندونیت آشیل"> Achilles Tendonitis</label>
-                <label><input type="checkbox" class="injury-chk" value="Ankle Sprain / پیچ‌خوردگی مچ پا"> Ankle Sprain / مچ پا</label>
-                <label><input type="checkbox" class="injury-chk" value="Shin Splints / شین اسپلینت"> Shin Splints</label>
-                <label><input type="checkbox" class="injury-chk" value="Rib Fracture / شکستگی دنده"> Rib Fracture</label>
-                <label><input type="checkbox" class="injury-chk" value="Spondylolisthesis / لغزش مهره کمر"> Spondylolisthesis</label>
-                <label><input type="checkbox" class="injury-chk" value="Impingement Syndrome / سندرم ایمپینجمنت"> Impingement</label>
-                <label><input type="checkbox" class="injury-chk" value="TMJ Jaw Pain / درد فک"> TMJ Jaw Pain</label>
-                <label><input type="checkbox" class="injury-chk" value="Plantar Fasciitis / خار پاشنه و التهاب کف پا"> Plantar Fasciitis</label>
-                <label><input type="checkbox" class="injury-chk" value="Biceps Tendonitis / تاندونیت دوسر بازویی"> Biceps Tendonitis</label>
-                <label><input type="checkbox" class="injury-chk" value="Pectoral Tear / پارگی عضله سینه"> Pectoral Tear</label>
-                <label><input type="checkbox" class="injury-chk" value="Abdominal Hernia / فتق شکمی"> Abdominal Hernia</label>
-                <label><input type="checkbox" class="injury-chk" value="Inguinal Hernia / فتق مغبنی"> Inguinal Hernia</label>
-                <label><input type="checkbox" class="injury-chk" value="Tailbone Injury / آسیب دنبالچه"> Tailbone Injury</label>
-                <label><input type="checkbox" class="injury-chk" value="None / بدون آسیب"> None / بدون آسیب</label>
-            </div>
-            <input type="text" id="clientCustomInjuries" placeholder="Other injuries or medical notes (optional)..." style="margin-top:8px;">
-
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblHabitsHeader">Lifestyle & Daily Habits:</label>
-            <div class="scrollable-checklist">
-                <label><input type="checkbox" class="habit-chk" value="Smoking / سیگار کشیدن"> Smoking / سیگار</label>
-                <label><input type="checkbox" class="habit-chk" value="Alcohol Consumption / مصرف الکل"> Alcohol / الکل</label>
-                <label><input type="checkbox" class="habit-chk" value="High Stress / استرس بالا"> High Stress / استرس بالا</label>
-                <label><input type="checkbox" class="habit-chk" value="Poor Sleep / کم‌خوابی و بی‌خوابی"> Poor Sleep / کم‌خوابی</label>
-                <label><input type="checkbox" class="habit-chk" value="Sedentary Job / شغل پشت‌میزنشینی"> Sedentary Job / پشت‌میزنشین</label>
-                <label><input type="checkbox" class="habit-chk" value="Fast Food Diet / تغذیه فست‌فود"> Fast Food Diet / فست‌فود</label>
-                <label><input type="checkbox" class="habit-chk" value="Sugar Addiction / اعتیاد به قند و شیرینی"> Sugar Addiction / قند بالا</label>
-                <label><input type="checkbox" class="habit-chk" value="Caffeine Overuse / مصرف زیاد کافئین"> Caffeine Overuse / کافئین زیاد</label>
-                <label><input type="checkbox" class="habit-chk" value="Night Shift Worker / کار در شیفت شب"> Night Shift Worker</label>
-                <label><input type="checkbox" class="habit-chk" value="Vaping / ویپ و دخانیات الکترونیکی"> Vaping / ویپ</label>
-            </div>
-            <input type="text" id="clientCustomHabits" placeholder="Other lifestyle habits (optional)..." style="margin-top:8px;">
-
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblClientPhoto">Upload Body/Physique Photo (Optional):</label>
-            <input type="file" id="clientImageFile" accept="image/*">
-
-            <button class="action-btn" style="background:var(--accent); color:#000; margin-top:10px;" onclick="submitClientOrderAndPay()"><span id="payZarinBtnText">Pay with ZarinPal & Send to Trainer (40k Tomans)</span></button>
-            <div id="orderProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
-        </div>
-    </div>
-
-</body>
-=======
-<!DOCTYPE html>
-<html lang="en" id="trainersRoot" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro - Trainers Marketplace & Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --accent: #ff9800;
-            --danger: #f44336;
-            --text-main: #ffffff;
-            --text-muted: #b0b0b0;
-            --border: #333333;
-        }
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-            background: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-            position: relative;
-        }
-        h1 { color: var(--accent); margin-bottom: 5px; }
-        .top-controls {
-            position: absolute;
-            top: 0;
-            right: 0;
-            display: flex;
-            gap: 8px;
-        }
-        [dir="rtl"] .top-controls {
-            right: auto;
-            left: 0;
-        }
-        .top-btn {
-            background: var(--card-bg);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 8px 14px;
-            cursor: pointer;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 13px;
-            text-decoration: none;
-            font-family: 'Vazirmatn', sans-serif;
-        }
-        .top-btn:hover { background: var(--accent); color: #000; }
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-        .card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-        }
-        .card h2 { color: var(--accent); margin-top: 0; }
-        input, textarea, select {
-            width: 100%;
-            padding: 10px;
-            background: #111;
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            border-radius: 6px;
-            font-size: 14px;
-            box-sizing: border-box;
-            margin-bottom: 12px;
-            font-family: 'Vazirmatn', sans-serif;
-        }
-        button.action-btn {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            font-family: 'Vazirmatn', sans-serif;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-        }
-        .trainer-card {
-            background: #181818;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 8px;
-        }
-        .trainer-card img {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent);
-        }
-        .trainer-card h3 { margin: 5px 0 0 0; color: var(--accent); }
-        .badge {
-            background: #222;
-            color: #4caf50;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .prop-line {
-            font-size: 13px;
-            color: var(--text-muted);
-            width: 100%;
-            text-align: left;
-        }
-        [dir="rtl"] .prop-line {
-            text-align: right;
-        }
-        .trainer-exclusive-panel {
-            display: none;
-            background: #162218;
-            border: 2px solid #4caf50;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-        table.admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        table.admin-table th, table.admin-table td {
-            border: 1px solid var(--border);
-            padding: 10px;
-            text-align: left;
-        }
-        [dir="rtl"] table.admin-table th, [dir="rtl"] table.admin-table td {
-            text-align: right;
-        }
-        table.admin-table th { background: #222; color: var(--accent); }
-        
-        /* Modal Popup Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            border: 1px solid var(--accent);
-            width: 100%;
-            max-width: 650px;
-            box-sizing: border-box;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .close-modal {
-            background: none; border: none; color: var(--text-muted); float: right; cursor: pointer; font-size: 20px;
-        }
-        [dir="rtl"] .close-modal { float: left; }
-        .scrollable-checklist {
-            max-height: 160px;
-            overflow-y: auto;
-            background: #111;
-            border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 6px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            font-size: 13px;
-        }
-    </style>
-
-    <!-- Firebase SDK & Cloudinary Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, setDoc, doc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAilAXYxno9aywWxqy7ji52Dq-xvneKf5U",
-            authDomain: "fitness-pro-a3331.firebaseapp.com",
-            projectId: "fitness-pro-a3331",
-            storageBucket: "fitness-pro-a3331.firebasestorage.app",
-            messagingSenderId: "491662957413",
-            appId: "1:491662957413:web:f30a31deb817a6c13edf8c",
-            measurementId: "G-24TEJ5NJ83"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        const CLOUD_NAME = 'djibtdplp';
-        const UPLOAD_PRESET = 'FITNESS PRO WEB';
-        const EX_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/free-exercise-db/main/';
-
-        let currentUser = null;
-        let currentLang = 'en';
-        let allExercises = [];
-        let selectedTrainerForOrder = null;
-
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            if(!user) {
-                document.getElementById('applySection').style.opacity = '0.5';
-                document.getElementById('authNotice').style.display = 'block';
-                document.getElementById('trainerPortalSection').style.display = 'none';
-            } else {
-                document.getElementById('applySection').style.opacity = '1';
-                document.getElementById('authNotice').style.display = 'none';
-                await checkTrainerStatus(user.uid);
-            }
-        });
-
-        async function checkTrainerStatus(uid) {
-            try {
-                const docRef = doc(db, "trainers", uid);
-                const docSnap = await getDoc(docRef);
-                const portal = document.getElementById('trainerPortalSection');
-                
-                if (docSnap.exists() && docSnap.data().status === 'approved') {
-                    portal.style.display = 'block';
-                    document.getElementById('welcomeTrainerName').innerText = docSnap.data().name;
-                    loadTrainerPaidOrders(currentUser.email);
-                } else {
-                    portal.style.display = 'none';
-                }
-            } catch(e) {
-                console.error(e);
-            }
-        }
-
-        async function loadExercisesForDropdown() {
-            try {
-                const res = await fetch(EX_BASE + 'dist/exercises.json');
-                allExercises = await res.json();
-                const select = document.getElementById('exerciseSelector');
-                let html = currentLang === 'fa' ? '<option value="">-- انتخاب تمرین از دیتابیس --</option>' : '<option value="">-- Select Exercise from Database --</option>';
-                allExercises.forEach(ex => {
-                    html += `<option value="${ex.name}">${ex.name} (${ex.category || 'General'})</option>`;
-                });
-                select.innerHTML = html;
-            } catch(e) {
-                console.error("Error loading exercise database", e);
-            }
-        }
-
-        window.appendSelectedExercise = () => {
-            const select = document.getElementById('exerciseSelector');
-            const detailsBox = document.getElementById('programDetails');
-            const selectedName = select.value;
-            if(!selectedName) return;
-
-            const found = allExercises.find(ex => ex.name === selectedName);
-            if(found) {
-                const instructionsText = found.instructions ? found.instructions.join(' ') : '';
-                const appendStr = `\n[Exercise: ${found.name}]\nTarget: ${found.primaryMuscles ? found.primaryMuscles.join(', ') : 'N/A'}\nEquipment: ${found.equipment || 'N/A'}\nSets & Reps: 3 sets x 12 reps\nInstructions: ${instructionsText}\n-----------------------------------\n`;
-                detailsBox.value += appendStr;
-            }
-        };
-
-        async function loadTrainerPaidOrders(trainerEmail) {
-            const tableBody = document.getElementById('paidOrdersTableBody');
-            try {
-                const querySnap = await getDocs(collection(db, "trainer_orders"));
-                let html = '';
-                querySnap.forEach(d => {
-                    let order = d.data();
-                    if(order.trainerEmail === trainerEmail) {
-                        html += `
+                <!-- PAID CLIENT ORDERS LIST -->
+                <div style="background:rgba(15, 23, 42, 0.6); padding:16px; border-radius:10px; border:1px solid var(--border); margin-top:15px;">
+                    <h3 style="color:var(--accent); margin-top:0; font-size:16px;">سفارشات پرداخت‌شده مشتریان و آمار کاربر</h3>
+                    <table class="admin-table">
+                        <thead>
                             <tr>
-                                <td>${order.clientEmail}</td>
-                                <td>
-                                    <b>${order.planType}</b><br>
-                                    <small style="color:var(--text-muted);">Age: ${order.age} | Wt: ${order.weight}kg | Ht: ${order.height}cm | Exp: ${order.experience}</small><br>
-                                    <small style="color:var(--accent);">Goal Body: ${order.bodyGoal || 'N/A'}</small><br>
-                                    <small style="color:#ff5252;">Injuries: ${order.injuries || 'None'}</small><br>
-                                    <small style="color:#64b5f6;">Habits: ${order.habits || 'None'}</small>
-                                    ${order.clientImageUrl ? `<br><a href="${order.clientImageUrl}" target="_blank" style="color:#4caf50;">📷 View Physique Photo</a>` : ''}
-                                </td>
-                                <td><span class="badge" style="background:#1a3a2a; color:#4caf50;">PAID</span></td>
-                                <td>
-                                    <button class="action-btn" style="padding:4px 8px; font-size:11px;" onclick="selectClientForPlan('${order.clientEmail}')">${currentLang === 'fa' ? 'نوشتن برنامه' : 'Write Routine'}</button>
-                                </td>
+                                <th>ایمیل مشتری</th>
+                                <th>جزئیات برنامه و کاربر</th>
+                                <th>وضعیت</th>
+                                <th>عملیات</th>
                             </tr>
-                        `;
-                    }
-                });
-                tableBody.innerHTML = html || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">${currentLang === 'fa' ? 'هنوز سفارشی ثبت نشده است.' : 'No client orders yet.'}</td></tr>`;
-            } catch(e) {
-                tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Error loading orders.</td></tr>';
-            }
-        }
-
-        window.selectClientForPlan = (clientEmail) => {
-            document.getElementById('clientEmail').value = clientEmail;
-            window.scrollTo({ top: document.getElementById('trainerPortalSection').offsetTop, behavior: 'smooth' });
-        };
-
-        window.openOrderModal = (trainerEmail, trainerName) => {
-            if(!currentUser) {
-                alert(currentLang === 'fa' ? 'لطفاً ابتدا وارد حساب کاربری خود شوید.' : 'Please sign in first to purchase a workout plan.');
-                return;
-            }
-            selectedTrainerForOrder = { email: trainerEmail, name: trainerName };
-            document.getElementById('modalTrainerName').innerText = trainerName;
-            document.getElementById('orderModal').style.display = 'flex';
-        };
-
-        window.closeOrderModal = () => {
-            document.getElementById('orderModal').style.display = 'none';
-        };
-
-        window.submitClientOrderAndPay = async () => {
-            if(!selectedTrainerForOrder) return;
-
-            const planType = document.getElementById('orderPlanType').value;
-            const weight = document.getElementById('clientWeight').value;
-            const height = document.getElementById('clientHeight').value;
-            const age = document.getElementById('clientAge').value;
-            const experience = document.getElementById('clientExperience').value;
-            const bodyGoal = document.getElementById('clientBodyGoal').value;
-
-            // Collect Injuries
-            const injuryCheckboxes = document.querySelectorAll('.injury-chk:checked');
-            let injuriesList = Array.from(injuryCheckboxes).map(cb => cb.value).join(', ');
-            const customInjuries = document.getElementById('clientCustomInjuries').value;
-            if(customInjuries) injuriesList = injuriesList ? injuriesList + ', ' + customInjuries : customInjuries;
-
-            // Collect Habits
-            const habitCheckboxes = document.querySelectorAll('.habit-chk:checked');
-            let habitsList = Array.from(habitCheckboxes).map(cb => cb.value).join(', ');
-            const customHabits = document.getElementById('clientCustomHabits').value;
-            if(customHabits) habitsList = habitsList ? habitsList + ', ' + customHabits : customHabits;
-
-            const fileInput = document.getElementById('clientImageFile');
-            const progress = document.getElementById('orderProgress');
-
-            if(!weight || !height || !age || !bodyGoal) {
-                alert(currentLang === 'fa' ? 'لطفاً قد، وزن، سن و فرم بدنی دلخواه را وارد کنید.' : 'Please enter weight, height, age, and your desired body goal.');
-                return;
-            }
-
-            progress.style.display = 'block';
-            progress.innerText = currentLang === 'fa' ? 'در حال اتصال به درگاه زرین‌پال و ارسال اطلاعات...' : 'Connecting to ZarinPal & sending details to trainer...';
-
-            try {
-                let clientImageUrl = '';
-                if(fileInput.files.length > 0) {
-                    const formData = new FormData();
-                    formData.append('file', fileInput.files[0]);
-                    formData.append('upload_preset', UPLOAD_PRESET);
-
-                    const cRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
-                    const cData = await cRes.json();
-                    if(cData.secure_url) clientImageUrl = cData.secure_url;
-                }
-
-                const clientEmail = currentUser.email || currentUser.phoneNumber;
-
-                await setDoc(doc(collection(db, "trainer_orders")), {
-                    trainerEmail: selectedTrainerForOrder.email,
-                    trainerName: selectedTrainerForOrder.name,
-                    clientEmail: clientEmail,
-                    planType: planType,
-                    weight: weight,
-                    height: height,
-                    age: age,
-                    experience: experience,
-                    bodyGoal: bodyGoal,
-                    injuries: injuriesList || 'None',
-                    habits: habitsList || 'None',
-                    clientImageUrl: clientImageUrl,
-                    amount: 40000,
-                    status: "paid",
-                    createdAt: new Date().toISOString()
-                });
-
-                progress.style.display = 'none';
-                alert(currentLang === 'fa' ? 'پرداخت موفقیت‌آمیز بود! مشخصات کامل شما برای مربی ارسال شد.' : 'Payment Successful! Your complete profile and consultation form have been sent to ' + selectedTrainerForOrder.name);
-                closeOrderModal();
-            } catch(e) {
-                progress.style.display = 'none';
-                alert("Error: " + e.message);
-            }
-        };
-
-        window.toggleLang = () => {
-            currentLang = currentLang === 'en' ? 'fa' : 'en';
-            const root = document.getElementById('trainersRoot');
-            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
-            root.setAttribute('lang', currentLang);
-
-            // Header & Main Titles
-            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'English / EN' : 'فارسی / FA';
-            document.getElementById('homeLink').innerText = currentLang === 'fa' ? '🏠 خانه / Home' : '🏠 Home / خانه';
-            document.getElementById('mainTitle').innerText = currentLang === 'fa' ? 'بازار مربیان فیتنس پرو' : 'Trainers Marketplace';
-            document.getElementById('mainSub').innerText = currentLang === 'fa' ? 'مشاهده مربیان تایید شده، انتخاب مربی یا پنل اختصاصی مربی' : 'Browse certified fitness trainers, choose your coach, or manage your trainer portal';
-
-            // Marketplace Section
-            document.getElementById('listTitle').innerText = currentLang === 'fa' ? 'مربیان تایید شده آماده همکاری' : 'Certified Trainers Available';
-            document.getElementById('listSub').innerText = currentLang === 'fa' ? 'یک مربی مجرب انتخاب کنید تا برنامه‌های اختصاصی تمرین و تغذیه را دریافت کنید.' : 'Select a verified coach to receive personalized workout plans and continuous guidance.';
-            
-            // Sign Up Section
-            document.getElementById('applyTitle').innerText = currentLang === 'fa' ? 'آیا مربی بدنسازی هستید؟ اینجا ثبت‌نام کنید' : 'Are You a Fitness Trainer? Sign Up Here';
-            document.getElementById('applySub').innerText = currentLang === 'fa' ? 'پروفایل تخصصی خود را تکمیل کرده و عکس خود را بارگذاری کنید. پس از بررسی ادمین، پروفایل شما فعال می‌شود.' : 'Fill out your professional profile and upload your photo. Once reviewed and approved by the admin, your profile will appear in the public marketplace above.';
-            document.getElementById('authNotice').innerText = currentLang === 'fa' ? '⚠️ لطفاً ابتدا در حساب کاربری خود وارد شوید تا درخواست به پروفایل شما متصل شود.' : '⚠️ Please sign in to your user account first so your application links to your profile.';
-
-            document.getElementById('trName').placeholder = currentLang === 'fa' ? 'نام و نام خانوادگی' : 'Full Name';
-            document.getElementById('trGym').placeholder = currentLang === 'fa' ? 'باشگاه فعلی (مثال: باشگاه اکسیژن)' : 'Current Gym (e.g. Oxygen Gym)';
-            document.getElementById('trSpecialty').placeholder = currentLang === 'fa' ? 'تخصص (اختیاری - مثال: بدنسازی، چربی‌سوزی)' : 'Specialty (Optional - e.g. Bodybuilding, Weight Loss)';
-            document.getElementById('trCert').placeholder = currentLang === 'fa' ? 'مدارک و گواهینامه‌ها (اختیاری - مثال: مدرک درجه ۲ مربیگری)' : 'Certificates & Degrees (Optional - e.g. Second Degree Training Certificate)';
-            document.getElementById('trChamps').placeholder = currentLang === 'fa' ? 'قهرمانی‌ها و افتخارات (اختیاری - مثال: قهرمان استان)' : 'Championships (Optional - e.g. Provincial Champion)';
-            document.getElementById('trExp').placeholder = currentLang === 'fa' ? 'سابقه کار (مثال: ۵ سال)' : 'Years of Experience (e.g. 5 Years)';
-            document.getElementById('trBio').placeholder = currentLang === 'fa' ? 'بیوگرافی کوتاه و فلسفه مربیگری...' : 'Short Bio & Coaching Philosophy...';
-            document.getElementById('photoLabel').innerText = currentLang === 'fa' ? 'تصویر پروفایل (آپلود در کلادیناری):' : 'Profile Photo (Uploaded to Cloudinary):';
-            document.getElementById('submitBtn').innerText = currentLang === 'fa' ? 'ارسال درخواست مربیگری' : 'Submit Trainer Application';
-
-            // Modal Form Translations
-            document.getElementById('modalTitleText').innerText = currentLang === 'fa' ? '📋 فرم مشاوره و ثبت سفارش برنامه' : '📋 Coaching Consultation Form';
-            document.getElementById('lblPlanType').innerText = currentLang === 'fa' ? 'انتخاب نوع برنامه:' : 'Select Plan Type:';
-            document.getElementById('lblWeight').innerText = currentLang === 'fa' ? 'وزن (کیلوگرم):' : 'Weight (kg):';
-            document.getElementById('lblHeight').innerText = currentLang === 'fa' ? 'قد (سانتی‌متر):' : 'Height (cm):';
-            document.getElementById('lblAge').innerText = currentLang === 'fa' ? 'سن:' : 'Age:';
-            document.getElementById('lblExp').innerText = currentLang === 'fa' ? 'سطح تجربه:' : 'Experience Level:';
-            document.getElementById('lblBodyGoal').innerText = currentLang === 'fa' ? 'هدف فیزیکی و فرم بدنی دلخواه (توضیح دهید):' : 'Describe your Desired Body Goal & Physique:';
-            document.getElementById('clientBodyGoal').placeholder = currentLang === 'fa' ? 'مثال: سیکس‌پک خشک، حجم بازو، کاهش چربی شکم...' : 'e.g. Shredded abs, massive arms, lean athletic build...';
-            document.getElementById('lblInjuriesHeader').innerText = currentLang === 'fa' ? 'انتخاب آسیب‌دیدگی‌ها (در صورت وجود):' : 'Select Any Existing Injuries:';
-            document.getElementById('clientCustomInjuries').placeholder = currentLang === 'fa' ? 'سایر جراحی‌ها، آسیب‌ها یا نکات پزشکی...' : 'Other injuries, surgeries, or medical notes...';
-            document.getElementById('lblHabitsHeader').innerText = currentLang === 'fa' ? 'عادت‌های روزانه و سبک زندگی:' : 'Lifestyle & Daily Habits:';
-            document.getElementById('clientCustomHabits').placeholder = currentLang === 'fa' ? 'سایر عادت‌ها (مثال: کار پشت میز، بی‌خوابی...)' : 'Other habits (e.g. Desk job, sleeping late...)';
-            document.getElementById('lblClientPhoto').innerText = currentLang === 'fa' ? 'آپلود عکس فیزیک بدنی (اختیاری برای تحلیل بهتر):' : 'Upload Body/Physique Photo (Optional):';
-            document.getElementById('payZarinBtnText').innerText = currentLang === 'fa' ? 'پرداخت با زرین‌پال و ارسال برای مربی (۴۰ هزار تومان)' : 'Pay with ZarinPal & Send to Trainer (40k Tomans)';
-
-            loadApprovedTrainers();
-        };
-
-        window.submitTrainerApplication = async () => {
-            if(!currentUser) {
-                alert(currentLang === 'fa' ? 'لطفاً ابتدا به حساب کاربری خود وارد شوید.' : 'Please sign in to the app first before registering as a trainer.');
-                return;
-            }
-
-            const name = document.getElementById('trName').value;
-            const gym = document.getElementById('trGym').value;
-            const specialty = document.getElementById('trSpecialty').value;
-            const certificates = document.getElementById('trCert').value;
-            const championships = document.getElementById('trChamps').value;
-            const experience = document.getElementById('trExp').value;
-            const bio = document.getElementById('trBio').value;
-            const fileInput = document.getElementById('trImageFile');
-            const progress = document.getElementById('applyProgress');
-
-            if(!name || !gym || !bio || fileInput.files.length === 0) {
-                alert(currentLang === 'fa' ? 'لطفاً فیلدهای ضروری (نام، باشگاه، بیوگرافی و عکس) را پر کنید.' : 'Please fill in all required fields and select a profile photo.');
-                return;
-            }
-
-            progress.style.display = 'block';
-            progress.innerText = currentLang === 'fa' ? 'در حال آپلود عکس و ارسال درخواست...' : 'Uploading image to Cloudinary & submitting application...';
-
-            try {
-                const formData = new FormData();
-                formData.append('file', fileInput.files[0]);
-                formData.append('upload_preset', UPLOAD_PRESET);
-
-                const cRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
-                const cData = await cRes.json();
-
-                if(!cData.secure_url) throw new Error("Cloudinary image upload failed.");
-
-                const trainerId = currentUser.uid;
-                const trainerObj = {
-                    uid: trainerId,
-                    email: currentUser.email || currentUser.phoneNumber || '',
-                    name: name,
-                    gym: gym,
-                    specialty: specialty || 'General Fitness',
-                    certificates: certificates || '',
-                    championships: championships || '',
-                    experience: experience || '3+ Years',
-                    bio: bio,
-                    imageUrl: cData.secure_url,
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                };
-
-                await setDoc(doc(db, "trainers", trainerId), trainerObj);
-                progress.style.display = 'none';
-                alert(currentLang === 'fa' ? 'درخواست شما با موفقیت ثبت شد و در انتظار تایید ادمین است!' : 'Application successfully submitted! Your profile is now awaiting Admin review and approval.');
-                
-                document.getElementById('trName').value = '';
-                document.getElementById('trGym').value = '';
-                document.getElementById('trSpecialty').value = '';
-                document.getElementById('trCert').value = '';
-                document.getElementById('trChamps').value = '';
-                document.getElementById('trExp').value = '';
-                document.getElementById('trBio').value = '';
-                fileInput.value = '';
-                loadApprovedTrainers();
-            } catch(e) {
-                progress.style.display = 'none';
-                alert("Error: " + e.message);
-            }
-        };
-
-        window.loadApprovedTrainers = async () => {
-            const grid = document.getElementById('approvedTrainersGrid');
-            try {
-                const querySnap = await getDocs(collection(db, "trainers"));
-                let html = '';
-                querySnap.forEach(d => {
-                    let t = d.data();
-                    if(t.status === 'approved') {
-                        html += `
-                            <div class="trainer-card">
-                                <img src="${t.imageUrl}" alt="${t.name}">
-                                <h3>${t.name}</h3>
-                                <span class="badge">${t.specialty}</span>
-                                <div class="prop-line"><b>${currentLang === 'fa' ? 'باشگاه:' : 'Gym:'}</b> ${t.gym || 'N/A'}</div>
-                                ${t.certificates ? `<div class="prop-line"><b>${currentLang === 'fa' ? 'مدارک:' : 'Certificates:'}</b> ${t.certificates}</div>` : ''}
-                                ${t.championships ? `<div class="prop-line"><b>${currentLang === 'fa' ? 'قهرمانی‌ها:' : 'Championships:'}</b> ${t.championships}</div>` : ''}
-                                <div class="prop-line"><b>${currentLang === 'fa' ? 'سابقه:' : 'Experience:'}</b> ${t.experience}</div>
-                                <p style="font-size:13px; color:var(--text-main); line-height:1.4; margin-top:4px;">${t.bio}</p>
-                                <button class="action-btn" style="margin-top:auto; background:var(--accent); color:#000;" onclick="openOrderModal('${t.email}', '${t.name}')">${currentLang === 'fa' ? 'سفارش برنامه و مشاوره (زرین‌پال)' : 'Buy Plan & Pay with ZarinPal'}</button>
-                            </div>
-                        `;
-                    }
-                });
-                grid.innerHTML = html || `<p style="text-align:center; grid-column:1/-1; color:var(--text-muted);">${currentLang === 'fa' ? 'هنوز مربی تایید شده‌ای وجود ندارد.' : 'No approved trainers available right now.'}</p>`;
-            } catch(e) {
-                grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Error loading trainers.</p>';
-            }
-        };
-
-        window.publishTrainerProgram = async () => {
-            const clientEmail = document.getElementById('clientEmail').value;
-            const programTitle = document.getElementById('programTitle').value;
-            const programDetails = document.getElementById('programDetails').value;
-            const imageFileInput = document.getElementById('programImageFile');
-            const progress = document.getElementById('programPublishProgress');
-
-            if(!clientEmail || !programTitle) {
-                alert(currentLang === 'fa' ? 'لطفاً ایمیل کاربر و عنوان برنامه را وارد کنید.' : 'Please enter client email and program title.');
-                return;
-            }
-
-            let imageUrl = '';
-            progress.style.display = 'block';
-
-            try {
-                if(imageFileInput.files.length > 0) {
-                    progress.innerText = currentLang === 'fa' ? 'در حال آپلود عکس برنامه...' : 'Uploading routine image to Cloudinary...';
-                    const formData = new FormData();
-                    formData.append('file', imageFileInput.files[0]);
-                    formData.append('upload_preset', UPLOAD_PRESET);
-
-                    const cRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
-                    const cData = await cRes.json();
-                    if(cData.secure_url) imageUrl = cData.secure_url;
-                }
-
-                progress.innerText = currentLang === 'fa' ? 'در حال ارسال برنامه برای کاربر...' : 'Publishing program to client account...';
-
-                await setDoc(doc(collection(db, "trainer_programs")), {
-                    trainerId: currentUser.uid,
-                    trainerEmail: currentUser.email,
-                    clientEmail: clientEmail,
-                    title: programTitle,
-                    details: programDetails || 'Custom routine attached via image.',
-                    imageUrl: imageUrl,
-                    createdAt: new Date().toISOString()
-                });
-
-                progress.style.display = 'none';
-                alert(currentLang === 'fa' ? 'برنامه تمرینی با موفقیت برای کاربر ارسال شد!' : 'Custom workout program successfully published to client account!');
-                
-                document.getElementById('clientEmail').value = '';
-                document.getElementById('programTitle').value = '';
-                document.getElementById('programDetails').value = '';
-                imageFileInput.value = '';
-            } catch(e) {
-                progress.style.display = 'none';
-                alert("Error: " + e.message);
-            }
-        };
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadApprovedTrainers();
-            loadExercisesForDropdown();
-        });
-    </script>
-</head>
-<body>
-
-    <header>
-        <div class="top-controls">
-            <a href="index.html" class="top-btn" id="homeLink">🏠 Home / خانه</a>
-            <button class="top-btn" onclick="toggleLang()" id="langBtn">فارسی / FA</button>
-        </div>
-        <h1 id="mainTitle">Trainers Marketplace</h1>
-        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">Browse certified fitness trainers, choose your coach, or manage your trainer portal</p>
-    </header>
-
-    <div class="container">
-
-        <!-- EXCLUSIVE TRAINER MANAGEMENT PANEL (Appears only when approved) -->
-        <div class="trainer-exclusive-panel" id="trainerPortalSection">
-            <h2 style="color:#4caf50; margin-top:0;">🏋️‍♂️ Trainer Dashboard Portal: <span id="welcomeTrainerName" style="color:var(--accent);"></span></h2>
-            <p style="font-size:13px; color:var(--text-muted);">Manage your paid client orders and build custom workouts or upload routine photos directly.</p>
-            
-            <!-- PAID CLIENT ORDERS LIST -->
-            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333; margin-top:15px;">
-                <h3 style="color:var(--accent); margin-top:0; font-size:16px;">Paid Client Orders & User Stats</h3>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Client Email</th>
-                            <th>Plan & User Details</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="paidOrdersTableBody">
-                        <tr><td colspan="4" style="text-align:center;">Loading paid orders...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- WORKOUT & NUTRITION ROUTINE BUILDER WITH EXERCISE SELECTOR & IMAGE UPLOAD -->
-            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333; margin-top:20px;">
-                <h3 style="color:var(--accent); margin-top:0; font-size:16px;">Create & Publish Routine to Client</h3>
-                <input type="email" id="clientEmail" placeholder="Client Email (Select from paid orders above)">
-                <input type="text" id="programTitle" placeholder="Program Title (e.g. 4-Week Hypertrophy & Diet)">
-                
-                <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:5px;">Select Exercise from Database to Add (Optional):</label>
-                <div style="display:flex; gap:8px; margin-bottom:12px;">
-                    <select id="exerciseSelector" style="margin-bottom:0;"></select>
-                    <button class="action-btn" style="width:auto; padding:0 15px; background:var(--accent); color:#000;" onclick="appendSelectedExercise()">Add Exercise</button>
+                        </thead>
+                        <tbody id="paidOrdersTableBody">
+                            <tr><td colspan="4" style="text-align:center;">در حال بارگذاری سفارشات...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <textarea id="programDetails" placeholder="Type instructions or notes here..." rows="4"></textarea>
+                <!-- WORKOUT & NUTRITION ROUTINE BUILDER -->
+                <div style="background:rgba(15, 23, 42, 0.6); padding:16px; border-radius:10px; border:1px solid var(--border); margin-top:20px;">
+                    <h3 style="color:var(--accent); margin-top:0; font-size:16px;">ساخت و انتشار برنامه برای مشتری</h3>
+                    <input type="email" id="clientEmail" placeholder="ایمیل مشتری (انتخاب از سفارشات پرداخت‌شده بالا)">
+                    <input type="text" id="programTitle" placeholder="عنوان برنامه (مثال: حجم و تغذیه ۴ هفته‌ای)">
+                    
+                    <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:5px;">انتخاب تمرین از دیتابیس برای افزودن (اختیاری):</label>
+                    <div style="display:flex; gap:8px; margin-bottom:14px;">
+                        <select id="exerciseSelector" style="margin-bottom:0;"></select>
+                        <button class="action-btn" style="width:auto; padding:0 20px; background:var(--accent-gradient); color:#000;" onclick="appendSelectedExercise()">افزودن</button>
+                    </div>
 
-                <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:5px;">Upload Routine Image (Handwritten plan, chart, or schedule):</label>
-                <input type="file" id="programImageFile" accept="image/*">
+                    <textarea id="programDetails" placeholder="دستورالعمل‌ها یا نکات را اینجا وارد کنید..." rows="4"></textarea>
 
-                <button class="action-btn" onclick="publishTrainerProgram()">Publish Custom Plan & Image to Client's App Account</button>
-                <div id="programPublishProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
+                    <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:5px;">آپلود عکس برنامه (برنامه دست‌نویس، جدول یا جدول زمانی):</label>
+                    <input type="file" id="programImageFile" accept="image/*">
+
+                    <button class="action-btn" onclick="publishTrainerProgram()">انتشار برنامه سفارشی و عکس در حساب کاربری مشتری</button>
+                    <div id="programPublishProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
+                </div>
             </div>
-        </div>
-
-        <!-- Approved Trainers Marketplace Grid -->
-        <div class="card">
-            <h2 id="listTitle">Certified Trainers Available</h2>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;" id="listSub">Select a verified coach to receive personalized workout plans and continuous guidance.</p>
-            <div id="approvedTrainersGrid" class="grid">
-                <p style="text-align:center; grid-column:1/-1;">Loading verified trainers...</p>
-            </div>
-        </div>
-
-        <!-- Trainer Sign Up Form -->
-        <div class="card" id="applySection">
-            <h2 id="applyTitle">Are You a Fitness Trainer? Sign Up Here</h2>
-            <p style="font-size:13px; color:var(--text-muted);" id="applySub">Fill out your professional profile and upload your photo. Once reviewed and approved by the admin, your profile will appear in the public marketplace above.</p>
-            
-            <div id="authNotice" style="background:#2c1a00; border:1px solid var(--accent); padding:10px; border-radius:6px; margin-bottom:12px; display:none; font-size:13px; color:var(--accent);">
-                ⚠️ Please sign in to your user account first so your application links to your profile.
-            </div>
-
-            <input type="text" id="trName" placeholder="Full Name">
-            <input type="text" id="trGym" placeholder="Current Gym (e.g. Oxygen Gym)">
-            <input type="text" id="trSpecialty" placeholder="Specialty (Optional - e.g. Bodybuilding, Weight Loss)">
-            <input type="text" id="trCert" placeholder="Certificates & Degrees (Optional - e.g. Second Degree Training Certificate)">
-            <input type="text" id="trChamps" placeholder="Championships (Optional - e.g. Provincial Champion)">
-            <input type="text" id="trExp" placeholder="Years of Experience (e.g. 5 Years)">
-            <textarea id="trBio" placeholder="Short Bio & Coaching Philosophy..." rows="3"></textarea>
-            
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:5px;" id="photoLabel">Profile Photo (Uploaded to Cloudinary):</label>
-            <input type="file" id="trImageFile" accept="image/*">
-            
-            <button class="action-btn" onclick="submitTrainerApplication()" id="submitBtn">Submit Trainer Application</button>
-            <div id="applyProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
         </div>
 
     </div>
 
-    <!-- CLIENT CONSULTATION & ORDER MODAL -->
+    <!-- CLIENT CONSULTATION & ORDER MODAL (Modern Persian Translation & Compact Design) -->
     <div id="orderModal" class="modal-overlay">
         <div class="modal">
             <button class="close-modal" onclick="closeOrderModal()">&times;</button>
-            <h2 style="color:var(--accent); margin-top:0;" id="modalTitleText">📋 Coaching Consultation Form</h2>
-            <p style="font-size:13px; color:var(--text-muted);">Ordering custom plan from: <b id="modalTrainerName" style="color:#fff;"></b> (40,000 Tomans)</p>
+            <h2 style="color:var(--accent); margin-top:0;" id="modalTitleText">📋 فرم مشاوره و ثبت سفارش برنامه</h2>
+            <p style="font-size:13px; color:var(--text-muted);">ثبت سفارش برنامه اختصاصی از مربی: <b id="modalTrainerName" style="color:#fff;"></b> (۴۰,۰۰۰ تومان)</p>
             
-            <label style="font-size:13px; color:var(--text-muted);" id="lblPlanType">Select Plan Type:</label>
+            <label style="font-size:13px; color:var(--text-muted);" id="lblPlanType">انتخاب نوع برنامه:</label>
             <select id="orderPlanType">
-                <option value="Workout Plan Only">Workout Plan Only (برنامه تمرینی)</option>
-                <option value="Nutrition Plan Only">Nutrition Plan Only (برنامه تغذیه)</option>
-                <option value="Both Workout & Nutrition">Both Workout & Nutrition (هر دو - تمرین و تغذیه)</option>
+                <option value="Workout Plan Only">فقط برنامه تمرینی (Workout Plan)</option>
+                <option value="Nutrition Plan Only">فقط برنامه تغذیه (Nutrition Plan)</option>
+                <option value="Both Workout & Nutrition">هر دو - تمرین و تغذیه کامل (Both)</option>
             </select>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <div>
-                    <label style="font-size:12px; color:var(--text-muted);" id="lblWeight">Weight (kg):</label>
-                    <input type="number" id="clientWeight" placeholder="e.g. 75">
+                    <label style="font-size:12px; color:var(--text-muted);" id="lblWeight">وزن (کیلوگرم):</label>
+                    <input type="number" id="clientWeight" placeholder="مثال: ۷۵">
                 </div>
                 <div>
-                    <label style="font-size:12px; color:var(--text-muted);" id="lblHeight">Height (cm):</label>
-                    <input type="number" id="clientHeight" placeholder="e.g. 180">
+                    <label style="font-size:12px; color:var(--text-muted);" id="lblHeight">قد (سانتی‌متر):</label>
+                    <input type="number" id="clientHeight" placeholder="مثال: ۱۸۰">
                 </div>
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <div>
-                    <label style="font-size:12px; color:var(--text-muted);" id="lblAge">Age:</label>
-                    <input type="number" id="clientAge" placeholder="e.g. 25">
+                    <label style="font-size:12px; color:var(--text-muted);" id="lblAge">سن:</label>
+                    <input type="number" id="clientAge" placeholder="مثال: ۲۵">
                 </div>
                 <div>
-                    <label style="font-size:12px; color:var(--text-muted);" id="lblExp">Experience Level:</label>
+                    <label style="font-size:12px; color:var(--text-muted);" id="lblExp">سطح تجربه:</label>
                     <select id="clientExperience">
-                        <option value="Beginner">Beginner (مبتدی)</option>
-                        <option value="Intermediate">Intermediate (متوسط)</option>
-                        <option value="Advanced">Advanced (پیشرفته)</option>
+                        <option value="Beginner">مبتدی (Beginner)</option>
+                        <option value="Intermediate">متوسط (Intermediate)</option>
+                        <option value="Advanced">پیشرفته (Advanced)</option>
                     </select>
                 </div>
             </div>
 
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblBodyGoal">Describe your Desired Body Goal & Physique:</label>
-            <input type="text" id="clientBodyGoal" placeholder="e.g. Shredded abs, massive arms, lean athletic build...">
+            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblBodyGoal">هدف فیزیکی و فرم بدنی دلخواه (توضیح دهید):</label>
+            <input type="text" id="clientBodyGoal" placeholder="مثال: سیکس‌پک خشک، حجم بازو، کاهش چربی شکم...">
 
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblInjuriesHeader">Select Any Existing Injuries (30+ Common):</label>
+            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblInjuriesHeader">انتخاب آسیب‌دیدگی‌ها (در صورت وجود):</label>
             <div class="scrollable-checklist">
-                <label><input type="checkbox" class="injury-chk" value="Lower Back Herniated Disc / دیسک کمر"> Lower Back / دیسک کمر</label>
-                <label><input type="checkbox" class="injury-chk" value="Knee Meniscus Tear / پارگی مینیسک زانو"> Knee Meniscus / مینیسک زانو</label>
-                <label><input type="checkbox" class="injury-chk" value="Anterior Cruciate Ligament (ACL) / پارگی رباط صلیبی"> ACL Tear / رباط صلیبی</label>
-                <label><input type="checkbox" class="injury-chk" value="Rotator Cuff Injury / آسیب روتاتور کاف"> Rotator Cuff / روتاتور کاف</label>
-                <label><input type="checkbox" class="injury-chk" value="Shoulder Impingement / گیر افتادگی شانه"> Shoulder Impingement</label>
-                <label><input type="checkbox" class="injury-chk" value="Tennis Elbow / تنیس باب"> Tennis Elbow / آرنج تنیس‌بازان</label>
-                <label><input type="checkbox" class="injury-chk" value="Golfer's Elbow / آرنج گلف‌بازان"> Golfer's Elbow</label>
-                <label><input type="checkbox" class="injury-chk" value="Carpal Tunnel Syndrome / سندرم تونل کارپال"> Carpal Tunnel</label>
-                <label><input type="checkbox" class="injury-chk" value="Wrist Sprain / پیچ‌خوردگی مچ دست"> Wrist Sprain / مچ دست</label>
-                <label><input type="checkbox" class="injury-chk" value="Neck Cervical Pain / درد مهره‌های گردن"> Neck Pain / گردن</label>
-                <label><input type="checkbox" class="injury-chk" value="Upper Back Pain / درد بالای کمر"> Upper Back Pain</label>
-                <label><input type="checkbox" class="injury-chk" value="Sciatica / سیاتیک"> Sciatica / سیاتیک</label>
-                <label><input type="checkbox" class="injury-chk" value="Hip Bursitis / بورسیت لگن"> Hip Bursitis / لگن</label>
-                <label><input type="checkbox" class="injury-chk" value="Hamstring Pull / کشیدگی همسترینگ"> Hamstring Pull</label>
-                <label><input type="checkbox" class="injury-chk" value="Quad Strain / کشیدگی چهارسر"> Quad Strain</label>
-                <label><input type="checkbox" class="injury-chk" value="Calf Tear / پارگی ساق پا"> Calf Tear / ساق پا</label>
-                <label><input type="checkbox" class="injury-chk" value="Achilles Tendonitis / تاندونیت آشیل"> Achilles Tendonitis</label>
-                <label><input type="checkbox" class="injury-chk" value="Ankle Sprain / پیچ‌خوردگی مچ پا"> Ankle Sprain / مچ پا</label>
-                <label><input type="checkbox" class="injury-chk" value="Shin Splints / شین اسپلینت"> Shin Splints</label>
-                <label><input type="checkbox" class="injury-chk" value="Rib Fracture / شکستگی دنده"> Rib Fracture</label>
-                <label><input type="checkbox" class="injury-chk" value="Spondylolisthesis / لغزش مهره کمر"> Spondylolisthesis</label>
-                <label><input type="checkbox" class="injury-chk" value="Impingement Syndrome / سندرم ایمپینجمنت"> Impingement</label>
-                <label><input type="checkbox" class="injury-chk" value="TMJ Jaw Pain / درد فک"> TMJ Jaw Pain</label>
-                <label><input type="checkbox" class="injury-chk" value="Plantar Fasciitis / خار پاشنه و التهاب کف پا"> Plantar Fasciitis</label>
-                <label><input type="checkbox" class="injury-chk" value="Biceps Tendonitis / تاندونیت دوسر بازویی"> Biceps Tendonitis</label>
-                <label><input type="checkbox" class="injury-chk" value="Pectoral Tear / پارگی عضله سینه"> Pectoral Tear</label>
-                <label><input type="checkbox" class="injury-chk" value="Abdominal Hernia / فتق شکمی"> Abdominal Hernia</label>
-                <label><input type="checkbox" class="injury-chk" value="Inguinal Hernia / فتق مغبنی"> Inguinal Hernia</label>
-                <label><input type="checkbox" class="injury-chk" value="Tailbone Injury / آسیب دنبالچه"> Tailbone Injury</label>
-                <label><input type="checkbox" class="injury-chk" value="None / بدون آسیب"> None / بدون آسیب</label>
+                <label><input type="checkbox" class="injury-chk" value="دیسک کمر / Lower Back Disc"> دیسک کمر</label>
+                <label><input type="checkbox" class="injury-chk" value="پارگی مینیسک زانو / Knee Meniscus"> مینیسک زانو</label>
+                <label><input type="checkbox" class="injury-chk" value="پارگی رباط صلیبی / ACL Tear"> رباط صلیبی (ACL)</label>
+                <label><input type="checkbox" class="injury-chk" value="آسیب روتاتور کاف شانه / Rotator Cuff"> روتاتور کاف شانه</label>
+                <label><input type="checkbox" class="injury-chk" value="آرنج تنیس‌بازان / Tennis Elbow"> آرنج تنیس‌بازان</label>
+                <label><input type="checkbox" class="injury-chk" value="سندرم تونل کارپال / Carpal Tunnel"> تونل کارپال مچ</label>
+                <label><input type="checkbox" class="injury-chk" value="درد مهره‌های گردن / Neck Pain"> درد مهره‌های گردن</label>
+                <label><input type="checkbox" class="injury-chk" value="درد سیاتیک / Sciatica"> سیاتیک</label>
+                <label><input type="checkbox" class="injury-chk" value="کشیدگی همسترینگ / Hamstring Pull"> کشیدگی همسترینگ</label>
+                <label><input type="checkbox" class="injury-chk" value="خار پاشنه و التهاب کف پا / Plantar Fasciitis"> خار پاشنه / کف پا</label>
+                <label><input type="checkbox" class="injury-chk" value="تاندونیت آشیل / Achilles Tendonitis"> تاندونیت آشیل</label>
+                <label><input type="checkbox" class="injury-chk" value="پیچ‌خوردگی مچ پا / Ankle Sprain"> پیچ‌خوردگی مچ پا</label>
+                <label><input type="checkbox" class="injury-chk" value="بدون آسیب / None"> بدون آسیب خاصی</label>
             </div>
-            <input type="text" id="clientCustomInjuries" placeholder="Other injuries or medical notes (optional)..." style="margin-top:8px;">
+            <input type="text" id="clientCustomInjuries" placeholder="سایر جراحی‌ها، آسیب‌ها یا نکات پزشکی (اختیاری)..." style="margin-top:8px;">
 
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblHabitsHeader">Lifestyle & Daily Habits:</label>
+            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblHabitsHeader">عادت‌های روزانه و سبک زندگی:</label>
             <div class="scrollable-checklist">
-                <label><input type="checkbox" class="habit-chk" value="Smoking / سیگار کشیدن"> Smoking / سیگار</label>
-                <label><input type="checkbox" class="habit-chk" value="Alcohol Consumption / مصرف الکل"> Alcohol / الکل</label>
-                <label><input type="checkbox" class="habit-chk" value="High Stress / استرس بالا"> High Stress / استرس بالا</label>
-                <label><input type="checkbox" class="habit-chk" value="Poor Sleep / کم‌خوابی و بی‌خوابی"> Poor Sleep / کم‌خوابی</label>
-                <label><input type="checkbox" class="habit-chk" value="Sedentary Job / شغل پشت‌میزنشینی"> Sedentary Job / پشت‌میزنشین</label>
-                <label><input type="checkbox" class="habit-chk" value="Fast Food Diet / تغذیه فست‌فود"> Fast Food Diet / فست‌فود</label>
-                <label><input type="checkbox" class="habit-chk" value="Sugar Addiction / اعتیاد به قند و شیرینی"> Sugar Addiction / قند بالا</label>
-                <label><input type="checkbox" class="habit-chk" value="Caffeine Overuse / مصرف زیاد کافئین"> Caffeine Overuse / کافئین زیاد</label>
-                <label><input type="checkbox" class="habit-chk" value="Night Shift Worker / کار در شیفت شب"> Night Shift Worker</label>
-                <label><input type="checkbox" class="habit-chk" value="Vaping / ویپ و دخانیات الکترونیکی"> Vaping / ویپ</label>
+                <label><input type="checkbox" class="habit-chk" value="سیگار کشیدن / Smoking"> سیگار کشیدن</label>
+                <label><input type="checkbox" class="habit-chk" value="استرس بالا / High Stress"> استرس بالا</label>
+                <label><input type="checkbox" class="habit-chk" value="کم‌خوابی / Poor Sleep"> کم‌خوابی و بی‌خوابی</label>
+                <label><input type="checkbox" class="habit-chk" value="شغل پشت‌میزنشینی / Sedentary Job"> شغل پشت‌میزنشینی</label>
+                <label><input type="checkbox" class="habit-chk" value="تغذیه فست‌فود / Fast Food Diet"> تغذیه فست‌فود</label>
+                <label><input type="checkbox" class="habit-chk" value="اعتیاد به قند و شیرینی / Sugar Addiction"> مصرف بالای قند و شیرینی</label>
+                <label><input type="checkbox" class="habit-chk" value="مصرف زیاد کافئین / Caffeine Overuse"> مصرف زیاد کافئین</label>
+                <label><input type="checkbox" class="habit-chk" value="کار در شیفت شب / Night Shift"> کار در شیفت شب</label>
             </div>
-            <input type="text" id="clientCustomHabits" placeholder="Other lifestyle habits (optional)..." style="margin-top:8px;">
+            <input type="text" id="clientCustomHabits" placeholder="سایر عادت‌های سبک زندگی (اختیاری)..." style="margin-top:8px;">
 
-            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblClientPhoto">Upload Body/Physique Photo (Optional):</label>
+            <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblClientPhoto">آپلود عکس فیزیک بدنی (اختیاری برای تحلیل بهتر):</label>
             <input type="file" id="clientImageFile" accept="image/*">
 
-            <button class="action-btn" style="background:var(--accent); color:#000; margin-top:10px;" onclick="submitClientOrderAndPay()"><span id="payZarinBtnText">Pay with ZarinPal & Send to Trainer (40k Tomans)</span></button>
+            <button class="action-btn" style="margin-top:10px;" onclick="submitClientOrderAndPay()"><span id="payZarinBtnText">پرداخت با زرین‌پال و ارسال برای مربی (۴۰ هزار تومان)</span></button>
             <div id="orderProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
         </div>
     </div>
 
 </body>
->>>>>>> 80c01da217c37133fa018884a730fc85c1f5e515
 </html>

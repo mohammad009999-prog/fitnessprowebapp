@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fa" id="strengthRoot" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Pro - Rippetoe Starting Strength Compendium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0a0f1d 0%, #171f38 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-solid: #1e293b;
+            --accent: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --success: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.12);
+        }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        h1 { color: var(--accent); margin-bottom: 5px; font-weight: 900; font-size: 28px; }
+        .top-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 8px;
+        }
+        [dir="ltr"] .top-controls {
+            right: auto;
+            left: 0;
+        }
+        .top-btn {
+            background: var(--card-solid);
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none;
+            font-family: 'Vazirmatn', sans-serif;
+            backdrop-filter: blur(10px);
+        }
+        .top-btn:hover { background: var(--accent); color: #fff; }
+        
+        .source-banner {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--accent);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-main);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .source-banner h2 { color: var(--accent); margin-top: 0; font-size: 20px; }
+        .source-banner b { color: var(--accent); }
+
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: var(--card-solid);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        .card h2, .card h3 { color: var(--accent); margin-top: 0; font-weight: 700; }
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 14px;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        button.action-btn {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
+            font-size: 15px;
+            font-family: 'Vazirmatn', sans-serif;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+            transition: transform 0.2s;
+        }
+        button.action-btn:hover { transform: translateY(-2px); }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        .detailed-article {
+            background: var(--card-solid);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .detailed-article h3 { color: var(--accent); margin: 0 0 5px 0; font-size: 17px; }
+        .detailed-article p { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin: 0; }
+        .result-box {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--success);
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: var(--success);
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            line-height: 1.7;
+        }
+    </style>
+
+    <script>
+        let currentLang = 'fa';
+
+        window.toggleLang = () => {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            const root = document.getElementById('strengthRoot');
+            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+            root.setAttribute('lang', currentLang);
+
+            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'English / EN' : 'فارسی / FA';
+            document.getElementById('homeLink').innerText = currentLang === 'fa' ? '🏠 خانه / Home' : '🏠 Home / خانه';
+            
+            document.getElementById('mainTitle').innerText = currentLang === 'fa' ? 'مرکز بیومکانیک و قدرت بنیادین (Starting Strength)' : 'Starting Strength: Biomechanics & Core Lifts Hub';
+            document.getElementById('mainSub').innerText = currentLang === 'fa' ? 'مرجع تخصصی بیومکانیک حرکات پایه و اضافه بار خطی بر اساس کتاب مارک ریپه‌تو' : 'The Definitive Guide to Barbell Mechanics and Novice Linear Progression';
+            
+            document.getElementById('introTitle').innerText = currentLang === 'fa' ? 'درباره کتاب و نویسنده (Mark Rippetoe)' : 'About the Book & Author (Mark Rippetoe)';
+            document.getElementById('introText').innerHTML = currentLang === 'fa' ? 
+                'کتاب <b>"Starting Strength: Basic Barbell Training"</b> اثر برجسته <b>مارک ریپه‌تو</b>، معتبرترین مرجع آموزش بیومکانیک حرکات چندمفصلی پایه (اسکوات، ددلیفت، پرس سینه، پرس سرشانه و پاورکلین) در جهان است. این کتاب بر پایه فیزیک اهرم‌ها، مرکز ثقل و اضافه بار خطی برای توسعه حداکثر قدرت اسکلتی استوار است.' :
+                'The book <b>"Starting Strength"</b> by <b>Mark Rippetoe</b> is the premier international reference for learning the biomechanics of core barbell movements and basic strength development.';
+
+            document.getElementById('tabToolsText').innerText = currentLang === 'fa' ? '🛠️ ابزارهای محاسباتی قدرت (۶ ابزار)' : '🛠️ Strength Tools (6)';
+            document.getElementById('tabMasterText').innerText = currentLang === 'fa' ? '📖 بیومکانیک حرکات (۵ حرکت)' : '📖 Core Lifts Mechanics';
+            document.getElementById('tabArticlesText').innerText = currentLang === 'fa' ? '📚 دانشنامه مقالات (۱۲ مقاله)' : '📚 Knowledge Articles (12)';
+            document.getElementById('tabProgText').innerText = currentLang === 'fa' ? '📋 برنامه‌نویسی و اضافه بار' : '📋 Novice Progression';
+            document.getElementById('tabGearText').innerText = currentLang === 'fa' ? '🛡️ تجهیزات و ایمنی اسکلتی' : '🛡️ Gear & Skeletal Safety';
+        };
+
+        // Tool 1: Linear Progression Predictor
+        window.calculateLP = () => {
+            const currentW = parseFloat(document.getElementById('lpWeight').value);
+            const res = document.getElementById('lpResult');
+            res.style.display = 'block';
+
+            if(isNaN(currentW)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً وزنه فعلی را وارد کنید.' : 'Please enter current weight.';
+                return;
+            }
+
+            const nextSquat = currentW + 2.5;
+            const nextUpper = currentW + 1.25;
+
+            res.innerHTML = currentLang === 'fa' ? 
+                `📈 پیش‌بینی اضافه بار خطی (Novice LP):<br>• برای حرکات پایین‌تنه (اسکوات / ددلیفت): وزنه جلسه بعد <b>${nextSquat} کیلوگرم</b>.<br>• برای حرکات بالاتنه (پرس سینه / سرشانه): وزنه جلسه بعد <b>${nextUpper} کیلوگرم</b>.<br><i>قانون ریپه‌تو: افزایش وزن کوچک و مستمر در هر جلسه تمرین.</i>` :
+                `📈 Linear Progression: Lower body +2.5kg, Upper body +1.25kg for the next workout.`;
+        };
+
+        // Tool 2: Plate Loading Calculator
+        window.calculatePlates = () => {
+            const totalW = parseFloat(document.getElementById('totalWeight').value);
+            const res = document.getElementById('platesResult');
+            res.style.display = 'block';
+
+            if(isNaN(totalW) || totalW < 20) {
+                res.innerText = currentLang === 'fa' ? 'حداقل وزنه کل باید برابر با وزن هالتر استاندارد (۲۰ کیلوگرم) باشد.' : 'Total weight must be at least 20kg (bar weight).';
+                return;
+            }
+
+            const perSide = (totalW - 20) / 2;
+            res.innerHTML = currentLang === 'fa' ? 
+                `🏋️ بارگذاری هالتر (وزن هر سمت): <b>${perSide} کیلوگرم</b><br>هالتر استاندارد ۲۰ کیلوگرمی است و شما نیاز به دو دیسک <b>${perSide} کیلوگرمی</b> در دو طرف دارید.` :
+                `🏋️ Plate loading per side: <b>${perSide} kg</b>.`;
+        };
+
+        // Tool 3: 1RM Strength Estimator
+        window.calculate1RM = () => {
+            const w = parseFloat(document.getElementById('rmWeight').value);
+            const r = parseInt(document.getElementById('rmReps').value);
+            const res = byte = document.getElementById('rmResult');
+            res.style.display = 'block';
+
+            if(isNaN(w) || isNaN(r)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً وزنه و تکرار را وارد کنید.' : 'Please enter weight and reps.';
+                return;
+            }
+
+            // Epley Formula
+            const est1RM = Math.round(w * (1 + r / 30));
+            res.innerHTML = currentLang === 'fa' ? 
+                `💪 تخمین یک تکرار بیشینه (1RM): حدود <b>${est1RM} کیلوگرم</b>.<br>این عدد قدرت حداکثری اسکلتی شما را در این حرکت تخمین می‌زند.` :
+                `💪 Estimated 1RM: Approx. <b>${est1RM} kg</b>.`;
+        };
+
+        // Tool 4: Heavy Rest Calculator
+        window.calculateRest = () => {
+            const setNum = parseInt(document.getElementById('setNumInput').value);
+            const res = document.getElementById('restResult');
+            res.style.display = 'block';
+
+            if(isNaN(setNum)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً شماره ست را وارد کنید.' : 'Please enter set number.';
+                return;
+            }
+
+            if(setNum === 1) {
+                res.innerHTML = currentLang === 'fa' ? '⏱️ استراحت بعد از ست اول: <b>۳ دقیقه</b> (بازیابی نسبی مخازن کراتین فسفات).' : '⏱️ Rest 3 minutes.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? '⏱️ استراحت بعد از ست‌های سنگین پایانی: <b>۴ تا ۵ دقیقه کامل</b>.<br><b>دلیل (ریپه‌تو):</b> برای وزنه‌های سنگین زیربیشینه، سیستم عصبی مرکزی (CNS) و ATP نیاز به بازیابی کامل دارند؛ عجله نکنید!' : '⏱️ Rest 4-5 minutes for full CNS recovery.';
+            }
+        };
+
+        // Tool 5: Center of Balance Checker
+        window.checkBalance = () => {
+            const feedback = document.getElementById('balanceSelect').value;
+            const res = document.getElementById('balanceResult');
+            res.style.display = 'block';
+
+            if(feedback === 'heels') {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '✅ تعادل بی‌نقص: فشار بر روی مرکز پاشنه پا و میان‌پا (Mid-Foot) قرار دارد که طبق قوانین ریپه‌تو بهترین مسیر عمودی هالتر را تضمین می‌کند.' :
+                    '✅ Perfect balance over the mid-foot.';
+            } else if(feedback === 'toes') {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '⚠️ خطای تعادل (افتادن روی پنجه): هالتر از خط ثقل خارج شده و فشار مخربی به زانوها و مهره‌های کمر وارد می‌شود. باسن را عقب‌تر ببرید و وزن را روی پاشنه بیندازید.' :
+                    '⚠️ Balance fault: Shifting to toes. Keep weight over the mid-foot.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '⚠️ خطای تعادل (پرتاب شدن به عقب): زاویه ساق پا تغییر کرده یا نشستن به عقب بیش از حد انجام شده است.' :
+                    '⚠️ Balance fault: Sitting back too far.';
+            }
+        };
+
+        // Tool 6: Joint Moment Analyzer
+        window.analyzeMoment = () => {
+            const form = document.getElementById('formSelect').value;
+            const res = document.getElementById('momentResult');
+            res.style.display = 'block';
+
+            if(form === 'correct') {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🟢 فیزیک اهرم‌ها در حالت استاندارد: گشتاور وارد بر مهره‌های کمری حداقل بوده و عضلات همسترینگ و گلوت (باپایین‌ترین ممان اینرسی) حداکثر قدرت را اعمال می‌کنند.' :
+                    '🟢 Optimal mechanical moment.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🚨 خطر مکانیکی جدی (قوز کردن کمر در ددلیفت): فاصله هالتر از خط ثقل مفصل ران زیاد شده و اهرم گشتاور روی مهره‌های L4-L5 تا چند برابر افزایش می‌یابد که ریسک آسیب دیسک را به شدت بالا می‌برد!' :
+                    '🚨 Severe mechanical disadvantage and disc injury risk due to spinal flexion.';
+            }
+        };
+
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        };
+    </script>
+</head>
+<body>
+
+    <header>
+        <div class="top-controls">
+            <a href="index.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
+            <button class="top-btn" onclick="toggleLang()" id="langBtn">English / EN</button>
+        </div>
+        <h1 id="mainTitle">مرکز بیومکانیک و قدرت بنیادین (Starting Strength)</h1>
+        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">مرجع تخصصی بیومکانیک حرکات پایه و اضافه بار خطی بر اساس کتاب مارک ریپه‌تو</p>
+    </header>
+
+    <div class="container">
+        <!-- Book & Author Introduction -->
+        <div class="source-banner">
+            <h2 id="introTitle">درباره کتاب و نویسنده (Mark Rippetoe)</h2>
+            <p id="introText" style="margin: 0; line-height: 1.8;">
+                کتاب <b>"Starting Strength: Basic Barbell Training"</b> اثر برجسته <b>مارک ریپه‌تو</b>، معتبرترین مرجع آموزش بیومکانیک حرکات چندمفصلی پایه (اسکوات، ددلیفت، پرس سینه، پرس سرشانه و پاورکلین) در جهان است. این کتاب بر پایه فیزیک اهرم‌ها، مرکز ثقل و اضافه بار خطی برای توسعه حداکثر قدرت اسکلتی استوار است.
+            </p>
+        </div>
+
+        <!-- Navigation Tabs (5 Tabs) -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('tabTools')"><span id="tabToolsText">🛠️ ابزارهای محاسباتی قدرت (۶ ابزار)</span></button>
+            <button class="tab-btn" onclick="switchTab('tabMaster')"><span id="tabMasterText">📖 بیومکانیک حرکات (۵ حرکت)</span></button>
+            <button class="tab-btn" onclick="switchTab('tabArticles')"><span id="tabArticlesText">📚 دانشنامه مقالات (۱۲ مقاله)</span></button>
+            <button class="tab-btn" onclick="switchTab('tabProg')"><span id="tabProgText">📋 برنامه‌نویسی و اضافه بار</span></button>
+            <button class="tab-btn" onclick="switchTab('tabGear')"><span id="tabGearText">🛡️ تجهیزات و ایمنی اسکلتی</span></button>
+        </div>
+
+        <!-- TAB 1: 6 STRENGTH TOOLS -->
+        <div id="tabTools" class="tab-content active">
+            <div class="grid">
+                <!-- Tool 1 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۱. پیش‌بینی‌کننده اضافه بار خطی (Novice LP)</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">محاسبه افزایش وزنه جلسه به جلسه طبق فرمول ریپه‌تو.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">وزنه رکورد جلسه قبل (کیلوگرم):</label>
+                    <input type="number" id="lpWeight" placeholder="مثال: ۱۰۰">
+                    <button class="action-btn" onclick="calculateLP()">محاسبه وزنه جلسه بعد</button>
+                    <div id="lpResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 2 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۲. ماشین‌حساب صفحه گذاری هالتر</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تعیین سریع دیسک‌های وزنه در دو سمت هالتر.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">وزن کل مورد نظر (کیلوگرم):</label>
+                    <input type="number" id="totalWeight" placeholder="مثال: ۱۲۰">
+                    <button class="action-btn" onclick="calculatePlates()">محاسبه دیسک‌ها</button>
+                    <div id="platesResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 3 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۳. تخمین‌گر یک تکرار بیشینه (1RM)</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">محاسبه قدرت حداکثری اسکلتی بر اساس فرمول ایپلی.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">وزنه تمرین (کیلوگرم):</label>
+                    <input type="number" id="rmWeight" placeholder="مثال: ۱۴۰">
+                    <label style="font-size:12px; color:var(--text-muted);">تکرار انجام شده:</label>
+                    <input type="number" id="rmReps" placeholder="مثال: ۵">
+                    <button class="action-btn" onclick="calculate1RM()">محاسبه 1RM قدرتی</button>
+                    <div id="rmResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 4 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۴. بهینه‌ساز استراحت ست‌های سنگین</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تعیین زمان بازیابی سیستم عصبی مرکزی (CNS).</p>
+                    <label style="font-size:12px; color:var(--text-muted);">کدام ست را به پایان رسانده‌اید؟</label>
+                    <input type="number" id="setNumInput" placeholder="مثال: ۳">
+                    <button class="action-btn" onclick="calculateRest()">محاسبه استراحت بهینه</button>
+                    <div id="restResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 5 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۵. بررسی‌کننده مرکز ثقل و تعادل</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تحلیل توزیع فشار روی کف پا در حرکات پایه.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">حس تعادل شما در حین اجرای حرکت:</label>
+                    <select id="balanceSelect">
+                        <option value="heels">فشار کاملاً روی مرکز پاشنه و میان‌پا (Mid-Foot)</option>
+                        <option value="toes">افتادن وزن به سمت پنجه پاها</option>
+                        <option value="heels_too">پرتاب شدن به عقب و بلند شدن پنجه</option>
+                    </select>
+                    <button class="action-btn" onclick="checkBalance()">تحلیل تعادل اسکلتی</button>
+                    <div id="balanceResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 6 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۶. تحلیل‌گر گشتاور و اهرم‌های کمر</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">ارزیابی فشار مکانیکی وارد بر مهره‌ها در ددلیفت.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">وضعیت ستون فقرات در اجرای ددلیفت:</label>
+                    <select id="formSelect">
+                        <option value="correct">ستون فقرات کاملاً خنثی و صاف (Extended/Neutral)</option>
+                        <option value="bent">انحنا و قوز کردن کمر در بخش پایین حرکت</option>
+                    </select>
+                    <button class="action-btn" onclick="analyzeMoment()">تحلیل ریسک مکانیکی</button>
+                    <div id="momentResult" class="result-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: THE 5 CORE LIFTS BIOMECHANICS -->
+        <div id="tabMaster" class="tab-content">
+            <div class="card">
+                <h2>📖 کالبدشکافی بیومکانیک ۵ حرکت بنیادین کتاب</h2>
+                <div class="grid" style="margin-top: 20px;">
+                    <div class="detailed-article">
+                        <h3>۱. اسکوات از پشت با هالتر (Low Bar Back Squat)</h3>
+                        <p>حرکت بنیادین قدرت. قرار گرفتن هالتر روی استخوان کتف (Low Bar)، زاویه رو به جلوی بالاتنه برای استفاده بهینه از عضلات باسن و همسترینگ، و عبور خط ثقل مستقیم از میان‌پای کاربر.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۲. ددلیفت (The Deadlift)</h3>
+                        <p>خالص‌ترین آزمون قدرت انسانی. شروع حرکت با تماس مستقیم هالتر با ساق پا، بالا آوردن همزمان باسن و شانه با حفظ انحنای طبیعی ستون فقرات، و قفل کامل لگن در بالا.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۳. پرس سینه روی نیمکت (The Bench Press)</h3>
+                        <p>توسعه‌دهنده قدرت بالاتنه. استفاده از قوس طبیعی کمر، جمع کردن کتف‌ها به سمت عقب و پایین برای ایجاد پایگاه اتکا، و زاویه ۴۵ درجه آرنج نسبت به بالاتنه.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۴. پرس سرشانه ایستاده (The Press)</h3>
+                        <p>قدرت انفجاری بالای سر. شروع با حرکت انقباضی لگن (Hip Drive معکوس)، عبور دادن سریع سر از زیر هالتر بعد از رد شدن از صورت، و قفل کامل آرنج‌ها در بالا.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۵. پاورکلین (The Power Clean)</h3>
+                        <p>اوج توان انفجاری. انتقال شتاب خطی از زمین به هالتر با اکستنشن همزمان مچ پا، زانو و لگن، و کشش سریع باسن همراه با جابجایی پاها برای گرفتن هالتر روی دلتوئید جلو.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: 12 KNOWLEDGE ARTICLES -->
+        <div id="tabArticles" class="tab-content">
+            <div class="card">
+                <h2>📚 دانشنامه جامع مقالات و اصول تمرین قدرت</h2>
+                <div class="grid" style="margin-top: 20px;">
+                    <div class="detailed-article">
+                        <h3>۱. فلسفه تمرین با هالتر آزاد (Why Barbells?)</h3>
+                        <p>چرا دستگاه‌های بدنسازی و دمبل‌ها نمی‌توانند جایگزین هالتر شوند؟ هالتر به دلیل عدم وجود محدودیت مسیری، کل سیستم عصبی و عضلانی را وادار به تعادل و تولید نیروی سه بعدی می‌کند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۲. مکانیک اسکلتی اسکوات و مرکز ثقل</h3>
+                        <p>اهمیت عبور خط عمود وزن از میان‌پا. هرگونه انحراف به سمت پنجه یا پاشنه، بازوی گشتاور را افزایش داده و راندمان مکانیکی را نابود می‌کند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۳. مکانیک ددلیفت و تماس با ساق پا</h3>
+                        <p>چرا هالتر نباید از بدن فاصله بگیرد؟ حفظ تماس دائمی هالتر با ساق پا و ران، بازوی اهرم مقاومتی را کوتاه کرده و فشار روی مهره‌های کمر را به حداقل می‌رساند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۴. پرس سینه و انتقال نیروی سینه/سرشانه</h3>
+                        <p>نقش حیاتی پایداری کتف‌ها روی نیمکت. شانه آزاد روی نیمکت ثبات را از بین برده و نیروی تولیدی را هدر می‌دهد؛ اکستنشن کتف کلید اجرای صحیح است.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۵. پرس سرشانه ایستاده و تعادل جاذبه</h3>
+                        <p>چرا پرس ایستاده بسیار برتر از نشسته‌است؟ درگیر شدن کل عضلات هسته بدن (Core) و باسن برای حفظ تعادل ستون فقرات زیر بار عمودی.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۶. پاورکلین و قدرت انفجاری</h3>
+                        <p>تبدیل نیروی زمین به شتاب عمودی. نحوه صحیح اعمال ضربه باسن (Jump Shrug) برای سبک کردن موقت هالتر و دریافت آن.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۷. مفهوم حیاتی «هیپ درایو» (Hip Drive)</h3>
+                        <p>استفاده از قوی‌ترین عضلات بدن (گلوتوس ماکسیموس و همسترینگ) با باز کردن زاویه لگن در نقطه عطف اسکوات برای بلند کردن وزنه‌های سنگین.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۸. تنفس و مانور والسالوا (Valsalva Maneuver)</h3>
+                        <p>حبس هوا در قفسه سینه و ایجاد فشار داخل شکمی (IAP) برای تبدیل بالاتنه به یک استوانه صلب و محافظت مطلق از مهره‌های ستون فقرات.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۹. اهمیت کمربند وزنه‌برداری (Powerlifting Belts)</h3>
+                        <p>کمربند ابزار جادویی نیست؛ بلکه با فشار به دیواره شکم، گیرنده‌های عصبی عضلانی را فعال کرده و فشار داخل شکمی را برای حفظ ثبات ستون فقرات دوچندان می‌کند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۰. اضافه بار خطی مقدماتی (Novice LP)</h3>
+                        <p>چرا ورزشکاران مبتدی نیازی به برنامه‌های پیچیده ندارند؟ سیستم ساده افزایش وزنه در هر جلسه، سریع‌ترین مسیر ساخت قدرت در انسان است.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۱. مدیریت فلات‌ها و ریست رکوردها (Resets)</h3>
+                        <p>وقتی اضافه بار خطی متوقف می‌شود چه کنیم؟ کاهش برنامه‌ریزی‌شده وزنه‌ها به میزان ۱۰ درصد (Reset) برای بازیابی عصب و روان و عبور مجدد از مانع.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۲. آناتومی اهرم‌ها و تفاوت‌های قد و استخوان‌بندی</h3>
+                        <p>چرا افراد قدبلند با فمور (استخوان ران) بلند، اسکوات متفاوت‌تری نسبت به افراد کوتاه‌قامت اجرا می‌کنند؟ تطبیق بیومکانیک فردی با قوانین فیزیک هالتر.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: NOVICE PROGRAMMING & PROGRESSION -->
+        <div id="tabProg" class="tab-content">
+            <div class="card">
+                <h2>📋 سیستم برنامه‌نویسی تمرین مبتدیان (Novice Program)</h2>
+                <p style="color:var(--text-muted); line-height: 1.8;">
+                    برنامه تمرینی کتاب *Starting Strength* بر اساس دو الگوی چرخشی (Workout A و Workout B) تنظیم شده است که در سه روز غیرمتوالی در هفته اجرا می‌شود:
+                    <br><br>
+                    • <b>جلسه A:</b> اسکوات (۳ ست ۵ تکرار) | پرس سینه (۳ ست ۵ تکرار) | ددلیفت (۱ ست ۵ تکرار)
+                    <br>• <b>جلسه B:</b> اسکوات (۳ ست ۵ تکرار) | پرس سرشانه (۳ ست ۵ تکرار) | پاورکلین (۵ ست ۳ تکرار)
+                    <br><br>
+                    <b>قانون طلایی:</b> در هر جلسه تمرین، در صورت اجرای کامل تکرارها، ۲.۵ کیلوگرم به وزن هالتر در حرکات پایین‌تنه اضافه می‌شود.
+                </p>
+            </div>
+        </div>
+
+        <!-- TAB 5: GEAR & SKELETAL SAFETY -->
+        <div id="tabGear" class="tab-content">
+            <div class="card">
+                <h2>🛡️ تجهیزات ضروری و ایمنی ساختار اسکلتی</h2>
+                <p style="color:var(--text-muted); line-height: 1.8;">
+                    بر خلاف تجهیزات نمایشی باشگاه‌ها، ریپه‌تو استفاده از ابزارهای خاصی را برای حفظ ایمنی اسکلتی الزامی می‌داند:
+                    <br><br>
+                    • <b>کفش وزنه‌برداری (Lifiting Shoes):</b> پاشنه سخت و چوبی کفش، زاویه مناسب مچ پا را باز کرده و انتقال نیرو از زمین به هالتر را صددرصد می‌کند ( برخلاف کفش‌های نرم و راحتی).
+                    <br>• <b>کمربند پاورلیفتینگ استاندارد:</b> کمربندی با پهنای یکسان در تمام طول (معمولاً ۱۰ میلی‌متر ضخامت) برای ایجاد فشار حداکثری روی عضلات شکم.
+                    <br>• <b>گچ دست (Chalk):</b> استفاده از منیزیم کربنات برای جلوگیری از لیز خوردن هالتر از دست، که اتصال عصبی دست با میله را تقویت می‌کند.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

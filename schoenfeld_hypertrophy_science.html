@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fa" id="scienceRoot" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Pro - Schoenfeld Hypertrophy Ultimate Compendium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #090d16 0%, #171c30 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-solid: #1e293b;
+            --accent: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --success: #10b981;
+            --info: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.12);
+        }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        h1 { color: var(--accent); margin-bottom: 5px; font-weight: 900; font-size: 28px; }
+        .top-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 8px;
+        }
+        [dir="ltr"] .top-controls {
+            right: auto;
+            left: 0;
+        }
+        .top-btn {
+            background: var(--card-solid);
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none;
+            font-family: 'Vazirmatn', sans-serif;
+            backdrop-filter: blur(10px);
+        }
+        .top-btn:hover { background: var(--accent); color: #000; }
+        
+        .source-banner {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--accent);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-main);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .source-banner h2 { color: var(--accent); margin-top: 0; font-size: 20px; }
+        .source-banner b { color: var(--accent); }
+
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: var(--card-solid);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: #000;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        .card h2, .card h3 { color: var(--accent); margin-top: 0; font-weight: 700; }
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 14px;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        button.action-btn {
+            background: var(--accent-gradient);
+            color: #000;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
+            font-size: 15px;
+            font-family: 'Vazirmatn', sans-serif;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+            transition: transform 0.2s;
+        }
+        button.action-btn:hover { transform: translateY(-2px); }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        .detailed-article {
+            background: var(--card-solid);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .detailed-article h3 { color: var(--accent); margin: 0 0 5px 0; font-size: 17px; }
+        .detailed-article p { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin: 0; }
+        .result-box {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--success);
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: var(--success);
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            line-height: 1.7;
+        }
+    </style>
+
+    <script>
+        let currentLang = 'fa';
+
+        window.toggleLang = () => {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            const root = document.getElementById('scienceRoot');
+            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+            root.setAttribute('lang', currentLang);
+
+            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'English / EN' : 'فارسی / FA';
+            document.getElementById('homeLink').innerText = currentLang === 'fa' ? '🏠 خانه / Home' : '🏠 Home / خانه';
+            
+            document.getElementById('mainTitle').innerText = currentLang === 'fa' ? 'دایره‌المعارف جامع علوم هایپرتروفی (شونفلد)' : 'Schoenfeld Hypertrophy Ultimate Compendium';
+            document.getElementById('mainSub').innerText = currentLang === 'fa' ? 'مرجع کامل و مستند فیزیولوژی رشد عضلانی بر اساس کتاب مرجع جهانی' : 'The Definitive Evidence-Based Muscle Hypertrophy Reference';
+            
+            document.getElementById('introTitle').innerText = currentLang === 'fa' ? 'درباره کتاب و نویسنده (Dr. Brad Schoenfeld)' : 'About the Book & Author (Dr. Brad Schoenfeld)';
+            document.getElementById('introText').innerHTML = currentLang === 'fa' ? 
+                'کتاب <b>"Science and Development of Muscle Hypertrophy"</b> اثر برجسته <b>دکتر برد شونفلد</b> (پروفسور ارشد علوم ورزشی و ملقب به پدر هایپرتروفی جهان) معتبرترین و جامع‌ترین اثر علمی درباره مکانیسم‌های رشد سلولی و بیومکانیک عضلات است.' :
+                'The book <b>"Science and Development of Muscle Hypertrophy"</b> by <b>Dr. Brad Schoenfeld</b> is the definitive international reference on cellular growth mechanisms and muscle biomechanics.';
+
+            document.getElementById('tabToolsText').innerText = currentLang === 'fa' ? '🛠️ ابزارهای محاسباتی (۸ ابزار)' : '🛠️ Analytical Tools (8)';
+            document.getElementById('tabMasterText').innerText = currentLang === 'fa' ? '📖 دانشنامه (۱۳ فصل)' : '📖 Knowledge Base (13)';
+            document.getElementById('tabBiomechText').innerText = currentLang === 'fa' ? '🧬 بیومکانیک و فیبرها' : '🧬 Biomechanics Lab';
+            document.getElementById('tabPeriodText').innerText = currentLang === 'fa' ? '📅 پریودی‌زشن و برنامه‌ریزی' : '📅 Periodization';
+            document.getElementById('tabNutText').innerText = currentLang === 'fa' ? '🥗 تغذیه و هورمون‌ها' : '🥗 Nutrition & Hormones';
+        };
+
+        // Tool 1: Volume Calculator
+        window.calculateVolume = () => {
+            const sets = parseInt(document.getElementById('setsInput').value);
+            const res = document.getElementById('volumeResult');
+            res.style.display = 'block';
+
+            if(isNaN(sets)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً تعداد ست‌ها را وارد کنید.' : 'Please enter sets.';
+                return;
+            }
+
+            if(sets < 10) {
+                res.innerText = currentLang === 'fa' ? '⚠️ حجم تمرینی در سطح نگهداری (Maintenance): این میزان (زیر ۱۰ ست در هفته) برای حفظ سایز عضلانی کافی است، اما طبق تحقیقات شونفلد تحریک لازم برای رشد پیشرونده را ایجاد نمی‌کند.' : '⚠️ Maintenance Volume: Good for retaining muscle, but suboptimal for growth.';
+            } else if(sets >= 10 && sets <= 20) {
+                res.innerText = currentLang === 'fa' ? '✅ محدوده حجم بهینه (Optimal Hypertrophy): بالاترین بازدهی سلولی (بین ۱۰ تا ۲۰ ست در هفته) برای بیشترین میزان سنتز پروتئین عضلانی و هایپرتروفی.' : '✅ Optimal Hypertrophy Range: Maximum cellular yield for muscle protein synthesis based on Schoenfeld research.';
+            } else {
+                res.innerText = currentLang === 'fa' ? '🔥 حجم بالا (High Volume - بیش از ۲۰ ست): نیازمند ریکاوری بسیار پیشرفته، تغذیه بی‌نقص و خواب کامل؛ در غیر این صورت خطر تمرین‌زدگی عصبی و تخریب بافت وجود دارد.' : '🔥 High Volume: Requires elite recovery and nutrition; high risk of nervous system burnout otherwise.';
+            }
+        };
+
+        // Tool 2: Protein Calculator
+        window.calculateProtein = () => {
+            const weight = parseFloat(document.getElementById('weightInput').value);
+            const res = document.getElementById('proteinResult');
+            res.style.display = 'block';
+
+            if(isNaN(weight)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً وزن خود را وارد کنید.' : 'Please enter weight.';
+                return;
+            }
+
+            const totalProtein = Math.round(weight * 1.9); 
+            const perMeal = Math.round(totalProtein / 4);
+
+            res.innerHTML = currentLang === 'fa' ? 
+                `🥩 پروتئین کل روزانه: حدود <b>${totalProtein} گرم</b> (معادل ۱.۹ گرم به ازای هر کیلوگرم وزن بدن).<br>🕒 توزیع وعده‌ای برای تحریک مداوم MPS: تقسیم در <b>۴ الی ۵ وعده</b> (هر وعده تقریباً <b>${perMeal} گرم</b> پروتئین خالص با فاصله ۳ الی ۴ ساعت) بر اساس اصول شونفلد.` :
+                `🥩 Total Daily Protein: Approx. <b>${totalProtein}g</b>.<br>🕒 Meal Distribution for MPS: Split into <b>4-5 meals</b> (approx. <b>${perMeal}g</b> per meal every 3-4 hours).`;
+        };
+
+        // Tool 3: Rest Calculator
+        window.calculateRest = () => {
+            const type = document.getElementById('exTypeSelect').value;
+            const res = document.getElementById('restResult');
+            res.style.display = 'block';
+
+            if(type === 'compound') {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '⏱️ زمان استراحت بهینه: <b>۲ تا ۳ دقیقه</b>.<br><b>دلیل علمی (شونفلد):</b> حرکات چندمفصلی سنگین (مثل اسکوات و ددلیفت) سیستم عصبی مرکزی (CNS) و مخازن انرژی ATP-PC را به شدت تخلیه می‌کنند. استراحت کوتاه مانع بازیابی قدرت در ست‌های بعدی و افت تنش مکانیکی می‌شود.' :
+                    '⏱️ Optimal Rest: <b>2-3 minutes</b> for heavy compound lifts to ensure full ATP-PC and CNS recovery.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '⏱️ زمان استراحت بهینه: <b>۱ تا ۱.۵ دقیقه</b>.<br><b>دلیل علمی (شونفلد):</b> حرکات تک‌مفصلی و ایزوله فشار کمتری به CNS وارد کرده و هدف اصلی آن‌ها ایجاد استرس متابولیک و تورم سلولی است، بنابراین استراحت کوتاه‌تر کاملاً استاندارد است.' :
+                    '⏱️ Optimal Rest: <b>1-1.5 minutes</b> for isolation movements targeting metabolic stress.';
+            }
+        };
+
+        // Tool 4: Frequency Analyzer
+        window.calculateFrequency = () => {
+            const freq = parseInt(document.getElementById('freqSelect').value);
+            const res = document.getElementById('freqResult');
+            res.style.display = 'block';
+
+            if(freq === 1) {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '⚠️ فرکانس ۱ بار در هفته (Old School): طبق یافته‌های شونفلد، سنتز پروتئین عضلانی (MPS) پس از ۴۸ ساعت به سطح پایه برمی‌گردد. تمرین ۱ بار در هفته یعنی بیش از ۵ هفته از سال عضلات شما غیرفعال یا در حال افت هستند.' :
+                    '⚠️ 1x/week frequency leaves muscle protein synthesis baseline for too long.';
+            } else if(freq === 2) {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '✅ فرکانس ۲ بار در هفته (Golden Standard): ایده‌آل‌ترین حالت برای حفظ پروتئین‌سازی در بالاترین سطح طی هفته و ریکاوری کامل بین جلسات.' :
+                    '✅ 2x/week frequency is the golden standard for maximizing protein synthesis windows.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🔥 فرکانس ۳ بار در هفته (Full Body / Advanced): فوق‌العاده برای افراد مطلع به شرط کنترل حجم جلسات و عدم تخریب تاندون‌ها.' :
+                    '🔥 3x/week high frequency requires precise volume management per session.';
+            }
+        };
+
+        // Tool 5: Deload Tracker
+        window.calculateDeload = () => {
+            const weeks = parseInt(document.getElementById('weeksInput').value);
+            const res = document.getElementById('deloadResult');
+            res.style.display = 'block';
+
+            if(isNaN(weeks)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً هفته‌های تمرین را وارد کنید.' : 'Please enter weeks.';
+                return;
+            }
+
+            if(weeks < 6) {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🟢 وضعیت ریکاوری نرمال: بدن شما هنوز در چرخه پیشرفت است و نیازی به دلود نیست مگر علائم خستگی مزمن داشته باشید.' :
+                    '🟢 Normal phase: No immediate deload needed yet.';
+            } else if(weeks >= 6 && weeks <= 8) {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '⚠️ زمان هشدار دلود (Deload Recommended): بر اساس کتاب شونفلد، انباشت خستگی عصبی پس از ۶ تا ۸ هفته آغاز می‌شود. حتماً هفته آینده حجم و وزنه‌ها را ۳۰٪ کاهش دهید.' :
+                    '⚠️ Deload Recommended: Accumulated CNS fatigue requires a light recovery week now.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🚨 هشدار جدی بیش‌تمرینی (Overtraining Risk): ادامه تمرین سنگین بدون دلود پس از ۸ هفته منجر به استپ عضلانی، ریزش رکورد و آسیب تاندونی خواهد شد!' :
+                    '🚨 High overtraining risk: Immediate deload is mandatory.';
+            }
+        };
+
+        // Tool 6: Stimulus Matrix
+        window.calculateMatrix = () => {
+            const repRange = document.getElementById('repRangeSelect').value;
+            const res = document.getElementById('matrixResult');
+            res.style.display = 'block';
+
+            if(repRange === 'heavy') {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '📊 تحلیل محرک (۱ تا ۶ تکرار):<br>• تنش مکانیکی: <b>۹۵٪ (بسیار بالا)</b><br>• استرس متابولیک: <b>۳۰٪ (پایین)</b><br>• آسیب عضلانی: <b>۸۰٪ (بالا)</b><br><i>بهترین حالت برای فعال‌سازی مسیر mTOR از طریق تنش سنگین.</i>' :
+                    '📊 Heavy load matrix: High mechanical tension, moderate damage, low metabolic stress.';
+            } else if(repRange === 'hyper') {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '📊 تحلیل محرک (۸ تا ۱۲ تکرار - محدوده طلایی شونفلد):<br>• تنش مکانیکی: <b>۸۵٪ (عالی)</b><br>• استرس متابولیک: <b>۸۵٪ (عالی)</b><br>• آسیب عضلانی: <b>۷۰٪ (متعادل)</b><br><i>ترکیب بی‌نقص هر ۳ محرک رشد عضلانی.</i>' :
+                    '📊 Hypertrophy range matrix: Balanced mechanical tension and metabolic stress.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '📊 تحلیل محرک (۱۵ تا ۳۰ تکرار):<br>• تنش مکانیکی: <b>۵۰٪ (متوسط)</b><br>• استرس متابولیک: <b>۹۵٪ (بسیار بالا)</b><br>• آسیب عضلانی: <b>۴۰٪ (پایین)</b><br><i>تمرکز اصلی روی استرس متابولیک و پمپاژ.</i>' :
+                    '📊 High rep range matrix: Maximum metabolic stress and cellular swelling.';
+            }
+        };
+
+        // Tool 7: Progressive Overload Predictor (NEW)
+        window.calculateOverload = () => {
+            const currentWeight = parseFloat(document.getElementById('overloadWeight').value);
+            const currentReps = parseInt(document.getElementById('overloadReps').value);
+            const res = document.getElementById('overloadResult');
+            res.style.display = 'block';
+
+            if(isNaN(currentWeight) || isNaN(currentReps)) {
+                res.innerText = currentLang === 'fa' ? 'لطفاً وزنه و تکرار فعلی را وارد کنید.' : 'Please enter current weight and reps.';
+                return;
+            }
+
+            if(currentReps >= 10) {
+                const suggestedWeight = currentWeight + 2.5;
+                res.innerHTML = currentLang === 'fa' ? 
+                    `🚀 پیش‌بینی اضافه بار تدریجی:<br>شما به سقف رنج تکرار رسیده‌اید! برای جلسه بعدی وزنه را به <b>${suggestedWeight} کیلوگرم</b> افزایش دهید و تکرارها را به محدوده ۶ تا ۸ برگردانید.` :
+                    `🚀 Progressive Overload: Increase weight to <b>${suggestedWeight} kg</b> for the next session.`;
+            } else {
+                const suggestedReps = currentReps + 1;
+                res.innerHTML = currentLang === 'fa' ? 
+                    `🚀 پیش‌بینی اضافه بار تدریجی:<br>وزنه را ثابت نگه دارید و در جلسه آینده سعی کنید تکرار خود را به <b>${suggestedReps} تکرار</b> برسانید (قانون اضافه بار تدریجی تکرار).` :
+                    `🚀 Progressive Overload: Keep weight steady and aim for <b>${suggestedReps} reps</b>.`;
+            }
+        };
+
+        // Tool 8: Sticking Point Analyzer (NEW)
+        window.calculateSticking = () => {
+            const point = document.getElementById('stickingSelect').value;
+            const res = document.getElementById('stickingResult');
+            res.style.display = 'block';
+
+            if(point === 'bottom') {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🧬 تحلیل نقطه ضعف (بخش پایین / کششی):<br><b>راهکار شونفلد:</b> مشکل در بخش کششی دامنه حرکت نشان‌دهنده ضعف در تولید نیروی اولیه است. استفاده از حرکات با توقف در پایین (Pause Reps) یا تمرکز روی طول کششی (Lengthened Partials) این نقطه کور را برطرف می‌کند.' :
+                    '🧬 Bottom sticking point: Implement pause reps and focus on stretched-position tension.';
+            } else if(point === 'middle') {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🧬 تحلیل نقطه ضعف (بخش میانی):<br><b>راهکار شونفلد:</b> افت نیرو در نقطه میانی ناشی از تغییر اهرم‌های بیومکانیکی مفصل است. بهبود سرعت انفجاری (Explosive Intent) در بخش مثبت حرکت بهترین راهکار است.' :
+                    '🧬 Middle sticking point: Focus on explosive concentric acceleration.';
+            } else {
+                res.innerHTML = currentLang === 'fa' ? 
+                    '🧬 تحلیل نقطه ضعف (بخش بالا / قفل مفصل):<br><b>راهکار شونفلد:</b> ضعف در انقباض نهایی و قفل مفصل نشان‌دهنده افت تنش در طول کوتاه شده عضله است. استفاده از باندهای مقاومتی (Bands) مقاومت را در بالا افزایش می‌دهد.' :
+                    '🧬 Top sticking point: Use resistance bands to match the strength curve.';
+            }
+        };
+
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        };
+    </script>
+</head>
+<body>
+
+    <header>
+        <div class="top-controls">
+            <a href="index.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
+            <button class="top-btn" onclick="toggleLang()" id="langBtn">English / EN</button>
+        </div>
+        <h1 id="mainTitle">دایره‌المعارف جامع علوم هایپرتروفی (شونفلد)</h1>
+        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">مرجع کامل و مستند فیزیولوژی رشد عضلانی بر اساس کتاب مرجع جهانی</p>
+    </header>
+
+    <div class="container">
+        <!-- Book & Author Introduction -->
+        <div class="source-banner">
+            <h2 id="introTitle">درباره کتاب و نویسنده (Dr. Brad Schoenfeld)</h2>
+            <p id="introText" style="margin: 0; line-height: 1.8;">
+                کتاب <b>"Science and Development of Muscle Hypertrophy"</b> اثر برجسته <b>دکتر برد شونفلد</b> (پروفسور ارشد علوم ورزشی و ملقب به پدر هایپرتروفی جهان) معتبرترین و جامع‌ترین اثر علمی درباره مکانیسم‌های رشد سلولی و بیومکانیک عضلات است. این کتاب با بررسی صدها مقاله پژوهشی و آزمایشگاهی، مرز میان «بروسینس» (باورهای عامیانه باشگاهی) و «علم واقعی فیزیولوژی» را مشخص کرده و راهنمای قطعی بدنسازان حرفه‌ای و محققان دنیاست.
+            </p>
+        </div>
+
+        <!-- Navigation Tabs (5 Tabs) -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('tabTools')"><span id="tabToolsText">🛠️ ابزارهای محاسباتی (۸ ابزار)</span></button>
+            <button class="tab-btn" onclick="switchTab('tabMaster')"><span id="tabMasterText">📖 دانشنامه (۱۳ فصل)</span></button>
+            <button class="tab-btn" onclick="switchTab('tabBiomech')"><span id="tabBiomechText">🧬 بیومکانیک و فیبرها</span></button>
+            <button class="tab-btn" onclick="switchTab('tabPeriod')"><span id="tabPeriodText">📅 پریودی‌زشن و برنامه‌ریزی</span></button>
+            <button class="tab-btn" onclick="switchTab('tabNut')"><span id="tabNutText">🥗 تغذیه و هورمون‌ها</span></button>
+        </div>
+
+        <!-- TAB 1: 8 ANALYTICAL TOOLS -->
+        <div id="tabTools" class="tab-content active">
+            <div class="grid">
+                <!-- Tool 1 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۱. محاسبه‌گر تخصصی حجم هفتگی</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تحلیل تعداد ست‌های عضلانی هفتگی بر اساس داده‌های آزمایشگاهی.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">تعداد ست‌های هفتگی برای یک عضله:</label>
+                    <input type="number" id="setsInput" placeholder="مثال: ۱۵">
+                    <button class="action-btn" onclick="calculateVolume()">تحلیل علمی ست‌ها</button>
+                    <div id="volumeResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 2 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۲. محاسبه‌گر توزیع پروتئین (MPS)</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">محاسبه میزان کل و تقسیم‌بندی وعده‌ای پروتئین.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">وزن بدن (کیلوگرم):</label>
+                    <input type="number" id="weightInput" placeholder="مثال: ۷۵">
+                    <button class="action-btn" onclick="calculateProtein()">محاسبه تغذیه علمی</button>
+                    <div id="proteinResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 3 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۳. بهینه‌ساز زمان استراحت بین ست‌ها</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تعیین زمان دقیق بازیابی ATP و تنش مکانیکی.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">نوع حرکت:</label>
+                    <select id="exTypeSelect">
+                        <option value="compound">چندمفصلی سنگین (اسکوات، پرس سینه)</option>
+                        <option value="isolation">تک‌مفصلی / ایزوله (جلو بازو، نشر جانب)</option>
+                    </select>
+                    <button class="action-btn" onclick="calculateRest()">محاسبه استراحت</button>
+                    <div id="restResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 4 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۴. تحلیل‌گر فرکانس تمرین</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">ارزیابی همخوانی با پنجره سنتز پروتئین (۴۸ ساعته).</p>
+                    <label style="font-size:12px; color:var(--text-muted);">تعداد دفعات تمرین هر عضله در هفته:</label>
+                    <select id="freqSelect">
+                        <option value="1">۱ بار در هفته (سنتی)</option>
+                        <option value="2">۲ بار در هفته (بهینه شونفلد)</option>
+                        <option value="3">۳ بار در هفته (پیشرفته)</option>
+                    </select>
+                    <button class="action-btn" onclick="calculateFrequency()">تحلیل فرکانس</button>
+                    <div id="freqResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 5 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۵. ارزیاب خستگی و زمان دلود (Deload)</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تشخیص نیاز به کاهش بار برای سیستم عصبی.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">چند هفته متوالی سنگین تمرین کرده‌اید؟</label>
+                    <input type="number" id="weeksInput" placeholder="مثال: ۷">
+                    <button class="action-btn" onclick="calculateDeload()">بررسی وضعیت دلود</button>
+                    <div id="deloadResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 6 -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۶. ماتریس تحریک هایپرتروفی</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">محاسبه سهم تنش، متابولیک و آسیب بر اساس رنج تکرار.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">رنج تکرار تمرینات:</label>
+                    <select id="repRangeSelect">
+                        <option value="heavy">سنگین (۱ تا ۶ تکرار)</option>
+                        <option value="hyper">هایپرتروفی استاندارد (۸ تا ۱۲ تکرار)</option>
+                        <option value="endur">استقامتی / پمپاژ (۱۵ تا ۳۰ تکرار)</option>
+                    </select>
+                    <button class="action-btn" onclick="calculateMatrix()">تحلیل محرک‌های رشد</button>
+                    <div id="matrixResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 7 (NEW) -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۷. پیش‌بینی‌کننده اضافه بار تدریجی</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">تشخیص زمان دقیق افزایش وزنه یا تکرار برای فرار از استپ.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">وزنه رکورد اخیر (کیلوگرم):</label>
+                    <input type="number" id="overloadWeight" placeholder="مثال: ۸۰">
+                    <label style="font-size:12px; color:var(--text-muted);">تکرار انجام شده در آخرین ست:</label>
+                    <input type="number" id="overloadReps" placeholder="مثال: ۱۰">
+                    <button class="action-btn" onclick="calculateOverload()">پیش‌بینی گام بعدی</button>
+                    <div id="overloadResult" class="result-box"></div>
+                </div>
+
+                <!-- Tool 8 (NEW) -->
+                <div class="card" style="margin-bottom:0;">
+                    <h3>۸. تحلیل‌گر نقاط ضعف بیومکانیکی</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">برطرف کردن نقاط کور و افت نیرو در دامنه حرکات.</p>
+                    <label style="font-size:12px; color:var(--text-muted);">در کدام بخش حرکت افت نیرو دارید؟</label>
+                    <select id="stickingSelect">
+                        <option value="bottom">بخش پایین (نقطه کشش / آغاز حرکت)</option>
+                        <option value="middle">بخش میانی (انتقال نیرو)</option>
+                        <option value="top">بخش بالا (قفل مفصل / انقباض نهایی)</option>
+                    </select>
+                    <button class="action-btn" onclick="calculateSticking()">دریافت راهکار بیومکانیک</button>
+                    <div id="stickingResult" class="result-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: 13 IN-DEPTH CHAPTERS/ARTICLES -->
+        <div id="tabMaster" class="tab-content">
+            <div class="card">
+                <h2>📖 دانشنامه جامع (۱۳ فصل کلیدی کتاب)</h2>
+                <div class="grid" style="margin-top: 20px;">
+                    <div class="detailed-article">
+                        <h3>۱. تنش مکانیکی (Mechanical Tension)</h3>
+                        <p>بزرگترین کاتالیزور رشد عضلانی. ایجاد نیروی مکانیکی بالا روی غشای سلولی فیبرهای عضلانی هنگام جابجایی بار سنگین در دامنه حرکتی کامل، سیگنال‌های آنابولیک (مثل مسیر mTOR) را در سطح مولکولی فعال می‌کند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۲. استرس متابولیک (Metabolic Stress)</h3>
+                        <p>احساس سوزش شدید در اثر تجمع متابولیت‌هایی مانند یون‌های هیدروژن، لاکتات و پیروات. این فاکتور با ایجاد تورم سلولی و استخدام فیبرهای نوع ۲ در تکرارهای بالاتر، هایپرتروفی را تقویت می‌کند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۳. واقعیت آسیب عضلانی (Muscle Damage)</h3>
+                        <p>برخلاف تصور رایج، کوفتگی شدید عضلانی نشانه عملکرد بهتر نیست! آسیب متوسط ناشی از بخش اکسنتریک (منفی) حرکات برای رشد کافی است؛ آسیب‌های شدید تنها ظرفیت ریکاوری را هدر می‌دهند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۴. حجم تمرین (Training Volume)</h3>
+                        <p>تحقیقات شونفلد ثابت کرده است که رابطه مستقیمی میان تعداد ست‌های باکیفیت هفتگی و میزان رشد عضله وجود دارد (معمولاً بین ۱۰ تا ۲۰ ست برای هر عضله در هفته بیشترین بازدهی را دارد).</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۵. فرکانس تمرین (Training Frequency)</h3>
+                        <p>از آنجا که اوج سنتز پروتئین عضلانی (MPS) پس از حدود ۴۸ ساعت به سطح پایه برمی‌گردد، تمرین دادن هر عضله حداقل ۲ الی ۳ بار در هفته بسیار کارآمدتر از سیستم‌های سنتی است.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۶. استراحت بین ست‌ها (Rest Intervals)</h3>
+                        <p>کوتاه کردن زمان استراحت به قصد چربی‌سوزی، ATP سلولی و سیستم عصبی را تخلیه کرده و تنش مکانیکی ست‌های بعدی را نابود می‌کند. برای حرکات چندمفصلی سنگین حتماً ۲ تا ۳ دقیقه استراحت کنید.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۷. اضافه بار تدریجی (Progressive Overload)</h3>
+                        <p>رشد عضلانی پاسخی به سازگاری بدن با استرس‌های فراتر از حد معمول است. اگر در طول زمان وزنه‌ها، تکرارها یا کیفیت اجرای حرکات افزایش نیابد، هایپرتروفی متوقف خواهد شد.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۸. تغذیه و سنتز پروتئین (MPS)</h3>
+                        <p>مصرف کل پروتئین روزانه (حدود ۱.۶ تا ۲.۲ گرم به ازای هر کیلوگرم) به همراه توزیع مساوی آن در ۴ تا ۵ وعده روزانه، شرایط پایدار برای بالاترین نرخ سنتز پروتئین فراهم می‌کند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۹. مدیریت خستگی و دلود (Deload)</h3>
+                        <p>انباشت خستگی مزمن در تاندون‌ها و سیستم عصبی مرکزی پس از ۶ الی ۸ هفته تمرین سنگین نیازمند هفته‌های کاهش بار (Deload) است تا از افت رکورد و آسیب‌دیدگی جلوگیری شود.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۰. اهمیت سرعت اجرا (Tempo)</h3>
+                        <p>کنترل بخش اکسنتریک (پایین آوردن وزنه با تمرکز ۲ تا ۳ ثانیه‌ای) زمان تحت تنش (TUT) را افزایش داده و فیبرهای عضلانی بیشتری را درگیر فرآیند رشد می‌کند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۱. رنج تکرار و فیبرها (Fiber-Type Specificity)</h3>
+                        <p>بر خلاف تئوری‌های قدیمی، تحقیقات شونفلد نشان می‌دهد هر رنج تکراری (از ۶ تا ۳۰ تکرار) در صورت نزدیک بودن به ناتوانی عضلانی (RPE بالا)، می‌تواند هایپرتروفی کاملاً مشابهی ایجاد کند.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۲. استراتژی‌های پریودی‌زشن (Periodization)</h3>
+                        <p>تنوع‌بخشی برنامه‌ریزی‌شده به متغیرها (حجم و شدت در بلندمدت) کلید اصلی فرار از استپ‌های طولانی‌مدت و استمرار رشد عضلانی در ورزشکاران است.</p>
+                    </div>
+                    <div class="detailed-article">
+                        <h3>۱۳. جمعیت‌های خاص و تفاوت‌های جنسیتی (Special Populations)</h3>
+                        <p>مکانیسم‌های سلولی هایپرتروفی در زنان، مردان و سالمندان بسیار مشابه است؛ تفاوت اصلی در ظرفیت ریکاوری عصبی، تحمل استرس متابولیک و لزوم تنظیم دقیق حجم بر اساس سطح آمادگی فرد است.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: BIOMECHANICS & FIBERS -->
+        <div id="tabBiomech" class="tab-content">
+            <div class="card">
+                <h2>🧬 بیومکانیک پیشرفته، طول کششی عضلات و پروفایل مقاومت</h2>
+                <p style="color:var(--text-muted); line-height: 1.8;">
+                    <b>۱. رشد در طول کششی (Lengthened Partials):</b> جدیدترین یافته‌های دکتر شونفلد نشان می‌دهد که تمرکز بر بخش کششی دامنه حرکت (جایی که فیبرهای عضلانی در بیشترین طول خود مقاومت می‌کنند) هایپرتروفی به‌مراتب بالاتری نسبت به بخش کوتاه شده ایجاد می‌کند. انتخاب حرکاتی که مقاومت را در نقطه کشش کامل حفظ می‌کنند (مانند حرکات با کابل) یک ضرورت علمی است.
+                    <br><br>
+                    <b>۲. پروفایل مقاومت حرکات:</b> در طراحی برنامه باید دقت شود که حرکات مختلف (دمبل، هالتر، کابل، دستگاه) پروفایل مقاومت متفاوتی دارند. استفاده بهینه از کابل‌ها و دستگاه‌ها به دلیل ایجاد تنش یکنواخت در تمام طول دامنه حرکت، برتری محسوسی نسبت به برخی حرکات آزاد دارد.
+                </p>
+            </div>
+        </div>
+
+        <!-- TAB 4: PERIODIZATION -->
+        <div id="tabPeriod" class="tab-content">
+            <div class="card">
+                <h2>📅 مدل‌های پریودی‌زشن و چرخه‌های افزایشی</h2>
+                <p style="color:var(--text-muted); line-height: 1.8;">
+                    پریودی‌زشن (Periodization) یعنی سازماندهی سیستماتیک متغیرهای تمرین در بلوک‌های زمانی مشخص. مدل‌های بررسی‌شده در کتاب شامل:
+                    <br>• <b>خطی (Linear):</b> افزایش تدریجی شدت و کاهش حجم در طول زمان (عالی برای قدرت و هایپرتروفی پایه).
+                    <br>• <b>موجی (Undulating / DUP):</b> تغییر مکرر حجم و شدت در طول هفته (نتایج بسیار درخشان در هایپرتروفی مدرن).
+                </p>
+            </div>
+        </div>
+
+        <!-- TAB 5: NUTRITION & HORMONES -->
+        <div id="tabNut" class="tab-content">
+            <div class="card">
+                <h2>🥗 تغذیه، هورمون‌ها و محیط پیرامون تمرین</h2>
+                <p style="color:var(--text-muted); line-height: 1.8;">
+                    هورمون‌های آنابولیک (مثل تستوسترون و هورمون رشد) نقش بستر را دارند، اما محرک اصلی رشد همچنان «تنش مکانیکی» تمرین است. تغذیه پیرامون تمرین (Peri-Workout Nutrition) شامل تامین کربوهیدرات و پروتئین کافی قبل و بعد از تمرین، گلیکوژن از دست‌رفته را جبران کرده و شرایط کاتابولیک را خنثی می‌سازد.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
