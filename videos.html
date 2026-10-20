@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Persia - Videos & Instructions Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0b0e;
+            --card-bg: #16161c;
+            --card-inner: #1f1f28;
+            --accent: #ff9800;
+            --success: #00e676;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --border: #2a2a35;
+        }
+        body {
+            font-family: 'Vazirmatn', Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        * { box-sizing: border-box; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            background: #181818;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        h1 { color: var(--accent); margin: 0; font-size: 20px; }
+        .back-btn {
+            background: var(--card-bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .back-btn:hover { background: var(--accent); color: #000; }
+        
+        .sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+        .sub-tab-btn {
+            background: #222;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .sub-tab-btn.active {
+            background: #333;
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .card h3 { margin: 0; color: var(--accent); font-size: 18px; }
+        .badge-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            display: inline-block;
+            background: #2a2a2a;
+            color: var(--accent);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-muscle {
+            background: #1a2b3c;
+            color: #64b5f6;
+        }
+        .card img, .card video {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #252525;
+            display: block;
+        }
+        .instructions-box {
+            background: var(--card-inner);
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+        .instructions-box b {
+            color: var(--success);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .instructions-list {
+            padding-right: 16px;
+            margin: 4px 0 0 0;
+        }
+        .instructions-list li {
+            margin-bottom: 4px;
+        }
+        .loading { text-align: center; font-size: 16px; color: var(--text-muted); margin-top: 40px; grid-column: 1/-1; }
+    </style>
+</head>
+<body id="bodyRoot">
+
+    <header>
+        <div>
+            <h1 id="pageTitle">🎬 کتابخانه ویدیوها و آموزش حرکات فیتنس پرشیا</h1>
+            <p style="margin: 3px 0 0 0; font-size: 12px; color: var(--text-muted);" id="pageSub">همراه با راهنمای اجرای حرکت مستقیماً از دیتابیس جامع</p>
+        </div>
+        <a href="index.html" class="back-btn" id="backHomeBtn">← بازگشت به صفحه اصلی</a>
+    </header>
+
+    <div class="sub-tabs" id="vidSubTabs">
+        <button class="sub-tab-btn active" onclick="switchVidCategory('all', event)" id="catAll">همه</button>
+        <button class="sub-tab-btn" onclick="switchVidCategory('chest', event)" id="catChest">سینه</button>
+        <button class="sub-tab-btn" onclick="switchVidCategory('legs', event)" id="catLegs">پاها</button>
+        <button class="sub-tab-btn" onclick="switchVidCategory('cardio', event)" id="catCardio">هوازی</button>
+        <button class="sub-tab-btn" onclick="switchVidCategory('abs', event)" id="catAbs">شکم</button>
+        <button class="sub-tab-btn" onclick="switchVidCategory('shoulders', event)" id="catShoulders">سرشانه</button>
+        <button class="sub-tab-btn" onclick="switchVidCategory('back', event)" id="catBack">پشت</button>
+        <button class="sub-tab-btn" onclick="switchVidCategory('arms', event)" id="catArms">بازوها</button>
+    </div>
+
+    <div id="videoGrid" class="grid">
+        <div class="loading">در حال بارگذاری دیتابیس تمرینات و همگام‌سازی آموزش‌ها...</div>
+    </div>
+
+    <script>
+        const EX_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/free-exercise-db/main/';
+        const GITHUB_API_BASE = 'https://api.github.com/repos/mohammad009999-prog/fitness_pro_database/contents/';
+        
+        let exerciseDatabaseMap = {}; // ذخیره کامل اطلاعات حرکات بر اساس نام
+        let videosData = [];
+        let currentVidCategory = 'all';
+
+        // ۱. خواندن فایل کامل exercises.json جهت استخراج نام فارسی، عضلات و آموزش‌ها
+        async function loadExercisesDatabase() {
+            try {
+                const res = await fetch(EX_BASE + 'dist/exercises.json');
+                const exercises = await res.json();
+                
+                exercises.forEach(ex => {
+                    if (ex.name) {
+                        const cleanKey = ex.name.toLowerCase().trim();
+                        exerciseDatabaseMap[cleanKey] = {
+                            nameFa: ex.name_fa || ex.nameFa || ex.name,
+                            nameEn: ex.name,
+                            instructionsFa: ex.instructions_fa || ex.instructionsFa,
+                            instructionsEn: ex.instructions,
+                            primaryMuscles: ex.primaryMuscles || []
+                        };
+                    }
+                });
+            } catch (e) {
+                console.error("Error loading exercises json:", e);
+            }
+            loadGitHubGifs();
+        }
+
+        function switchVidCategory(category, evt) {
+            currentVidCategory = category;
+            document.querySelectorAll('.sub-tab-btn').forEach(el => el.classList.remove('active'));
+            if(evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+            renderVideos();
+        }
+
+        // ۲. اسکن ویدیوها و تطبیق آن‌ها با اطلاعات دیتابیس
+        async function loadGitHubGifs() {
+            const categories = ['chest', 'legs', 'cardio', 'abs', 'shoulders', 'back', 'arms'];
+            videosData = [];
+            
+            for (const cat of categories) {
+                try {
+                    const res = await fetch(GITHUB_API_BASE + cat);
+                    if (res.ok) {
+                        const files = await res.json();
+                        if (Array.isArray(files)) {
+                            files.forEach(file => {
+                                if (file.type === 'file' && (file.name.endsWith('.gif') || file.name.endsWith('.GIF') || file.name.endsWith('.mp4'))) {
+                                    const rawName = file.name.replace(/\.[^/.]+$/, "");
+                                    const formattedNameEn = rawName.replace(/[-_]/g, " ").trim();
+                                    const lowerKey = formattedNameEn.toLowerCase();
+
+                                    // جستجو در دیتابیس تمرینات
+                                    let matchedEx = exerciseDatabaseMap[lowerKey];
+                                    
+                                    if (!matchedEx) {
+                                        // جستجوی تطبیقی جزئی اگر نام فایل دقیقاً مشابه نبود
+                                        const foundKey = Object.keys(exerciseDatabaseMap).find(k => k.includes(lowerKey) || lowerKey.includes(k));
+                                        if (foundKey) {
+                                            matchedEx = exerciseDatabaseMap[foundKey];
+                                        }
+                                    }
+
+                                    videosData.push({
+                                        titleFa: matchedEx ? matchedEx.nameFa : (formattedNameEn.charAt(0).toUpperCase() + formattedNameEn.slice(1)),
+                                        titleEn: matchedEx ? matchedEx.nameEn : formattedNameEn,
+                                        instructionsFa: matchedEx ? matchedEx.instructionsFa : null,
+                                        instructionsEn: matchedEx ? matchedEx.instructionsEn : null,
+                                        muscles: matchedEx ? matchedEx.primaryMuscles : [],
+                                        category: cat,
+                                        gif: file.download_url
+                                    });
+                                }
+                            });
+                        }
+                    }
+                } catch (e) {}
+            }
+            renderVideos();
+        }
+
+        function renderVideos() {
+            const grid = document.getElementById('videoGrid');
+            let filteredVideos = videosData;
+            
+            if (currentVidCategory !== 'all') {
+                filteredVideos = videosData.filter(v => v.category === currentVidCategory);
+            }
+
+            if (filteredVideos.length === 0) {
+                grid.innerHTML = `<div class="loading">هیچ ویدیویی در این بخش یافت نشد.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filteredVideos.map((vid) => {
+                const isVideoFile = vid.gif && (vid.gif.endsWith('.mp4') || vid.gif.includes('/video/upload/'));
+                
+                // آماده‌سازی لیست آموزش‌ها (ترجیحاً فارسی، اگر نبود انگلیسی)
+                let instructionsHtml = '';
+                const activeInstructions = vid.instructionsFa || vid.instructionsEn;
+                if (activeInstructions) {
+                    const steps = Array.isArray(activeInstructions) ? activeInstructions : [activeInstructions];
+                    instructionsHtml = `
+                        <div class="instructions-box">
+                            <b>📖 نحوه اجرا / آموزش حرکت:</b>
+                            <ul class="instructions-list">
+                                ${steps.slice(0, 3).map(step => `<li>${step}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                const musclesBadge = vid.muscles.length > 0 ? `<span class="badge badge-muscle">${vid.muscles.join(', ')}</span>` : '';
+
+                return `
+                    <div class="card">
+                        <div>
+                            <h3>${vid.titleFa}</h3>
+                            <p style="font-size:12px; color:var(--text-muted); margin:2px 0 6px 0;">${vid.titleEn}</p>
+                            <div class="badge-row">
+                                <span class="badge">${vid.category}</span>
+                                ${musclesBadge}
+                            </div>
+                        </div>
+                        ${isVideoFile ? `<video src="${vid.gif}" controls muted autoplay loop></video>` : `<img src="${vid.gif}" alt="${vid.titleFa}" onerror="this.style.display='none'">`}
+                        ${instructionsHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // بارگذاری اولیه دیتابیس
+        loadExercisesDatabase();
+    </script>
+</body>
+</html>

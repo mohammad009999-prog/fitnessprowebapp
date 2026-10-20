@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro - Global Fitness & Bodybuilding News Hub</title>
+    <title>Fitness Persia - Global Bodybuilding News Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
     <style>
         :root {
             --bg-color: #000000;
@@ -190,6 +189,39 @@
             font-size: 11px;
             font-weight: bold;
         }
+        /* Modal for Full Article Reading */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+        .modal-content {
+            background: #141418;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 25px;
+            position: relative;
+        }
+        .close-modal {
+            background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; float: right;
+        }
+        .source-link {
+            color: #34d399 !important;
+            text-decoration: underline !important;
+            font-weight: bold;
+        }
+        .source-link:hover {
+            color: #ffffff !important;
+        }
         .float-support {
             position: fixed;
             bottom: 20px;
@@ -224,20 +256,20 @@
             <a href="index.html" class="top-btn" id="backBtn">← Back / بازگشت</a>
             <button class="top-btn" onclick="toggleLang()" id="langBtn">فارسی / FA</button>
         </div>
-        <h1 id="mainTitle">FITNESS PRO - NEWS & ARTICLES HUB</h1>
-        <p style="color: var(--text-muted); font-size: 13px;" id="mainSub">Latest Bodybuilding, Supplement, Steroid Science & Training Articles / آخرین اخبار بدنسازی، مکمل و علوم تمرینی</p>
+        <h1 id="mainTitle">FITNESS PERSIA - BODYBUILDING NEWS HUB</h1>
+        <p style="color: var(--text-muted); font-size: 13px;" id="mainSub">Verified Bodybuilding & Science Articles Database / پایگاه مقالات تخصصی و معتبر بدنسازی</p>
     </header>
 
     <div class="container">
 
         <div class="nav-tabs">
-            <button class="nav-tab-btn active" onclick="switchMainTab('newsFeed')" id="tabFeedBtn">📰 Live Fitness News / اخبار روز ورزشی</button>
+            <button class="nav-tab-btn active" onclick="switchMainTab('newsFeed')" id="tabFeedBtn">📰 Official News Feed / اخبار رسمی و مقالات</button>
             <button class="nav-tab-btn" onclick="switchMainTab('adminPublish')" id="tabAdminBtn">✍️ Admin Publisher / انتشار خبر جدید</button>
         </div>
 
         <div class="panel active" id="tabNewsFeedPanel">
-            <h2 id="feedHeaderTitle">Latest Verified Articles & Live Feeds (آخرین مقالات معتبر و فیدهای زنده)</h2>
-            <p style="font-size:13px; color:var(--text-muted);" id="feedHeaderSub">Aggregated from verified bodybuilding networks and custom admin publications.</p>
+            <h2 id="feedHeaderTitle">Curated Bodybuilding Database (پایگاه مقالات گلچین‌شده بدنسازی)</h2>
+            <p style="font-size:13px; color:var(--text-muted);" id="feedHeaderSub">Loaded directly from secure repository database with clickable source links.</p>
 
             <div style="display:flex; gap:10px; margin-bottom: 15px;">
                 <input type="text" id="newsSearchInput" placeholder="Search articles by title or keyword..." oninput="filterNews()" style="flex: 2;">
@@ -245,32 +277,32 @@
                     <option value="all" id="catAll">All Categories / همه دسته‌ها</option>
                     <option value="Bodybuilding" id="catBB">Bodybuilding & Olympia / بدنسازی</option>
                     <option value="Supplements" id="catSup">Supplements & Nutrition / مکمل‌ها</option>
-                    <option value="Steroids" id="catSter">Steroids & Science / استروئید و فارماکولوژی</option>
                     <option value="Training" id="catTrain">Training & Hypertrophy / سیستم‌های تمرینی</option>
+                    <option value="Steroids" id="catSter">Steroids & Science / استروئید و فارماکولوژی</option>
                 </select>
             </div>
 
             <div class="grid-cards" id="newsCardsContainer">
-                <p style="color: var(--text-muted); text-align: center; grid-column: 1/-1;" id="loadingText">Loading articles...</p>
+                <p style="color: var(--text-muted); text-align: center; grid-column: 1/-1;" id="loadingText">Loading verified database articles...</p>
             </div>
         </div>
 
         <div class="panel" id="tabAdminPublishPanel">
             <h2 id="adminHeaderTitle">Admin News & Article Publisher (پنل مدیریت و انتشار اخبار جدید)</h2>
-            <p style="font-size:13px; color:var(--text-muted);" id="adminHeaderSub">Publish announcements, steroid safety guides, or training articles instantly to the user feed.</p>
+            <p style="font-size:13px; color:var(--text-muted);" id="adminHeaderSub">Publish announcements or training articles instantly to the user feed.</p>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                 <div class="input-group" style="grid-column: span 2;">
                     <label id="lblTitle">Article Title / عنوان خبر یا مقاله</label>
-                    <input type="text" id="adminTitle" placeholder="e.g. راهنمای جامع مصرف کراتین و استک‌های حجم خشک">
+                    <input type="text" id="adminTitle" placeholder="e.g. راهنمای جامع بدنسازی">
                 </div>
                 <div class="input-group">
                     <label id="lblCat">Category / دسته‌بندی</label>
                     <select id="adminCategory">
                         <option value="Bodybuilding">Bodybuilding & Olympia</option>
                         <option value="Supplements">Supplements & Nutrition</option>
-                        <option value="Steroids">Steroids & Science</option>
                         <option value="Training">Training & Hypertrophy</option>
+                        <option value="Steroids">Steroids & Science</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -279,7 +311,15 @@
                 </div>
                 <div class="input-group" style="grid-column: span 2;">
                     <label id="lblContent">Article Content / متن کامل مقاله یا خبر</label>
-                    <textarea id="adminContent" rows="5" placeholder="Write the full article description, guidelines, or research summary here..."></textarea>
+                    <textarea id="adminContent" rows="5" placeholder="Write the full article description here..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label id="lblSource">Source Name / نام منبع اصلی</label>
+                    <input type="text" id="adminSource" placeholder="e.g. Generation Iron">
+                </div>
+                <div class="input-group">
+                    <label id="lblSourceUrl">Source URL / لینک سایت مرجع</label>
+                    <input type="text" id="adminSourceUrl" placeholder="https://generationiron.com/...">
                 </div>
             </div>
 
@@ -288,61 +328,55 @@
 
     </div>
 
+    <!-- Full Article Reading Modal -->
+    <div id="articleModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeArticleModal()">&times;</button>
+            <span id="modalBadge" class="badge" style="margin-bottom: 10px;"></span>
+            <h2 id="modalArticleTitle" style="color: var(--accent-orange); margin-top: 5px; font-size: 20px;"></h2>
+            <p id="modalArticleDate" style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;"></p>
+            <img id="modalArticleImg" src="" alt="Article Image" style="width:100%; height:220px; object-fit:cover; border-radius:8px; margin-bottom:15px;">
+            <div id="modalArticleText" style="font-size: 14px; color: var(--text-main); line-height: 1.7; margin-bottom: 20px;"></div>
+            <div style="border-top: 1px solid var(--border); padding-top: 15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <div id="modalArticleSourceContainer"></div>
+                <button class="top-btn" onclick="closeArticleModal()">بستن / Close</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentLang = 'en';
+        let newsArticles = [];
+        const NEWS_JSON_URL = 'https://raw.githubusercontent.com/mohammad009999-prog/fitness_pro_database/main/news.json';
 
-        let newsArticles = [
-            {
-                id: 1,
-                titleEn: "Latest Research on Creatine Monohydrate & Muscle Hypertrophy",
-                titleFa: "جدیدترین تحقیقات درباره تاثیر کراتین مونوهیدرات بر ریکاوری و حجم عضلانی",
-                category: "Supplements",
-                image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80",
-                date: "2026-06-01",
-                contentEn: "Creatine monohydrate remains the most proven sports supplement, improving explosive power and sarcoplasmic volume by boosting cellular phosphocreatine stores.",
-                contentFa: "کراتین مونوهیدرات همچنان به عنوان اثربخش‌ترین مکمل ورزشی شناخته می‌شود که با افزایش ذخایر فسفوکراتین در سلول‌های عضلانی، قدرت انفجاری و حجم سارکوپلاسمی را به شدت بهبود می‌بخشد.",
-                source: "Fitness Pro Science"
-            },
-            {
-                id: 2,
-                titleEn: "Hypertrophy Training Systems: Mechanical Tension vs. Metabolic Stress",
-                titleFa: "تحلیل تخصصی سیستم‌های تمرینی هایپرتروفی: تنش مکانیکی در برابر استرس متابولیک",
-                category: "Training",
-                image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80",
-                date: "2026-05-28",
-                contentEn: "For maximum muscle growth, combining heavy lifting for mechanical tension with high-fatigue training close to failure for metabolic stress yields optimal results.",
-                contentFa: "برای حداکثر رشد عضلانی، ترکیب وزنه‌های سنگین با تنش مکانیکی بالا و تمرینات تا حد ناتوانی با استرس متابولیک بهترین نتیجه را در بدنسازان سطح متوسط و پیشرفته ایجاد می‌کند.",
-                source: "Coach Academy"
-            },
-            {
-                id: 3,
-                titleEn: "Liver Protection & Lipid Profile Management During PCT Cycles",
-                titleFa: "بررسی پروتکل‌های محافظت از کبد و کنترل پروفایل لیپیدی در دوره‌های پاکسازی",
-                category: "Steroids",
-                image: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=600&q=80",
-                date: "2026-05-20",
-                contentEn: "Understanding androgenic anabolic steroid side effects and utilizing supportive supplements like TUDCA, omega-3, and antioxidants is crucial for cardiovascular and liver health.",
-                contentFa: "آگاهی از عوارض جانبی ترکیبات آندروژنیک آنابولیک و استفاده از مکمل‌های حمایتی مانند تی‌کیو، امگا ۳ و آنتی‌اکسیدان‌ها برای حفظ سلامت قلب و عروق و کبد الزامی است.",
-                source: "Clinical Pharmacology"
-            },
-            {
-                id: 4,
-                titleEn: "Advanced Olympia Prep: Maximizing Muscle Density & Conditioning",
-                titleFa: "آمادگی پیشرفته مسابقات: حداکثر کردن چگالی عضلانی و کات نهایی",
-                category: "Bodybuilding",
-                image: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=600&q=80",
-                date: "2026-06-04",
-                contentEn: "Top professional coaches reveal the precise nutritional adjustments and sodium-potassium balance techniques used during peak week conditioning.",
-                contentFa: "برجسته‌ترین مربیان حرفه‌ای دقیق‌ترین تنظیمات تغذیه‌ای و تکنیک‌های تعادل سدیم و پتاسیم را در هفته پایانی مسابقات تشریح می‌کنند.",
-                source: "Bodybuilding Network"
+        function loadAdminArticles() {
+            let customArticles = [];
+            if (localStorage.getItem('fitness_persia_admin_news')) {
+                try {
+                    customArticles = JSON.parse(localStorage.getItem('fitness_persia_admin_news'));
+                } catch(e) { console.error(e); }
             }
-        ];
+            return customArticles;
+        }
 
-        if (localStorage.getItem('fitness_pro_admin_news')) {
+        async function fetchNewsDatabase() {
+            const container = document.getElementById('newsCardsContainer');
+            const adminArticles = loadAdminArticles();
+
             try {
-                const saved = JSON.parse(localStorage.getItem('fitness_pro_admin_news'));
-                newsArticles = saved.concat(newsArticles);
-            } catch(e) { console.error(e); }
+                const res = await fetch(NEWS_JSON_URL);
+                if (res.ok) {
+                    const remoteArticles = await res.json();
+                    newsArticles = [...adminArticles, ...remoteArticles];
+                } else {
+                    newsArticles = [...adminArticles];
+                }
+                renderNews(newsArticles);
+            } catch (error) {
+                console.error("Error fetching news.json:", error);
+                newsArticles = [...adminArticles];
+                renderNews(newsArticles);
+            }
         }
 
         function renderNews(list) {
@@ -354,12 +388,22 @@
                 return;
             }
 
-            list.forEach(art => {
+            list.forEach((art, index) => {
                 const card = document.createElement('div');
                 card.className = 'card-item';
                 const title = currentLang === 'fa' ? (art.titleFa || art.titleEn) : art.titleEn;
-                const content = currentLang === 'fa' ? (art.contentFa || art.contentEn) : art.contentEn;
+                const fullContent = currentLang === 'fa' ? (art.contentFa || art.contentEn) : art.contentEn;
+                const snippet = fullContent.length > 130 ? fullContent.substring(0, 130) + '...' : fullContent;
                 
+                // خواندن دقیق sourceUrl و ساخت تگ لینک قابل کلیک
+                const sourceName = art.source || 'Fitness Persia';
+                let sourceHtml = '';
+                if (art.sourceUrl && art.sourceUrl.trim() !== '') {
+                    sourceHtml = `<a href="${art.sourceUrl}" target="_blank" class="source-link">${currentLang === 'fa' ? 'منبع: ' : 'Source: '}${sourceName} ↗</a>`;
+                } else {
+                    sourceHtml = `<span style="color:var(--text-muted);">${currentLang === 'fa' ? 'منبع: ' : 'Source: '}${sourceName}</span>`;
+                }
+
                 card.innerHTML = `
                     <img src="${art.image}" alt="${title}" onerror="this.src='https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80'">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -367,14 +411,43 @@
                         <span style="font-size:11px; color:var(--text-muted);">${art.date}</span>
                     </div>
                     <h3>${title}</h3>
-                    <p style="font-size:13px; color:var(--text-muted); margin:0; line-height:1.4;">${content}</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin:0; line-height:1.4;">${snippet}</p>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:8px; border-top:1px solid var(--border);">
-                        <span style="font-size:11px; color:var(--accent);">${currentLang === 'fa' ? 'منبع: ' : 'Source: '}${art.source || 'Fitness Pro'}</span>
-                        <button style="background:var(--accent); border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="alert('${title}\\n\\n${content}')">${currentLang === 'fa' ? 'مطالعه' : 'Read'}</button>
+                        ${sourceHtml}
+                        <button style="background:var(--accent); border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="openFullArticle('${art.id || index}')">${currentLang === 'fa' ? 'مطالعه کامل' : 'Read Full'}</button>
                     </div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function openFullArticle(artId) {
+            const article = newsArticles.find(a => (a.id && a.id == artId) || newsArticles.indexOf(a) == artId);
+            if (!article) return;
+
+            const title = currentLang === 'fa' ? (article.titleFa || article.titleEn) : article.titleEn;
+            const content = currentLang === 'fa' ? (article.contentFa || article.contentEn) : article.contentEn;
+
+            document.getElementById('modalBadge').innerText = article.category;
+            document.getElementById('modalArticleTitle').innerText = title;
+            document.getElementById('modalArticleDate').innerText = `📅 ${article.date}`;
+            document.getElementById('modalArticleImg').src = article.image;
+            document.getElementById('modalArticleText').innerText = content;
+
+            // ساخت لینک در پنجره modal برای رفتن به سایت مرجع
+            const sourceContainer = document.getElementById('modalArticleSourceContainer');
+            const sourceName = article.source || 'Fitness Persia';
+            if (article.sourceUrl && article.sourceUrl.trim() !== '') {
+                sourceContainer.innerHTML = `<a href="${article.sourceUrl}" target="_blank" class="source-link" style="font-size: 14px;">🔗 ${currentLang === 'fa' ? 'مشاهده مقاله اصلی در سایت: ' : 'View Original Article on: '}${sourceName} ↗</a>`;
+            } else {
+                sourceContainer.innerHTML = `<span style="font-size: 13px; color: var(--text-muted);">${currentLang === 'fa' ? 'منبع: ' : 'Source: '}${sourceName}</span>`;
+            }
+
+            document.getElementById('articleModal').style.display = 'flex';
+        }
+
+        function closeArticleModal() {
+            document.getElementById('articleModal').style.display = 'none';
         }
 
         function filterNews() {
@@ -399,6 +472,8 @@
             const category = document.getElementById('adminCategory').value;
             const image = document.getElementById('adminImage').value;
             const content = document.getElementById('adminContent').value;
+            const source = document.getElementById('adminSource').value;
+            const sourceUrl = document.getElementById('adminSourceUrl').value;
 
             if (!title || !content) {
                 alert(currentLang === 'fa' ? 'لطفاً حداقل عنوان و متن مقاله را وارد کنید.' : 'Please fill in at least the article title and content.');
@@ -406,7 +481,7 @@
             }
 
             const newArt = {
-                id: Date.now(),
+                id: 'admin_' + Date.now(),
                 titleEn: title,
                 titleFa: title,
                 category: category,
@@ -414,21 +489,23 @@
                 date: new Date().toISOString().split('T')[0],
                 contentEn: content,
                 contentFa: content,
-                source: "Admin Publisher"
+                source: source || "Admin Publisher",
+                sourceUrl: sourceUrl || ""
             };
 
-            newsArticles.unshift(newArt);
-            
-            const customArticles = newsArticles.filter(a => a.source === "Admin Publisher");
-            localStorage.setItem('fitness_pro_admin_news', JSON.stringify(customArticles));
+            let customArticles = loadAdminArticles();
+            customArticles.unshift(newArt);
+            localStorage.setItem('fitness_persia_admin_news', JSON.stringify(customArticles));
 
-            renderNews(newsArticles);
-            alert(currentLang === 'fa' ? '✅ مقاله با موفقیت به فید خبری اضافه شد!' : '✅ Article successfully published to the live feed!');
+            fetchNewsDatabase();
+            alert(currentLang === 'fa' ? '✅ مقاله با موفقیت به فید خبری اضافه شد!' : '✅ Article successfully published to the app feed!');
             switchMainTab('newsFeed');
 
             document.getElementById('adminTitle').value = '';
             document.getElementById('adminImage').value = '';
             document.getElementById('adminContent').value = '';
+            document.getElementById('adminSource').value = '';
+            document.getElementById('adminSourceUrl').value = '';
         }
 
         function toggleLang() {
@@ -439,28 +516,30 @@
 
             document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'English / EN' : 'فارسی / FA';
             document.getElementById('backBtn').innerText = currentLang === 'fa' ? '← بازگشت / Back' : '← Back / بازگشت';
-            document.getElementById('mainTitle').innerText = currentLang === 'fa' ? 'فیتنس پرو - مرکز اخبار و مقالات بدنسازی' : 'FITNESS PRO - NEWS & ARTICLES HUB';
-            document.getElementById('mainSub').innerText = currentLang === 'fa' ? 'آخرین اخبار بدنسازی، مکمل، استروئید و علوم تمرینی' : 'Latest Bodybuilding, Supplement, Steroid Science & Training Articles';
+            document.getElementById('mainTitle').innerText = currentLang === 'fa' ? 'فیتنس پرشیا - مرکز اخبار و مقالات بدنسازی' : 'FITNESS PERSIA - BODYBUILDING NEWS HUB';
+            document.getElementById('mainSub').innerText = currentLang === 'fa' ? 'پایگاه مقالات تخصصی و معتبر بدنسازی' : 'Verified Bodybuilding & Science Articles Database';
             
-            document.getElementById('tabFeedBtn').innerText = currentLang === 'fa' ? '📰 اخبار روز ورزشی' : '📰 Live Fitness News';
+            document.getElementById('tabFeedBtn').innerText = currentLang === 'fa' ? '📰 اخبار رسمی و مقالات' : '📰 Official News Feed';
             document.getElementById('tabAdminBtn').innerText = currentLang === 'fa' ? '✍️ انتشار مقاله جدید' : '✍️ Admin Publisher';
 
-            document.getElementById('feedHeaderTitle').innerText = currentLang === 'fa' ? 'آخرین مقالات معتبر و فیدهای زنده' : 'Latest Verified Articles & Live Feeds';
-            document.getElementById('feedHeaderSub').innerText = currentLang === 'fa' ? 'برگرفته از شبکه‌های معتبر بدنسازی و مقالات اختصاصی ادمین' : 'Aggregated from verified bodybuilding networks and custom admin publications.';
+            document.getElementById('feedHeaderTitle').innerText = currentLang === 'fa' ? 'پایگاه مقالات گلچین‌شده بدنسازی' : 'Curated Bodybuilding Database';
+            document.getElementById('feedHeaderSub').innerText = currentLang === 'fa' ? 'بارگذاری مستقیم از دیتابیس امن با ذکر دقیق منابع و لینک مستقیم' : 'Loaded directly from secure repository database with clickable source links.';
             document.getElementById('newsSearchInput').placeholder = currentLang === 'fa' ? 'جستجوی مقالات بر اساس عنوان یا کلمه کلیدی...' : 'Search articles by title or keyword...';
 
             document.getElementById('catAll').innerText = currentLang === 'fa' ? 'همه دسته‌ها' : 'All Categories';
             document.getElementById('catBB').innerText = currentLang === 'fa' ? 'بدنسازی و مسترالمپیا' : 'Bodybuilding & Olympia';
             document.getElementById('catSup').innerText = currentLang === 'fa' ? 'مکمل‌ها و تغذیه' : 'Supplements & Nutrition';
-            document.getElementById('catSter').innerText = currentLang === 'fa' ? 'استروئید و فارماکولوژی' : 'Steroids & Science';
             document.getElementById('catTrain').innerText = currentLang === 'fa' ? 'سیستم‌های تمرینی' : 'Training & Hypertrophy';
+            document.getElementById('catSter').innerText = currentLang === 'fa' ? 'استروئید و فارماکولوژی' : 'Steroids & Science';
 
             document.getElementById('adminHeaderTitle').innerText = currentLang === 'fa' ? 'پنل مدیریت و انتشار اخبار' : 'Admin News & Article Publisher';
-            document.getElementById('adminHeaderSub').innerText = currentLang === 'fa' ? 'انتشار اطلاعیه‌ها، راهنماهای ایمنی یا مقالات تمرینی برای کاربران' : 'Publish announcements, steroid safety guides, or training articles instantly.';
+            document.getElementById('adminHeaderSub').innerText = currentLang === 'fa' ? 'انتشار مقالات جدید همراه با لینک منبع' : 'Publish announcements or training articles with source links.';
             document.getElementById('lblTitle').innerText = currentLang === 'fa' ? 'عنوان خبر یا مقاله' : 'Article Title';
             document.getElementById('lblCat').innerText = currentLang === 'fa' ? 'دسته‌بندی' : 'Category';
             document.getElementById('lblImg').innerText = currentLang === 'fa' ? 'لینک عکس مقاله' : 'Image URL';
             document.getElementById('lblContent').innerText = currentLang === 'fa' ? 'متن کامل مقاله یا خبر' : 'Article Content';
+            document.getElementById('lblSource').innerText = currentLang === 'fa' ? 'نام منبع اصلی' : 'Source Name';
+            document.getElementById('lblSourceUrl').innerText = currentLang === 'fa' ? 'لینک سایت مرجع' : 'Source URL';
             document.getElementById('pubBtn').innerText = currentLang === 'fa' ? '🚀 انتشار مقاله در اپلیکیشن' : '🚀 Publish Article to App Feed';
             document.getElementById('waText').innerText = currentLang === 'fa' ? 'پشتیبانی واتساپ' : 'WhatsApp Support';
 
@@ -480,7 +559,7 @@
             }
         }
 
-        renderNews(newsArticles);
+        fetchNewsDatabase();
     </script>
 </body>
 </html>

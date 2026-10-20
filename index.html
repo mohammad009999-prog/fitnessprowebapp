@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro</title>
+    <title>Fitness Persia</title>
 
     <!-- PWA Manifest & Mobile App Configuration -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff9800">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Fitness Pro">
+    <meta name="apple-mobile-web-app-title" content="Fitness Persia">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
@@ -529,7 +529,7 @@
         .instructions-list li {
             margin-bottom: 4px;
         }
-        .card img, .card video {
+        .card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
@@ -797,8 +797,8 @@
     <!-- SIDEBAR NAVIGATION PANEL -->
     <aside class="app-sidebar">
         <div class="sidebar-logo">
-            Fitness Pro
-            <span id="uiSub">Exercise & Video Hub</span>
+            Fitness Persia
+            <span id="uiSub">Exercise & Knowledge Hub</span>
         </div>
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('exercises')" id="tabEx">Exercises</button>
@@ -818,7 +818,8 @@
             <button class="tab-btn" onclick="switchTab('legends')" id="tabLegendsNav">🏆 Olympia Legends</button>
             <button class="tab-btn" onclick="switchTab('steroids')" id="tabSteroidsNav">💉 Steroids (Pharmacology)</button>
             <button class="tab-btn" onclick="switchTab('contest')" id="tabContestNav">🥇 Contest Secrets</button>
-            <button class="tab-btn" onclick="switchTab('videos')" id="tabVid">Videos</button>
+            <!-- ویدیوها حالا به صفحه مجزا متصل شدند -->
+            <a href="videos.html" class="tab-btn" id="tabVid">🎬 Videos Hub</a>
             <a href="tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabTools">🛠️ Tools</a>
             <a href="free-plans.html" class="tab-btn" style="background:#1e3a2f; color:#34d399; border-color:#34d399;" id="tabFreePlans">📋 Free Plans</a>
             <a href="advanced_tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabAdvancedTools">⚡ Advanced Tools</a>
@@ -834,7 +835,7 @@
     <main class="app-main">
         <header>
             <div class="header-title-area">
-                <h1 id="uiTitle">Fitness Pro</h1>
+                <h1 id="uiTitle">Fitness Persia</h1>
                 <p id="uiHeaderSub">Professional Training Hub</p>
             </div>
             <div class="top-controls">
@@ -864,7 +865,7 @@
                 <h4 id="newsCardTitle">Latest Research on Creatine Monohydrate & Muscle Hypertrophy</h4>
                 <p id="newsCardSnippet">Creatine monohydrate remains the most proven sports supplement, improving explosive power...</p>
                 <div class="news-footer-row">
-                    <span style="font-size:10px; color:var(--accent);" id="newsCardSource">Fitness Pro</span>
+                    <span style="font-size:10px; color:var(--accent);" id="newsCardSource">Fitness Persia</span>
                     <a href="news.html" id="newsWidgetLink">Read Full Article →</a>
                 </div>
             </div>
@@ -927,21 +928,6 @@
                 <div class="loading">Loading Contest Secrets...</div>
             </div>
         </div>
-
-        <!-- VIDEOS TAB -->
-        <div id="videos" class="section-content">
-            <div class="sub-tabs" id="vidSubTabs">
-                <button class="sub-tab-btn active" onclick="switchVidCategory('all', event)">All</button>
-                <button class="sub-tab-btn" onclick="switchVidCategory('chest', event)">Chest</button>
-                <button class="sub-tab-btn" onclick="switchVidCategory('legs', event)">Legs</button>
-                <button class="sub-tab-btn" onclick="switchVidCategory('cardio', event)">Cardio</button>
-                <button class="sub-tab-btn" onclick="switchVidCategory('abs', event)">Abs</button>
-                <button class="sub-tab-btn" onclick="switchVidCategory('shoulders', event)">Shoulders</button>
-                <button class="sub-tab-btn" onclick="switchVidCategory('back', event)">Back</button>
-                <button class="sub-tab-btn" onclick="switchVidCategory('arms', event)">Arms</button>
-            </div>
-            <div id="videoGrid" class="grid"><div class="loading">Scanning GitHub repository folders & Cloudinary for videos...</div></div>
-        </div>
     </main>
 
     <!-- AUTHENTICATION MODAL -->
@@ -987,8 +973,8 @@
             <div id="profileDetails" style="margin: 10px 0; display:flex; flex-direction:column; gap:8px;"></div>
             
             <div style="margin-top:15px; padding:12px; background:#161616; border-radius:6px; border:1px solid var(--border);">
-                <h4 style="color:var(--accent); margin:0 0 6px 0;" id="appInfoTitle">About Fitness Pro</h4>
-                <p style="font-size:13px; color:var(--text-muted); line-height:1.4;" id="appInfoDesc">Fitness Pro is your all-in-one professional fitness hub featuring an extensive exercise database, expert encyclopedias, video guides, and advanced calculators.</p>
+                <h4 style="color:var(--accent); margin:0 0 6px 0;" id="appInfoTitle">About Fitness Persia</h4>
+                <p style="font-size:13px; color:var(--text-muted); line-height:1.4;" id="appInfoDesc">Fitness Persia is your all-in-one professional fitness hub featuring an extensive exercise database, expert encyclopedias, video guides, and advanced calculators.</p>
                 <div style="margin-top:10px;">
                     <a href="https://myket.ir/app/com.mhmdhsyni.fitnesspro" target="_blank" style="display:inline-block; background:#4caf50; color:#fff; padding:6px 12px; border-radius:4px; font-weight:bold; font-size:12px; text-decoration:none;" id="myketLinkBtn">Download on Myket Store</a>
                 </div>
@@ -1017,12 +1003,12 @@
             <button class="close-modal" onclick="closeIOSModal()">&times;</button>
             <h2 id="iosModalTitle">How to Install on iOS (iPhone / iPad)</h2>
             <div style="font-size:14px; color:var(--text-muted); line-height:1.6;" id="iosModalContent">
-                <p>To use Fitness Pro like a native app with full screen and offline capability on iOS Safari:</p>
+                <p>To use Fitness Persia like a native app with full screen and offline capability on iOS Safari:</p>
                 <ol style="padding-left:20px; margin-top:8px;">
                     <li>Open this web app in <b>Safari</b> on your iPhone or iPad.</li>
                     <li>Tap the <b>Share button</b> <span style="color:var(--accent); font-weight:bold;">[ □↗ ]</span> at the bottom (or top) toolbar in Safari.</li>
                     <li>Scroll down the menu and tap <b>"Add to Home Screen"</b> (افزودن به صفحه اصلی).</li>
-                    <li>Tap <b>Add</b> in the top right corner. The Fitness Pro icon will now appear on your home screen!</li>
+                    <li>Tap <b>Add</b> in the top right corner. The Fitness Persia icon will now appear on your home screen!</li>
                 </ol>
             </div>
             <button class="action-btn" style="margin-top:15px;" onclick="closeIOSModal()" id="iosCloseBtn">Got it!</button>
@@ -1032,13 +1018,10 @@
     <script>
         let allExercises = [];
         let currentExSubCategory = 'all';
-        let currentVidCategory = 'all';
         window.currentLang = 'en';
         const EX_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/free-exercise-db/main/';
         const DB_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/fitness_pro_database/main/';
-        const GITHUB_API_BASE = 'https://api.github.com/repos/mohammad009999-prog/fitness_pro_database/contents/';
 
-        let videosData = [];
         let quotesData = [];
         let currentQuoteIndex = 0;
         let quotesInterval = null;
@@ -1056,7 +1039,7 @@
                 date: "2026-06-01",
                 contentEn: "Creatine monohydrate remains the most proven sports supplement, improving explosive power and sarcoplasmic volume by boosting cellular phosphocreatine stores.",
                 contentFa: "کراتین مونوهیدرات همچنان به عنوان اثربخش‌ترین مکمل ورزشی شناخته می‌شود که با افزایش ذخایر فسفوکراتین در سلول‌های عضلانی، قدرت انفجاری و حجم سارکوپلاسمی را به شدت بهبود می‌بخشد.",
-                source: "Fitness Pro Science"
+                source: "Fitness Persia Science"
             },
             {
                 titleEn: "Hypertrophy Training Systems: Mechanical Tension vs. Metabolic Stress",
@@ -1105,7 +1088,6 @@
             container.classList.toggle('open');
         }
 
-        // Close dropdown when clicking outside
         window.addEventListener('click', () => {
             const container = document.getElementById('scienceDropdownContainer');
             if(container) container.classList.remove('open');
@@ -1116,13 +1098,6 @@
             document.querySelectorAll('#exSubTabs .sub-tab-btn').forEach(el => el.classList.remove('active'));
             evt.currentTarget.classList.add('active');
             displayExercises(allExercises);
-        }
-
-        function switchVidCategory(category, evt) {
-            currentVidCategory = category;
-            document.querySelectorAll('#vidSubTabs .sub-tab-btn').forEach(el => el.classList.remove('active'));
-            evt.currentTarget.classList.add('active');
-            renderVideos();
         }
 
         function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
@@ -1210,8 +1185,8 @@
             root.setAttribute('lang', window.currentLang);
             const isFa = window.currentLang === 'fa';
             
-            document.getElementById('uiTitle').innerText = isFa ? 'فیتنس پرو' : 'Fitness Pro';
-            document.getElementById('uiSub').innerText = isFa ? 'مرجع تمرینات و ویدیوها' : 'Exercise & Video Hub';
+            document.getElementById('uiTitle').innerText = isFa ? 'فیتنس پرشیا' : 'Fitness Persia';
+            document.getElementById('uiSub').innerText = isFa ? 'مرجع تمرینات و دانش' : 'Exercise & Knowledge Hub';
             document.getElementById('uiHeaderSub').innerText = isFa ? 'مرجع تخصصی تمرین و بدنسازی' : 'Professional Training Hub';
             document.getElementById('tabEx').innerText = isFa ? 'تمرینات' : 'Exercises';
             document.getElementById('tabEnc').innerText = isFa ? '📖 دایره‌المعارف' : '📖 Encyclopedia';
@@ -1225,7 +1200,7 @@
             document.getElementById('tabLegendsNav').innerText = isFa ? '🏆 اسطوره‌های المپیا' : '🏆 Olympia Legends';
             document.getElementById('tabSteroidsNav').innerText = isFa ? '💉 استروئیدها (فارماکولوژی)' : '💉 Steroids (Pharmacology)';
             document.getElementById('tabContestNav').innerText = isFa ? '🥇 اسرار مسابقات' : '🥇 Contest Secrets';
-            document.getElementById('tabVid').innerText = isFa ? 'ویدیوها' : 'Videos';
+            document.getElementById('tabVid').innerText = isFa ? '🎬 کتابخانه ویدیوها' : '🎬 Videos Hub';
             document.getElementById('tabTools').innerText = isFa ? '🛠️ ابزارها' : '🛠️ Tools';
             document.getElementById('tabFreePlans').innerText = isFa ? '📋 برنامه‌های رایگان' : '📋 Free Plans';
             document.getElementById('tabAdvancedTools').innerText = isFa ? '⚡ ابزارهای پیشرفته' : '⚡ Advanced Tools';
@@ -1260,7 +1235,6 @@
             renderLegends();
             renderSteroids();
             renderContest();
-            renderVideos();
             renderCurrentQuote();
             renderNewsWidgetCard();
         }
@@ -1289,7 +1263,7 @@
                 document.getElementById('newsCardImg').src = item.image;
                 document.getElementById('newsCardTitle').innerText = title;
                 document.getElementById('newsCardSnippet').innerText = content;
-                document.getElementById('newsCardSource').innerText = item.source || 'Fitness Pro';
+                document.getElementById('newsCardSource').innerText = item.source || 'Fitness Persia';
                 box.style.opacity = 1;
             }, 300);
         }
@@ -1307,33 +1281,6 @@
                     imgEl.src = pages[pageId].thumbnail.source;
                 }
             } catch (e) {}
-        }
-
-        async function loadGitHubGifs() {
-            const categories = ['chest', 'legs', 'cardio', 'abs', 'shoulders', 'back', 'arms'];
-            for (const cat of categories) {
-                try {
-                    const res = await fetch(GITHUB_API_BASE + cat);
-                    if (res.ok) {
-                        const files = await res.json();
-                        if (Array.isArray(files)) {
-                            files.forEach(file => {
-                                if (file.type === 'file' && (file.name.endsWith('.gif') || file.name.endsWith('.GIF') || file.name.endsWith('.mp4'))) {
-                                    const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-                                    const title = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-                                    videosData.push({
-                                        title: title,
-                                        category: cat,
-                                        url: '',
-                                        gif: file.download_url
-                                    });
-                                }
-                            });
-                        }
-                    }
-                } catch (e) {}
-            }
-            renderVideos();
         }
 
         async function loadMainData() {
@@ -1379,7 +1326,6 @@
                 renderContest();
 
             } catch (error) {}
-            loadGitHubGifs();
         }
 
         function renderStructuredRoutine(scheduleArr) {
@@ -1677,32 +1623,6 @@
                 html += `</div>`;
             }
             container.innerHTML = html;
-        }
-
-        function renderVideos() {
-            const grid = document.getElementById('videoGrid');
-            const isFa = window.currentLang === 'fa';
-            let filteredVideos = videosData;
-            if (currentVidCategory !== 'all') {
-                filteredVideos = videosData.filter(v => v.category === currentVidCategory);
-            }
-
-            if (filteredVideos.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No videos or GIFs found in this folder yet. Upload videos from the Admin Portal.</p>';
-                return;
-            }
-
-            grid.innerHTML = filteredVideos.map((vid) => {
-                const isVideoFile = vid.gif && (vid.gif.endsWith('.mp4') || vid.gif.includes('/video/upload/'));
-                return `
-                    <div class="card">
-                        <h3>${vid.title}</h3>
-                        <span class="badge" style="background:#2a2a2a; color:var(--accent); text-transform:uppercase;">${vid.category}</span>
-                        ${isVideoFile ? `<video src="${vid.gif}" controls muted autoplay loop style="width:100%; height:160px; object-fit:cover; border-radius:6px;"></video>` : `<img src="${vid.gif}" alt="${vid.title}" style="width:100%; height:160px; object-fit:cover;" onerror="this.style.display='none'">`}
-                        ${vid.url ? `<p style="margin-top:10px;"><a href="${vid.url}" target="_blank" style="color:var(--accent);">${isFa ? 'تماشای ویدیو' : 'Watch Video Link'}</a></p>` : ''}
-                    </div>
-                `;
-            }).join('');
         }
 
         loadMainData();

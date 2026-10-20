@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro - Free Workout & Nutrition Plans</title>
+    <title>Fitness Persia - Workout & Nutrition Plans</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -38,7 +38,7 @@
                     <i class="fa-solid fa-dumbbell"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-wider text-white">Fitness Pro</h1>
+                    <h1 class="text-xl font-bold tracking-wider text-white">Fitness Persia</h1>
                     <p class="text-xs text-slate-400">برنامه‌های تخصصی تمرین و تغذیه</p>
                 </div>
             </div>
@@ -58,7 +58,7 @@
         
         <!-- Page Title & Filters -->
         <div class="mb-8 text-center">
-            <h2 id="pageTitle" class="text-3xl font-black text-white mb-2">برنامه‌های رایگان تمرین و تغذیه</h2>
+            <h2 id="pageTitle" class="text-3xl font-black text-white mb-2">برنامه‌های تمرین و تغذیه</h2>
             <p id="pageSubtitle" class="text-slate-400 max-w-2xl mx-auto text-sm">برنامه خود را انتخاب کنید و همراه با جزئیات تغذیه، مکمل‌ها و کالری روزانه مشاهده نمایید.</p>
             
             <!-- Filters -->
@@ -139,7 +139,7 @@
 
     <!-- Footer -->
     <footer class="bg-slate-800 border-t border-slate-700 py-6 mt-12 text-center text-xs text-slate-400">
-        <p>Fitness Pro © 2026 - All Rights Reserved. Powered by Gemini AI & GitHub Database.</p>
+        <p>Fitness Persia © 2026 - All Rights Reserved. Powered by Gemini AI & GitHub Database.</p>
     </footer>
 
     <!-- JavaScript Application Logic -->
@@ -425,12 +425,12 @@
             if (currentLang === 'fa') {
                 htmlTag.setAttribute('lang', 'fa');
                 htmlTag.setAttribute('dir', 'rtl');
-                document.getElementById('pageTitle').innerText = 'برنامه‌های رایگان تمرین و تغذیه';
+                document.getElementById('pageTitle').innerText = 'برنامه‌های تمرین و تغذیه';
                 document.getElementById('pageSubtitle').innerText = 'برنامه خود را انتخاب کنید و همراه با جزئیات تغذیه، مکمل‌ها و کالری روزانه مشاهده نمایید.';
             } else {
                 htmlTag.setAttribute('lang', 'en');
                 htmlTag.setAttribute('dir', 'ltr');
-                document.getElementById('pageTitle').innerText = 'Free Workout & Nutrition Plans';
+                document.getElementById('pageTitle').innerText = 'Workout & Nutrition Plans';
                 document.getElementById('pageSubtitle').innerText = 'Choose your plan to view detailed daily workouts, macronutrients, and supplement schedules.';
             }
             renderPlans('all');
