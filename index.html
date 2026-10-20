@@ -89,7 +89,9 @@
             transition: 0.2s;
             text-decoration: none;
             text-align: left;
-            display: block;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-family: 'Vazirmatn', sans-serif;
             width: 100%;
         }
@@ -101,6 +103,15 @@
             color: #000;
             border-color: var(--accent);
         }
+
+        .tab-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .badge-free { background: #1a3a2a; color: #4caf50; }
+        .badge-pro { background: #3a2a1a; color: #ff9800; }
 
         /* Dropdown Sub-menu for Science & Reference Library */
         .dropdown-container {
@@ -382,12 +393,25 @@
             display: block;
         }
         .pro-locked-banner {
-            background: #2c1a00;
-            border: 1px solid var(--accent);
-            padding: 20px;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #2c1a00 0%, #161005 100%);
+            border: 2px solid var(--accent);
+            padding: 30px;
+            border-radius: 12px;
             text-align: center;
             margin: 20px 0;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        }
+        .pro-locked-banner h3 {
+            color: var(--accent);
+            font-size: 22px;
+            margin-top: 0;
+        }
+        .pro-locked-banner p {
+            color: var(--text-muted);
+            font-size: 14px;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            line-height: 1.6;
         }
         .add-panel {
             background: var(--card-bg);
@@ -660,11 +684,30 @@
         window.firebaseDb = db;
 
         const ADMIN_EMAIL = "mohammad009999@gmail.com";
-        const PRO_PRICE = 40000;
+        window.pricingConfig = { proPrice: 40000, planPrice: 150000 };
+        window.accessConfig = {};
+
+        async function loadAppConfigs() {
+            try {
+                const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
+                if (pricingSnap.exists()) {
+                    window.pricingConfig = pricingSnap.data();
+                }
+
+                const accessSnap = await getDoc(doc(db, "settings", "access_control"));
+                if (accessSnap.exists()) {
+                    window.accessConfig = accessSnap.data();
+                }
+                updateUIWithAccessControl();
+            } catch (e) {
+                console.log("Using default config values.");
+            }
+        }
 
         onAuthStateChanged(auth, async (user) => {
             const authBtn = document.getElementById('authBtn');
             window.currentUser = user;
+            await loadAppConfigs();
             
             if (user) {
                 authBtn.innerText = user.email || user.phoneNumber || "Profile";
@@ -696,11 +739,13 @@
                 }
 
                 updateProfileUI();
+                updateUIWithAccessControl();
             } else {
                 authBtn.innerText = window.currentLang === 'fa' ? 'ورود' : 'Sign In';
                 authBtn.onclick = openAuthModal;
                 window.currentUserData = null;
                 document.body.classList.remove('is-admin');
+                updateUIWithAccessControl();
             }
         });
 
@@ -779,8 +824,9 @@
                 return;
             }
             
-            const amountRials = PRO_PRICE * 10;
-            alert(`Connecting to ZarinPal Gateway for ${PRO_PRICE.toLocaleString()} Tomans (${amountRials} Rials)...`);
+            const currentProPrice = window.pricingConfig.proPrice || 40000;
+            const amountRials = currentProPrice * 10;
+            alert(`Connecting to ZarinPal Gateway for ${currentProPrice.toLocaleString()} Tomans (${amountRials} Rials)...`);
             
             const userRef = doc(db, "users", window.currentUser.uid);
             let expires = new Date();
@@ -790,6 +836,38 @@
             alert("Payment Successful! Your account has been upgraded to PRO for 1 Month.");
             window.location.reload();
         };
+
+        function updateUIWithAccessControl() {
+            const isUserPro = window.currentUserData && window.currentUserData.isPro && (!window.currentUserData.proExpiresAt || new Date(window.currentUserData.proExpiresAt) > new Date());
+            const isAdmin = window.currentUser && window.currentUser.email === ADMIN_EMAIL;
+            const proPriceText = (window.pricingConfig.proPrice || 40000).toLocaleString();
+
+            const proDisplayEl = document.getElementById('proPriceDisplay');
+            if (proDisplayEl) proDisplayEl.innerText = proPriceText;
+
+            const sections = ['legends', 'steroids', 'contest', 'exercises'];
+            sections.forEach(secId => {
+                const isSectionProOnly = window.accessConfig[secId] === true;
+                const badgeEl = document.getElementById(`badge_${secId}`);
+                if (badgeEl) {
+                    badgeEl.innerText = isSectionProOnly ? 'PRO' : 'FREE';
+                    badgeEl.className = `tab-badge ${isSectionProOnly ? 'badge-pro' : 'badge-free'}`;
+                }
+
+                const containerEl = document.getElementById(`${secId}Container`);
+                const lockBannerEl = document.getElementById(`${secId}LockBanner`);
+
+                if (isSectionProOnly && !isUserPro && !isAdmin) {
+                    if (containerEl) containerEl.style.display = 'none';
+                    if (lockBannerEl) lockBannerEl.style.display = 'block';
+                } else {
+                    if (containerEl) containerEl.style.display = (secId === 'exercises') ? 'block' : 'grid';
+                    if (lockBannerEl) lockBannerEl.style.display = 'none';
+                }
+            });
+        }
+
+        window.updateUIWithAccessControl = updateUIWithAccessControl;
     </script>
 </head>
 <body id="bodyRoot">
@@ -801,7 +879,10 @@
             <span id="uiSub">Exercise & Knowledge Hub</span>
         </div>
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('exercises')" id="tabEx">Exercises</button>
+            <button class="tab-btn active" onclick="switchTab('exercises')" id="tabEx">
+                <span>Exercises</span>
+                <span class="tab-badge badge-free" id="badge_exercises">FREE</span>
+            </button>
             <a href="encyclopedia.html" class="tab-btn" style="background:#1a2b3c; color:#64b5f6; border-color:#64b5f6;" id="tabEnc">📖 Encyclopedia</a>
             
             <!-- Science & Reference Library Dropdown Menu -->
@@ -815,9 +896,18 @@
                 </div>
             </div>
 
-            <button class="tab-btn" onclick="switchTab('legends')" id="tabLegendsNav">🏆 Olympia Legends</button>
-            <button class="tab-btn" onclick="switchTab('steroids')" id="tabSteroidsNav">💉 Steroids (Pharmacology)</button>
-            <button class="tab-btn" onclick="switchTab('contest')" id="tabContestNav">🥇 Contest Secrets</button>
+            <button class="tab-btn" onclick="switchTab('legends')" id="tabLegendsNav">
+                <span>🏆 Olympia Legends</span>
+                <span class="tab-badge badge-pro" id="badge_legends">PRO</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('steroids')" id="tabSteroidsNav">
+                <span>💉 Steroids (Pharmacology)</span>
+                <span class="tab-badge badge-pro" id="badge_steroids">PRO</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('contest')" id="tabContestNav">
+                <span>🥇 Contest Secrets</span>
+                <span class="tab-badge badge-pro" id="badge_contest">PRO</span>
+            </button>
             <!-- ویدیوها حالا به صفحه مجزا متصل شدند -->
             <a href="videos.html" class="tab-btn" id="tabVid">🎬 Videos Hub</a>
             <a href="tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabTools">🛠️ Tools</a>
@@ -825,7 +915,7 @@
             <a href="advanced_tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabAdvancedTools">⚡ Advanced Tools</a>
             <a href="gymandtrainers.html" class="tab-btn" style="background:#003322; color:#34d399; border-color:#003322;" id="tabGymsAndTrainers">🏋️ Gyms & Workouts</a>
             <a href="trainers.html" class="tab-btn" style="background:#3a1a3a; color:#e040fb; border-color:#e040fb;" id="tabTrainers">🏋️ Trainers Marketplace</a>
-            <a href="news.html" class="tab-btn" style="background:#3a2a1a; color:#ff9800; border-color:#ff9800;" id="tabNews">📰 News & Articles</a>
+            <a href="news.html" class="tab-btn" style="background:#3a2a1a; color:#ff9800; border-color:#3a2a1a;" id="tabNews">📰 News & Articles</a>
             <a href="account.html" class="tab-btn" style="background:#1a3a2a; color:#4caf50; border-color:#1a3a2a;" id="tabAccount">👤 My Account & Plans</a>
             <a href="admin.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabAdmin">⚡ Admin Portal</a>
         </div>
@@ -897,6 +987,12 @@
                 </div>
             </div>
 
+            <div id="exercisesLockBanner" class="pro-locked-banner" style="display:none;">
+                <h3>🔒 این بخش اختصاصی اعضای ویژه (PRO) است</h3>
+                <p>جهت دسترسی به دیتابیس کامل تمرینات و برنامه‌ها، اشتراک ویژه فیتنس پرو را فعال کنید.</p>
+                <button class="action-btn" style="max-width:250px; background:var(--accent); color:#000;" onclick="openProfileModal()">ارتقا به حساب پرو</button>
+            </div>
+
             <div id="exerciseContainer">
                 <div class="loading">Loading categorized exercises...</div>
             </div>
@@ -906,6 +1002,13 @@
         <div id="legends" class="section-content">
             <h2 class="category-header" id="legendsHeaderTitle">🏆 Olympia Legends Master Database</h2>
             <p style="color:var(--text-muted); margin-bottom:15px;" id="legendsHeaderSub">Explore legendary champions, their biographies, off-season & contest diets, and custom training routines.</p>
+            
+            <div id="legendsLockBanner" class="pro-locked-banner" style="display:none;">
+                <h3>🔒 بخش اسطوره‌های المپیا قفل است</h3>
+                <p>این بخش توسط مدیریت سیستم برای کاربران عادی قفل شده است. جهت مشاهده بیوگرافی و رژیم‌های قهرمانان، حساب خود را ارتقا دهید.</p>
+                <button class="action-btn" style="max-width:250px; background:var(--accent); color:#000;" onclick="openProfileModal()">ارتقا به حساب پرو</button>
+            </div>
+
             <div id="legendsContainer" class="grid">
                 <div class="loading">Loading Olympia Legends...</div>
             </div>
@@ -915,6 +1018,13 @@
         <div id="steroids" class="section-content">
             <h2 class="category-header" id="steroidsHeaderTitle">💉 Pharmacology & Steroids Database</h2>
             <p style="color:var(--text-muted); margin-bottom:15px;" id="steroidsHeaderSub">Comprehensive pharmacological guides, properties, cycles, and medical considerations.</p>
+            
+            <div id="steroidsLockBanner" class="pro-locked-banner" style="display:none;">
+                <h3>🔒 بانک اطلاعاتی داروشناسی اختصاصی PRO</h3>
+                <p>دسترسی به اطلاعات داروشناسی و سیکل‌های پاکسازی نیازمند اشتراک ویژه پرو می‌باشد.</p>
+                <button class="action-btn" style="max-width:250px; background:var(--accent); color:#000;" onclick="openProfileModal()">ارتقا به حساب پرو</button>
+            </div>
+
             <div id="steroidsContainer" class="grid">
                 <div class="loading">Loading Steroids data...</div>
             </div>
@@ -924,6 +1034,13 @@
         <div id="contest" class="section-content">
             <h2 class="category-header" id="contestHeaderTitle">🥇 Contest Secrets & Peak Week Protocols</h2>
             <p style="color:var(--text-muted); margin-bottom:15px;" id="contestHeaderSub">Professional stage preparation secrets, water manipulation, sodium loading, and peak week strategies.</p>
+            
+            <div id="contestLockBanner" class="pro-locked-banner" style="display:none;">
+                <h3>🔒 پروتکل‌های هفته پایانی و رازهای مسابقات</h3>
+                <p>برای دریافت جدیدترین متدهای آب‌گیری و بارگیری هفته مسابقه، عضویت ویژه تهیه فرمایید.</p>
+                <button class="action-btn" style="max-width:250px; background:var(--accent); color:#000;" onclick="openProfileModal()">ارتقا به حساب پرو</button>
+            </div>
+
             <div id="contestContainer" class="grid">
                 <div class="loading">Loading Contest Secrets...</div>
             </div>
@@ -990,8 +1107,8 @@
 
             <div class="pro-locked-banner" style="margin-top:15px;">
                 <h3 style="color:var(--accent); margin-top:0;" id="proUpgradeTitle">Upgrade to PRO</h3>
-                <p id="proUpgradeSub">Get full access to all professional guides, advanced databases, and routines for only <b>40,000 Toman / Month</b>.</p>
-                <button class="action-btn" style="margin-top:15px; background:var(--accent); color:#000;" onclick="startZarinPalPayment()" id="payZarinBtn">Pay with ZarinPal (40k Toman)</button>
+                <p id="proUpgradeSub">Get full access to all professional guides, advanced databases, and routines for only <b id="proPriceDisplay">40,000</b> <b>Toman / Month</b>.</p>
+                <button class="action-btn" style="margin-top:15px; background:var(--accent); color:#000;" onclick="startZarinPalPayment()" id="payZarinBtn">Pay with ZarinPal</button>
             </div>
             <button class="action-btn" style="background:var(--danger); margin-top:10px;" onclick="signOutUser()" id="signOutBtn">Sign Out</button>
         </div>

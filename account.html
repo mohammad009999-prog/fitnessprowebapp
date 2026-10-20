@@ -271,10 +271,22 @@
         const db = getFirestore(app);
 
         let currentUser = null;
-        let currentLang = 'fa'; // Default to Farsi
+        window.pricingConfig = { proPrice: 40000, planPrice: 150000 };
+
+        async function loadPricingConfig() {
+            try {
+                const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
+                if (pricingSnap.exists()) {
+                    window.pricingConfig = pricingSnap.data();
+                }
+            } catch (e) {
+                console.log("Using default pricing.");
+            }
+        }
 
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
+            await loadPricingConfig();
             if (!user) {
                 document.getElementById('loggedOutView').style.display = 'block';
                 document.getElementById('loggedInView').style.display = 'none';

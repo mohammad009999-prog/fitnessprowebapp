@@ -68,6 +68,23 @@
             border: 1px solid var(--border);
         }
         .card h2 { color: var(--accent); margin-top: 0; }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+
         input, select, textarea {
             width: 100%;
             padding: 10px;
@@ -77,7 +94,6 @@
             border-radius: 6px;
             font-size: 14px;
             box-sizing: border-box;
-            margin-bottom: 10px;
             font-family: 'Vazirmatn', sans-serif;
         }
         button.action-btn {
@@ -129,6 +145,24 @@
         .analytic-card span { font-size: 11px; color: var(--text-muted); display: block; }
         .analytic-card b { font-size: 20px; color: var(--success); display: block; margin-top: 5px; }
 
+        /* TOGGLE LIST FOR SECTIONS LOCK */
+        .toggle-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .toggle-item {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toggle-item span { font-size: 13px; font-weight: bold; }
+
         #accessDenied {
             text-align: center;
             padding: 50px;
@@ -136,7 +170,7 @@
         }
 
         @media(max-width: 768px) {
-            .analytics-grid { grid-template-columns: repeat(2, 1fr); }
+            .analytics-grid, .form-grid, .toggle-grid { grid-template-columns: 1fr; }
         }
     </style>
 
@@ -144,7 +178,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAilAXYxno9aywWxqy7ji52Dq-xvneKf5U",
@@ -163,7 +197,7 @@
         const CLOUD_NAME = 'djibtdplp';
         const UPLOAD_PRESET = 'FITNESS PRO WEB';
 
-        let currentLang = 'fa'; // Default to Farsi
+        let currentLang = 'fa';
 
         onAuthStateChanged(auth, async (user) => {
             if (!user || user.email !== ADMIN_EMAIL) {
@@ -178,7 +212,25 @@
 
         window.loadAdminData = async () => {
             try {
-                // Load Users & Biometrics
+                // 1. Load Pricing Settings
+                const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
+                if (pricingSnap.exists()) {
+                    const pData = pricingSnap.data();
+                    document.getElementById('adminProPrice').value = pData.proPrice || 40000;
+                    document.getElementById('adminPlanPrice').value = pData.planPrice || 150000;
+                }
+
+                // 2. Load Feature Access Controls (Free vs Pro)
+                const accessSnap = await getDoc(doc(db, "settings", "access_control"));
+                if (accessSnap.exists()) {
+                    const aData = accessSnap.data();
+                    document.getElementById('lock_legends').value = aData.legends ? "pro" : "free";
+                    document.getElementById('lock_steroids').value = aData.steroids ? "pro" : "free";
+                    document.getElementById('lock_contest').value = aData.contest ? "pro" : "free";
+                    document.getElementById('lock_exercises').value = aData.exercises ? "pro" : "free";
+                }
+
+                // 3. Load Users & Biometrics
                 const usersSnap = await getDocs(collection(db, "users"));
                 let userHtml = '';
                 let totalUsers = 0;
@@ -209,47 +261,33 @@
                 });
                 document.getElementById('adminUsersTable').innerHTML = userHtml || '<tr><td colspan="4" style="text-align:center;">کاربری یافت نشد.</td></tr>';
 
-                // Load Trainers Review Applications
-                const trainersSnap = await getDocs(collection(db, "trainers"));
-                let trainerHtml = '';
-                let totalTrainers = 0;
-
-                trainersSnap.forEach(d => {
-                    let t = d.data();
-                    let tid = d.id;
-                    totalTrainers++;
-                    let statusColor = t.status === 'approved' ? '#4caf50' : t.status === 'rejected' ? '#f44336' : '#ff9800';
-                    trainerHtml += `
-                        <tr>
-                            <td><img src="${t.imageUrl || 'https://placehold.co/40'}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;"></td>
-                            <td>
-                                <b>${t.name}</b> (${t.email})<br>
-                                <small style="color:var(--text-muted);">باشگاه: ${t.gym || 'N/A'} | تخصص: ${t.specialty || 'N/A'}</small><br>
-                                ${t.certificates ? `<small style="color:#64b5f6;">مدرک: ${t.certificates}</small><br>` : ''}
-                            </td>
-                            <td><span class="badge" style="background:#222; color:${statusColor}">${t.status || 'pending'}</span></td>
-                            <td>
-                                <button class="action-btn" style="padding:4px 8px; font-size:11px; background:#4caf50; margin-bottom:4px;" onclick="updateTrainerStatus('${tid}', 'approved')">تایید</button>
-                                <button class="action-btn" style="padding:4px 8px; font-size:11px; background:var(--danger);" onclick="updateTrainerStatus('${tid}', 'rejected')">رد</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                document.getElementById('adminTrainersTable').innerHTML = trainerHtml || '<tr><td colspan="4" style="text-align:center;">درخواست مربی ثبت نشده است.</td></tr>';
-
-                // Load Videos Count
-                const videosSnap = await getDocs(collection(db, "videos"));
-                let totalVideos = videosSnap.size;
-
-                // Update Analytics Summary Counters
+                // Load Analytics Summary
                 document.getElementById('statTotalUsers').innerText = totalUsers;
                 document.getElementById('statProUsers').innerText = proUsers;
-                document.getElementById('statTrainers').innerText = totalTrainers;
-                document.getElementById('statVideos').innerText = totalVideos;
 
             } catch(err) {
                 console.error("Error loading admin data:", err);
             }
+        };
+
+        window.savePricingSettings = async () => {
+            const proPrice = parseInt(document.getElementById('adminProPrice').value) || 40000;
+            const planPrice = parseInt(document.getElementById('adminPlanPrice').value) || 150000;
+
+            await setDoc(doc(db, "settings", "pricing"), { proPrice, planPrice }, { merge: true });
+            alert("تنظیمات جدید قیمت‌ها با موفقیت ذخیره و روی سایت اعمال شد!");
+        };
+
+        window.saveAccessControlSettings = async () => {
+            const accessObj = {
+                legends: document.getElementById('lock_legends').value === 'pro',
+                steroids: document.getElementById('lock_steroids').value === 'pro',
+                contest: document.getElementById('lock_contest').value === 'pro',
+                exercises: document.getElementById('lock_exercises').value === 'pro'
+            };
+
+            await setDoc(doc(db, "settings", "access_control"), accessObj, { merge: true });
+            alert("سطوح دسترسی بخش‌های اصلی با موفقیت ذخیره شد!");
         };
 
         window.grantPro = async (uid) => {
@@ -265,65 +303,15 @@
             alert("اشتراک پرو لغو شد!");
             loadAdminData();
         };
-
-        window.updateTrainerStatus = async (tid, status) => {
-            await setDoc(doc(db, "trainers", tid), { status: status }, { merge: true });
-            alert(`وضعیت مربی به ${status} تغییر یافت!`);
-            loadAdminData();
-        };
-
-        window.uploadVideoToCloudinary = async () => {
-            const title = document.getElementById('adminVideoTitle').value;
-            const category = document.getElementById('adminVideoCategory').value;
-            const fileInput = document.getElementById('adminVideoFile');
-            const progress = document.getElementById('uploadProgress');
-
-            if(!title || fileInput.files.length === 0) return alert("لطفاً عنوان ویدیو را وارد کرده و یک فایل انتخاب کنید.");
-            
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-            formData.append('upload_preset', UPLOAD_PRESET);
-            formData.append('resource_type', 'video');
-
-            progress.style.display = 'block';
-            progress.innerText = "در حال آپلود ویدیو به کلادیناری...";
-
-            try {
-                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`, { method: 'POST', body: formData });
-                const data = await res.json();
-                if(data.secure_url) {
-                    await setDoc(doc(collection(db, "videos")), { title, category, url: data.secure_url, createdAt: new Date().toISOString() });
-                    progress.style.display = 'none';
-                    alert("ویدیو با موفقیت آپلود و منتشر شد!");
-                    document.getElementById('adminVideoTitle').value = '';
-                    fileInput.value = '';
-                    loadAdminData();
-                } else {
-                    throw new Error(data.error?.message || "Upload failed");
-                }
-            } catch(e) {
-                progress.style.display = 'none';
-                alert("خطا در آپلود: " + e.message);
-            }
-        };
-
-        window.toggleLang = () => {
-            currentLang = currentLang === 'en' ? 'fa' : 'en';
-            const root = document.getElementById('htmlRoot');
-            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
-            root.setAttribute('lang', currentLang);
-            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'English / EN' : 'فارسی / FA';
-        };
     </script>
 </head>
 <body>
     <header>
         <div class="top-controls">
             <a href="index.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
-            <button class="top-btn" onclick="toggleLang()" id="langBtn">English / EN</button>
         </div>
         <h1 id="mainTitle">پنل مدیریت جامع فیتنس پرو (Master Admin)</h1>
-        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">مدیریت کامل کاربران، بیومتریک‌ها، مربیان، تایید حساب‌های پرو و آپلود ویدیو</p>
+        <p style="color:var(--text-muted); font-size:14px;">مدیریت کامل قیمت‌ها، دسترسی بخش‌ها، کاربران و برنامه‌های تمرینی</p>
     </header>
 
     <div id="accessDenied">
@@ -345,56 +333,74 @@
                 <b id="statProUsers" style="color:var(--accent);">0</b>
             </div>
             <div class="analytic-card">
-                <span>مربیان سامانه</span>
-                <b id="statTrainers" style="color:#64b5f6;">0</b>
+                <span>درگاه پرداخت فعال</span>
+                <b style="color:#64b5f6;">زرین‌پال (ZarinPal)</b>
             </div>
             <div class="analytic-card">
-                <span>ویدیوهای بارگذاری شده</span>
-                <b id="statVideos" style="color:#e040fb;">0</b>
+                <span>وضعیت سیستم</span>
+                <b style="color:var(--success);">آنلاین</b>
             </div>
         </div>
 
-        <!-- Video Upload Card -->
+        <!-- PRICING MANAGEMENT CARD -->
         <div class="card">
-            <h2>آپلود ویدیو به کلادیناری (Cloudinary)</h2>
-            <input type="text" id="adminVideoTitle" placeholder="عنوان ویدیو (مثال: پرس سینه سنگین)">
-            <select id="adminVideoCategory">
-                <option value="chest">سینه (Chest)</option>
-                <option value="legs">پا (Legs)</option>
-                <option value="cardio">هوازی (Cardio)</option>
-                <option value="abs">شکم (Abs)</option>
-                <option value="shoulders">سرشانه (Shoulders)</option>
-                <option value="back">سرشانه و زیربغل (Back)</option>
-                <option value="arms">بازو و جلوبازو (Arms)</option>
-            </select>
-            <input type="file" id="adminVideoFile" accept="video/*">
-            <button class="action-btn" onclick="uploadVideoToCloudinary()">آپلود و انتشار ویدیو</button>
-            <div id="uploadProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
+            <h2>💰 مدیریت قیمت‌گذاری اشتراک‌ها و برنامه‌های تمرینی</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">قیمت‌های مدنظر خود به تومان را وارد کنید تا مستقیماً روی دکمه‌های پرداخت و صفحه اصلی سایت اعمال گردند.</p>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>قیمت اشتراک ماهانه پرو (تومان)</label>
+                    <input type="number" id="adminProPrice" placeholder="40000">
+                </div>
+                <div class="form-group">
+                    <label>قیمت برنامه اختصاصی تمرین و تغذیه (تومان)</label>
+                    <input type="number" id="adminPlanPrice" placeholder="150000">
+                </div>
+            </div>
+            <button class="action-btn" style="margin-top:15px; background:var(--accent); color:#000;" onclick="savePricingSettings()">ذخیره و به‌روزرسانی قیمت‌ها</button>
         </div>
 
-        <!-- Trainer Applications Review Card -->
+        <!-- FEATURE ACCESS CONTROL CARD -->
         <div class="card">
-            <h2>درخواست‌های همکاری مربیان</h2>
-            <p style="font-size:13px; color:var(--text-muted);">مربیانی که درخواست ارائه برنامه تمرینی داده‌اند را بررسی و تایید کنید تا در بازارچه مربیان نمایش داده شوند.</p>
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>تصویر</th>
-                        <th>اطلاعات مربی</th>
-                        <th>وضعیت</th>
-                        <th>عملیات</th>
-                    </tr>
-                </thead>
-                <tbody id="adminTrainersTable">
-                    <tr><td colspan="4" style="text-align:center;">در حال بارگذاری مربیان...</td></tr>
-                </tbody>
-            </table>
+            <h2>🔒 کنترل سطح دسترسی بخش‌های اصلی (رایگان / اختصاصی PRO)</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">مشخص کنید کدام بخش‌های صفحه اصلی برای همه کاربران رایگان باشد یا فقط برای اعضای پرو باز شود.</p>
+
+            <div class="toggle-grid">
+                <div class="toggle-item">
+                    <span>🏆 اسطوره‌های المپیا (Olympia Legends)</span>
+                    <select id="lock_legends" style="width:130px;">
+                        <option value="pro">قفل (PRO)</option>
+                        <option value="free">رایگان (FREE)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>💉 داروشناسی و استروئیدها (Steroids)</span>
+                    <select id="lock_steroids" style="width:130px;">
+                        <option value="pro">قفل (PRO)</option>
+                        <option value="free">رایگان (FREE)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>🥇 اسرار مسابقات (Contest Secrets)</span>
+                    <select id="lock_contest" style="width:130px;">
+                        <option value="pro">قفل (PRO)</option>
+                        <option value="free">رایگان (FREE)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>🏋️ دیتابیس کامل تمرینات (Exercises)</span>
+                    <select id="lock_exercises" style="width:130px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="pro">قفل (PRO)</option>
+                    </select>
+                </div>
+            </div>
+            <button class="action-btn" style="margin-top:15px;" onclick="saveAccessControlSettings()">ذخیره سطوح دسترسی</button>
         </div>
 
         <!-- Users & Biometrics Intelligence Card -->
         <div class="card">
-            <h2>مدیریت کاربران، بیومتریک و وضعیت اشتراک پرو</h2>
-            <p style="font-size:13px; color:var(--text-muted);">مشاهده اطلاعات بدنی، وزن، قد، تیپ بدنی و وضعیت حساب کاربری تمامی اعضا.</p>
+            <h2>👥 لیست تمامی خریداران و اعضای سیستم</h2>
             <table class="admin-table">
                 <thead>
                     <tr>
