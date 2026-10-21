@@ -933,8 +933,8 @@
 </head>
 <body id="bodyRoot">
 
-    <!-- LANGUAGE SELECTION SPLASH MODAL (Appears after 2 seconds) -->
-    <div id="langSplashModal" class="modal-overlay" style="display:flex; z-index:9999;">
+    <!-- LANGUAGE SELECTION SPLASH MODAL (Appears only if no language is saved) -->
+    <div id="langSplashModal" class="modal-overlay" style="display:none; z-index:9999;">
         <div class="modal" style="text-align:center; padding:35px; background:#18181c; border:2px solid var(--accent);">
             <h2 style="color:var(--accent); font-size:24px; margin-bottom:10px;">Fitness Persia / فیتنس پرشیا</h2>
             <p style="font-size:15px; color:var(--text-main); margin-bottom:20px;">
@@ -1289,21 +1289,28 @@
         window.setInitialLanguage = (lang) => {
             window.currentLang = lang;
             localStorage.setItem('app_lang', lang);
-            document.getElementById('langSplashModal').style.display = 'none';
+            const splash = document.getElementById('langSplashModal');
+            if(splash) splash.style.display = 'none';
             applyLanguageUI();
         };
 
-        // Automatically hide splash or show after 2 seconds if not set
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const savedLang = localStorage.getItem('app_lang');
-                if(savedLang) {
-                    window.currentLang = savedLang;
-                    document.getElementById('langSplashModal').style.display = 'none';
+        // Instant Check on Load to Prevent Popup Flashing/Reappearing
+        (function() {
+            const savedLang = localStorage.getItem('app_lang');
+            if (savedLang) {
+                window.currentLang = savedLang;
+                window.addEventListener('DOMContentLoaded', () => {
+                    const splash = document.getElementById('langSplashModal');
+                    if (splash) splash.style.display = 'none';
                     applyLanguageUI();
-                }
-            }, 500);
-        });
+                });
+            } else {
+                window.addEventListener('DOMContentLoaded', () => {
+                    const splash = document.getElementById('langSplashModal');
+                    if (splash) splash.style.display = 'flex';
+                });
+            }
+        })();
 
         function switchTab(tabId) {
             document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));

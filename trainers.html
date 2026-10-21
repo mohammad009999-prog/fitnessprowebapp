@@ -301,9 +301,31 @@
         let allExercises = [];
         let selectedTrainerForOrder = null;
         let approvedTrainersList = [];
+        
+        // Admin Pricing Configuration Cache
+        window.pricingConfig = {
+            workoutPrice: 100000,
+            nutritionPrice: 100000,
+            bundlePrice: 150000,
+            proPrice: 40000
+        };
+
+        async function loadAdminPricingConfig() {
+            try {
+                const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
+                if (pricingSnap.exists()) {
+                    window.pricingConfig = pricingSnap.data();
+                }
+            } catch (e) {
+                console.log("Using default fallback pricing.");
+            }
+            updateModalPriceDisplay();
+            loadApprovedTrainers();
+        }
 
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
+            await loadAdminPricingConfig();
             const trainerPortalTab = document.getElementById('tabTrainerPortal');
             if(!user) {
                 document.getElementById('applySection').style.opacity = '0.5';
@@ -370,12 +392,13 @@
                 querySnap.forEach(d => {
                     let order = d.data();
                     if(order.clientEmail === userEmail) {
-                        totalSpent += (order.amount || 40000);
+                        let orderAmt = order.amount || window.pricingConfig.workoutPrice;
+                        totalSpent += orderAmt;
                         html += `
                             <tr>
                                 <td>${order.createdAt ? order.createdAt.substring(0, 10) : 'N/A'}</td>
                                 <td><b>${order.planType}</b><br><small style="color:var(--text-muted)">مربی: ${order.trainerName || order.trainerEmail}</small></td>
-                                <td style="color:var(--accent);">${(order.amount || 40000).toLocaleString()} ${currentLang === 'fa' ? 'تومان' : 'Tomans'}</td>
+                                <td style="color:var(--accent);">${orderAmt.toLocaleString()} ${currentLang === 'fa' ? 'تومان' : 'Tomans'}</td>
                                 <td><span class="badge" style="background:rgba(16,185,129,0.15); color:var(--success);">موفق (زرین‌پال)</span></td>
                             </tr>
                         `;
@@ -465,6 +488,7 @@
             }
             selectedTrainerForOrder = { email: trainerEmail, name: trainerName };
             document.getElementById('modalTrainerName').innerText = trainerName;
+            updateModalPriceDisplay();
             document.getElementById('orderModal').style.display = 'flex';
         };
 
@@ -472,10 +496,36 @@
             document.getElementById('orderModal').style.display = 'none';
         };
 
+        // Dynamically update modal price text based on selection and admin configuration
+        window.updateModalPriceDisplay = () => {
+            const planType = document.getElementById('orderPlanType').value;
+            const btnText = document.getElementById('payZarinBtnText');
+            let price = window.pricingConfig.workoutPrice || 100000;
+
+            if (planType === 'Workout Plan Only') {
+                price = window.pricingConfig.workoutPrice || 100000;
+            } else if (planType === 'Nutrition Plan Only') {
+                price = window.pricingConfig.nutritionPrice || 100000;
+            } else if (planType === 'Both Workout & Nutrition') {
+                price = window.pricingConfig.bundlePrice || 150000;
+            }
+
+            if (currentLang === 'fa') {
+                btnText.innerText = `پرداخت با زرین‌پال و ارسال برای مربی (${price.toLocaleString()} تومان)`;
+            } else {
+                btnText.innerText = `Pay with ZarinPal & Send to Trainer (${price.toLocaleString()} Tomans)`;
+            }
+        };
+
         window.submitClientOrderAndPay = async () => {
             if(!selectedTrainerForOrder) return;
 
             const planType = document.getElementById('orderPlanType').value;
+            let finalAmount = window.pricingConfig.workoutPrice || 100000;
+            if (planType === 'Workout Plan Only') finalAmount = window.pricingConfig.workoutPrice || 100000;
+            if (planType === 'Nutrition Plan Only') finalAmount = window.pricingConfig.nutritionPrice || 100000;
+            if (planType === 'Both Workout & Nutrition') finalAmount = window.pricingConfig.bundlePrice || 150000;
+
             const weight = document.getElementById('clientWeight').value;
             const height = document.getElementById('clientHeight').value;
             const age = document.getElementById('clientAge').value;
@@ -530,7 +580,7 @@
                     injuries: injuriesList || 'ندارد',
                     habits: habitsList || 'ندارد',
                     clientImageUrl: clientImageUrl,
-                    amount: 40000,
+                    amount: finalAmount,
                     status: "paid",
                     createdAt: new Date().toISOString()
                 });
@@ -566,6 +616,10 @@
         };
 
         function renderTrainerCard(t) {
+            const workoutP = (window.pricingConfig.workoutPrice || 100000).toLocaleString();
+            const nutritionP = (window.pricingConfig.nutritionPrice || 100000).toLocaleString();
+            const bundleP = (window.pricingConfig.bundlePrice || 150000).toLocaleString();
+
             return `
                 <div class="trainer-card">
                     <img src="${t.imageUrl}" alt="${t.name}">
@@ -576,7 +630,15 @@
                     ${t.championships ? `<div class="prop-line"><b>${currentLang === 'fa' ? 'قهرمانی‌ها:' : 'Championships:'}</b> ${t.championships}</div>` : ''}
                     <div class="prop-line"><b>${currentLang === 'fa' ? 'سابقه:' : 'Experience:'}</b> ${t.experience}</div>
                     <p style="font-size:13px; color:var(--text-main); line-height:1.4; margin-top:4px;">${t.bio}</p>
-                    <button class="action-btn" style="margin-top:auto;" onclick="openOrderModal('${t.email}', '${t.name}')">${currentLang === 'fa' ? 'سفارش برنامه و مشاوره (۴۰ هزار تومان)' : 'Buy Plan & Pay (40k Tomans)'}</button>
+                    
+                    <!-- Dynamic Price Tags for All 3 States Under Purchase Button -->
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border); border-radius: 8px; padding: 8px; width: 100%; margin: 8px 0; font-size: 11px; text-align: ${currentLang === 'fa' ? 'right' : 'left'};">
+                        <div style="color:var(--text-muted);">🏋️‍♂️ ${currentLang === 'fa' ? 'برنامه تمرین' : 'Workout Plan'}: <b style="color:var(--accent);">${workoutP} تومان</b></div>
+                        <div style="color:var(--text-muted); margin: 3px 0;">🥗 ${currentLang === 'fa' ? 'برنامه تغذیه' : 'Nutrition Plan'}: <b style="color:var(--accent);">${nutritionP} تومان</b></div>
+                        <div style="color:var(--text-muted);">⭐ ${currentLang === 'fa' ? 'پکیج کامل (هر دو)' : 'Full Bundle'}: <b style="color:var(--success);">${bundleP} تومان</b></div>
+                    </div>
+
+                    <button class="action-btn" style="margin-top:auto;" onclick="openOrderModal('${t.email}', '${t.name}')">${currentLang === 'fa' ? 'سفارش برنامه و مشاوره' : 'Buy Plan & Consultation'}</button>
                 </div>
             `;
         }
@@ -904,10 +966,10 @@
         <div class="modal">
             <button class="close-modal" onclick="closeOrderModal()">&times;</button>
             <h2 style="color:var(--accent); margin-top:0;" id="modalTitleText">📋 فرم مشاوره و ثبت سفارش برنامه</h2>
-            <p style="font-size:13px; color:var(--text-muted);">ثبت سفارش برنامه اختصاصی از مربی: <b id="modalTrainerName" style="color:#fff;"></b> (۴۰,۰۰۰ تومان)</p>
+            <p style="font-size:13px; color:var(--text-muted);">ثبت سفارش برنامه اختصاصی از مربی: <b id="modalTrainerName" style="color:#fff;"></b></p>
             
             <label style="font-size:13px; color:var(--text-muted);" id="lblPlanType">انتخاب نوع برنامه:</label>
-            <select id="orderPlanType">
+            <select id="orderPlanType" onchange="updateModalPriceDisplay()">
                 <option value="Workout Plan Only">فقط برنامه تمرینی (Workout Plan)</option>
                 <option value="Nutrition Plan Only">فقط برنامه تغذیه (Nutrition Plan)</option>
                 <option value="Both Workout & Nutrition">هر دو - تمرین و تغذیه کامل (Both)</option>
@@ -976,7 +1038,7 @@
             <label style="font-size:13px; color:var(--text-muted); display:block; margin-top:8px;" id="lblClientPhoto">آپلود عکس فیزیک بدنی (اختیاری برای تحلیل بهتر):</label>
             <input type="file" id="clientImageFile" accept="image/*">
 
-            <button class="action-btn" style="margin-top:10px;" onclick="submitClientOrderAndPay()"><span id="payZarinBtnText">پرداخت با زرین‌پال و ارسال برای مربی (۴۰ هزار تومان)</span></button>
+            <button class="action-btn" style="margin-top:10px;" onclick="submitClientOrderAndPay()"><span id="payZarinBtnText">پرداخت با زرین‌پال و ارسال برای مربی</span></button>
             <div id="orderProgress" style="font-size:13px; color:var(--accent); display:none; margin-top:8px;"></div>
         </div>
     </div>
