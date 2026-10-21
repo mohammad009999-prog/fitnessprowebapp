@@ -227,16 +227,11 @@
                     const aData = accessSnap.data();
                     document.getElementById('adminTestingModeToggle').value = aData.adminTestingMode ? "true" : "false";
                     
-                    // Calculate remaining days for global free promo if active
                     if (aData.globalFreeExpiry) {
                         const expiryDate = new Date(aData.globalFreeExpiry);
                         const diffTime = expiryDate - new Date();
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                        if (diffDays > 0) {
-                            document.getElementById('globalFreeDaysInput').value = diffDays;
-                        } else {
-                            document.getElementById('globalFreeDaysInput').value = 0;
-                        }
+                        document.getElementById('globalFreeDaysInput').value = diffDays > 0 ? diffDays : 0;
                     }
 
                     allTabsList.forEach(tabKey => {
@@ -293,7 +288,7 @@
 
                 let trainerHtml = '';
                 for(let [trainer, stats] of Object.entries(trainerLedger)) {
-                    let commissionOwed = Math.round(stats.totalEarned * 0.80); // Trainer gets 80%
+                    let commissionOwed = Math.round(stats.totalEarned * 0.80);
                     trainerHtml += `
                         <tr>
                             <td><b>${trainer}</b></td>
@@ -305,7 +300,6 @@
                 }
                 document.getElementById('adminTrainerTable').innerHTML = trainerHtml || '<tr><td colspan="4" style="text-align:center;">هیچ فروشی ثبت نشده است.</td></tr>';
 
-                // Load Analytics Summary
                 document.getElementById('statTotalUsers').innerText = totalUsers;
                 document.getElementById('statProUsers').innerText = proUsers;
 
@@ -314,44 +308,49 @@
             }
         };
 
-        window.savePricingSettings = async () => {
-            const proPrice = parseInt(document.getElementById('adminProPrice').value) || 40000;
-            const workoutPrice = parseInt(document.getElementById('adminWorkoutPrice').value) || 100000;
-            const nutritionPrice = parseInt(document.getElementById('adminNutritionPrice').value) || 100000;
-            const bundlePrice = parseInt(document.getElementById('adminBundlePrice').value) || 150000;
-            const discountPercent = parseInt(document.getElementById('adminDiscountPercent').value) || 0;
+        // MASTER SAVE ALL FUNCTION
+        window.saveAllAdminSettings = async () => {
+            try {
+                // 1. Gather Pricing Data
+                const proPrice = parseInt(document.getElementById('adminProPrice').value) || 40000;
+                const workoutPrice = parseInt(document.getElementById('adminWorkoutPrice').value) || 100000;
+                const nutritionPrice = parseInt(document.getElementById('adminNutritionPrice').value) || 100000;
+                const bundlePrice = parseInt(document.getElementById('adminBundlePrice').value) || 150000;
+                const discountPercent = parseInt(document.getElementById('adminDiscountPercent').value) || 0;
 
-            await setDoc(doc(db, "settings", "pricing"), { proPrice, workoutPrice, nutritionPrice, bundlePrice, discountPercent }, { merge: true });
-            alert("تنظیمات جدید قیمت‌ها و تخفیف‌ها با موفقیت ذخیره و روی سایت اعمال شد!");
-        };
-
-        window.saveAccessControlSettings = async () => {
-            const freeDaysInput = parseInt(document.getElementById('globalFreeDaysInput').value) || 0;
-            let globalFreeExpiry = null;
-            if (freeDaysInput > 0) {
-                let expDate = new Date();
-                expDate.setDate(expDate.getDate() + freeDaysInput);
-                globalFreeExpiry = expDate.toISOString();
-            }
-
-            let accessObj = {
-                adminTestingMode: document.getElementById('adminTestingModeToggle').value === 'true',
-                globalFreeExpiry: globalFreeExpiry
-            };
-            allTabsList.forEach(tabKey => {
-                const selectEl = document.getElementById(`lock_${tabKey}`);
-                if(selectEl) {
-                    accessObj[tabKey] = selectEl.value; // 'free', 'pro', 'half'
+                // 2. Gather Access Controls & Promo Data
+                const freeDaysInput = parseInt(document.getElementById('globalFreeDaysInput').value) || 0;
+                let globalFreeExpiry = null;
+                if (freeDaysInput > 0) {
+                    let expDate = new Date();
+                    expDate.setDate(expDate.getDate() + freeDaysInput);
+                    globalFreeExpiry = expDate.toISOString();
                 }
-            });
 
-            await setDoc(doc(db, "settings", "access_control"), accessObj, { merge: true });
-            
-            // Clear and update local cache for immediate feedback
-            localStorage.removeItem('cached_access_config');
-            localStorage.setItem('cached_access_config', JSON.stringify(accessObj));
+                let accessObj = {
+                    adminTestingMode: document.getElementById('adminTestingModeToggle').value === 'true',
+                    globalFreeExpiry: globalFreeExpiry
+                };
+                allTabsList.forEach(tabKey => {
+                    const selectEl = document.getElementById(`lock_${tabKey}`);
+                    if(selectEl) {
+                        accessObj[tabKey] = selectEl.value; // 'free', 'pro', 'half'
+                    }
+                });
 
-            alert("تنظیمات دسترسی، حالت تست و کمپین رایگان با موفقیت در فایربیس ذخیره شد!");
+                // 3. Save to Firestore simultaneously
+                await setDoc(doc(db, "settings", "pricing"), { proPrice, workoutPrice, nutritionPrice, bundlePrice, discountPercent }, { merge: true });
+                await setDoc(doc(db, "settings", "access_control"), accessObj, { merge: true });
+
+                // 4. Update local cache
+                localStorage.removeItem('cached_access_config');
+                localStorage.setItem('cached_access_config', JSON.stringify(accessObj));
+
+                alert("✅ تمام تغییرات (قیمت‌ها، تخفیف‌ها، قفل تب‌ها و کمپین رایگان) با موفقیت در فایربیس ذخیره و روی سایت اعمال شد!");
+            } catch(err) {
+                console.error("Error saving settings:", err);
+                alert("❌ خطا در ذخیره تنظیمات: " + err.message);
+            }
         };
 
         window.resetAllLocks = async () => {
@@ -445,10 +444,6 @@
                     </select>
                 </div>
             </div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="action-btn" style="background:var(--accent); color:#000; flex:1;" onclick="saveAccessControlSettings()">ذخیره تنظیمات ویژه (رایگان‌سازی و تست)</button>
-                <button class="action-btn" style="background:var(--danger); color:#fff; max-width:220px;" onclick="resetAllLocks()">🔄 ریست کلی قفل‌ها (همه رایگان)</button>
-            </div>
         </div>
 
         <!-- PRICING & DISCOUNT MANAGEMENT CARD -->
@@ -478,7 +473,6 @@
                     <input type="number" id="adminBundlePrice" placeholder="150000">
                 </div>
             </div>
-            <button class="action-btn" style="margin-top:15px; background:var(--accent); color:#000;" onclick="savePricingSettings()">ذخیره و به‌روزرسانی قیمت‌ها و تخفیف</button>
         </div>
 
         <!-- UNIVERSAL TAB ACCESS CONTROL CARD (ALL SIDEBAR TABS + HALF-LOCK) -->
@@ -592,7 +586,16 @@
                     </select>
                 </div>
             </div>
-            <button class="action-btn" style="margin-top:15px;" onclick="saveAccessControlSettings()">ذخیره سطوح دسترسی جهانی تب‌ها</button>
+        </div>
+
+        <!-- MASTER SAVE ALL BUTTON CARD -->
+        <div class="card" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid var(--success); text-align: center; padding: 30px;">
+            <h2 style="color: var(--success); margin-top: 0;">💾 ذخیره‌سازی جامع تمام تغییرات پنل</h2>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">با کلیک روی دکمه زیر، قیمت‌ها، تنظیمات تخفیف، قفل تمامی تب‌ها و کمپین رایگان همگی به صورت یکجا در فایربیس ذخیره شده و روی کل سایت اعمال می‌شوند.</p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button class="action-btn" style="background: var(--success); color: #000; font-size: 16px; padding: 16px 30px; max-width: 400px;" onclick="saveAllAdminSettings()">💾 ذخیره همه تغییرات در فایربیس (Save All)</button>
+                <button class="action-btn" style="background: var(--danger); color: #fff; font-size: 14px; padding: 16px 20px; max-width: 220px;" onclick="resetAllLocks()">🔄 ریست کلی قفل‌ها</button>
+            </div>
         </div>
 
         <!-- TRAINER SALES & PAYOUT LEDGER -->
