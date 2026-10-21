@@ -109,10 +109,9 @@
             padding: 2px 6px;
             border-radius: 4px;
             font-weight: bold;
+            display: none; /* Hidden by default; only shown if PRO */
         }
-        .badge-free { background: #1a3a2a; color: #4caf50; }
-        .badge-pro { background: #3a2a1a; color: #ff9800; }
-        .badge-half { background: #2a2a1a; color: #ffeb3b; }
+        .badge-pro { background: #3a2a1a; color: #ff9800; display: inline-block; }
 
         /* Dropdown Sub-menu for Science & Reference Library */
         .dropdown-container {
@@ -195,7 +194,7 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        .top-btn, .lang-select {
+        .top-btn {
             background: var(--card-bg);
             color: var(--accent);
             border: 1px solid var(--accent);
@@ -207,13 +206,9 @@
             text-decoration: none;
             font-family: 'Vazirmatn', sans-serif;
         }
-        .top-btn:hover, .lang-select:hover {
+        .top-btn:hover {
             background: var(--accent);
             color: #000;
-        }
-        .lang-select {
-            appearance: none;
-            outline: none;
         }
 
         /* WIDGET GRID (NEWS & QUOTES TOP ROW) */
@@ -415,6 +410,14 @@
             line-height: 1.6;
         }
         
+        /* ADMIN PORTAL TAB VISIBILITY (HIDDEN BY DEFAULT, SHOWN ONLY FOR ADMIN) */
+        #tabAdmin {
+            display: none !important;
+        }
+        body.is-admin #tabAdmin {
+            display: flex !important;
+        }
+
         /* BLURRED / SECRET HALF-LOCK PREVIEW STYLING */
         .card-wrapper-locked {
             position: relative;
@@ -715,6 +718,9 @@
         const ADMIN_EMAIL = "mohammad009999@gmail.com";
         window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000, discountPercent: 0 };
         
+        // Persistent Language Storage & Setup
+        window.currentLang = localStorage.getItem('app_lang') || 'fa';
+        
         // Instant load from localStorage to ensure 0-delay load speed even over slow VPNs
         window.accessConfig = JSON.parse(localStorage.getItem('cached_access_config') || '{}');
         window.adminTestingMode = localStorage.getItem('cached_admin_testing') === 'true';
@@ -746,7 +752,7 @@
             await loadAppConfigs();
             
             if (user) {
-                authBtn.innerText = user.email || user.phoneNumber || "Profile";
+                authBtn.innerText = user.email || user.phoneNumber || (window.currentLang === 'fa' ? 'پروفایل' : 'Profile');
                 authBtn.onclick = openProfileModal;
                 
                 const userRef = doc(db, "users", user.uid);
@@ -788,15 +794,15 @@
         window.handleFirebaseEmailAuth = async (isSignUp) => {
             const email = document.getElementById('userEmail').value;
             const password = document.getElementById('userPassword').value;
-            if(!email || !password) return alert("Please enter both email and password.");
+            if(!email || !password) return alert(window.currentLang === 'fa' ? 'لطفاً ایمیل و رمز عبور را وارد کنید.' : 'Please enter both email and password.');
 
             try {
                 if(isSignUp) {
                     await createUserWithEmailAndPassword(auth, email, password);
-                    alert("Account created and signed in successfully!");
+                    alert(window.currentLang === 'fa' ? 'حساب کاربری با موفقیت ساخته شد و وارد شدید!' : 'Account created and signed in successfully!');
                 } else {
                     await signInWithEmailAndPassword(auth, email, password);
-                    alert("Logged in successfully!");
+                    alert(window.currentLang === 'fa' ? 'با موفقیت وارد شدید!' : 'Logged in successfully!');
                 }
                 window.closeAuthModal();
             } catch (error) {
@@ -808,9 +814,13 @@
             const provider = new GoogleAuthProvider();
             try {
                 await signInWithPopup(auth, provider);
-                alert("Signed in with Google successfully!");
+                alert(window.currentLang === 'fa' ? 'با موفقیت با گوگل وارد شدید!' : 'Signed in with Google successfully!');
                 window.closeAuthModal();
             } catch (error) {
+                if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
+                    console.log("Google popup was closed by user.");
+                    return;
+                }
                 alert("Google Sign-In Error: " + error.message);
             }
         };
@@ -855,16 +865,12 @@
 
         window.startZarinPalPayment = async (tier = 'pro') => {
             if(!window.currentUser) {
-                alert("Please sign in first to complete purchase.");
+                alert(window.currentLang === 'fa' ? 'لطفاً ابتدا برای تکمیل خرید وارد حساب شوید.' : 'Please sign in first to complete purchase.');
                 openAuthModal();
                 return;
             }
             
             let basePrice = window.pricingConfig.proPrice || 40000;
-            if(tier === 'workout') basePrice = window.pricingConfig.workoutPrice || 100000;
-            if(tier === 'nutrition') basePrice = window.pricingConfig.nutritionPrice || 100000;
-            if(tier === 'bundle') basePrice = window.pricingConfig.bundlePrice || 150000;
-
             const discount = window.pricingConfig.discountPercent || 0;
             const finalPrice = discount > 0 ? Math.round(basePrice * (1 - discount / 100)) : basePrice;
             const amountRials = finalPrice * 10;
@@ -876,14 +882,13 @@
             expires.setMonth(expires.getMonth() + 1);
             
             await setDoc(userRef, { isPro: true, proExpiresAt: expires.toISOString() }, { merge: true });
-            alert("Payment Successful! Your account has been upgraded.");
+            alert(window.currentLang === 'fa' ? 'پرداخت موفقیت‌آمیز بود! حساب شما ارتقا یافت.' : 'Payment Successful! Your account has been upgraded.');
             window.location.reload();
         };
 
         function updateSidebarBadges() {
             const allTabs = ['exercises', 'encyclopedia', 'science', 'legends', 'steroids', 'contest', 'videos', 'tools', 'freeplans', 'advancedtools', 'gyms', 'trainers', 'news'];
             
-            // Check Global Free Days Promo
             let isGlobalFreeActive = false;
             if (window.accessConfig.globalFreeExpiry) {
                 if (new Date() < new Date(window.accessConfig.globalFreeExpiry)) {
@@ -898,22 +903,17 @@
                     if(state === 'pro') {
                         badgeEl.innerText = 'PRO';
                         badgeEl.className = 'tab-badge badge-pro';
-                    } else if(state === 'half') {
-                        badgeEl.innerText = '50% LOCK';
-                        badgeEl.className = 'tab-badge badge-half';
                     } else {
-                        badgeEl.innerText = 'FREE';
-                        badgeEl.className = 'tab-badge badge-free';
+                        badgeEl.style.display = 'none'; // Only show badge if PRO
                     }
                 }
             });
         }
 
         window.getTabAccessState = (tabKey) => {
-            // Check Global Free Days Promo first
             if (window.accessConfig.globalFreeExpiry) {
                 if (new Date() < new Date(window.accessConfig.globalFreeExpiry)) {
-                    return 'unlocked'; // Everything is free during promo window
+                    return 'unlocked';
                 }
             }
 
@@ -925,13 +925,27 @@
             }
 
             if (isUserPro || isAdmin) return 'unlocked';
-            return window.accessConfig[tabKey] || 'free'; // 'free', 'pro', 'half'
+            return window.accessConfig[tabKey] || 'free';
         };
 
         window.updateSidebarBadges = updateSidebarBadges;
     </script>
 </head>
 <body id="bodyRoot">
+
+    <!-- LANGUAGE SELECTION SPLASH MODAL (Appears after 2 seconds) -->
+    <div id="langSplashModal" class="modal-overlay" style="display:flex; z-index:9999;">
+        <div class="modal" style="text-align:center; padding:35px; background:#18181c; border:2px solid var(--accent);">
+            <h2 style="color:var(--accent); font-size:24px; margin-bottom:10px;">Fitness Persia / فیتنس پرشیا</h2>
+            <p style="font-size:15px; color:var(--text-main); margin-bottom:20px;">
+                Hello dear friend!<br>لطفاً زبان خود را انتخاب کنید / Please choose your language:
+            </p>
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <button class="action-btn" style="background:var(--accent); color:#000; font-size:16px; padding:12px 25px;" onclick="setInitialLanguage('fa')">فارسی (FA)</button>
+                <button class="action-btn" style="background:#2563eb; color:#fff; font-size:16px; padding:12px 25px;" onclick="setInitialLanguage('en')">English (EN)</button>
+            </div>
+        </div>
+    </div>
 
     <!-- SIDEBAR NAVIGATION PANEL -->
     <aside class="app-sidebar">
@@ -942,18 +956,18 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('exercises')" id="tabEx">
                 <span>Exercises</span>
-                <span class="tab-badge badge-free" id="badge_exercises">FREE</span>
+                <span class="tab-badge badge-pro" id="badge_exercises">PRO</span>
             </button>
             <a href="encyclopedia.html" class="tab-btn" style="background:#1a2b3c; color:#64b5f6; border-color:#64b5f6;" id="tabEnc">
                 <span>📖 Encyclopedia</span>
-                <span class="tab-badge badge-free" id="badge_encyclopedia">FREE</span>
+                <span class="tab-badge badge-pro" id="badge_encyclopedia">PRO</span>
             </a>
             
             <!-- Science & Reference Library Dropdown Menu -->
             <div class="dropdown-container" id="scienceDropdownContainer">
                 <button class="tab-btn dropdown-btn" onclick="toggleScienceDropdown(event)" id="tabScienceLib">
                     <span>📚 کتابخانه علمی و مرجع</span>
-                    <span class="tab-badge badge-free" id="badge_science">FREE</span>
+                    <span class="tab-badge badge-pro" id="badge_science">PRO</span>
                 </button>
                 <div class="dropdown-menu">
                     <a href="schoenfeld_hypertrophy_science.html" class="sub-link" id="libSchoenfeld">🧬 دکتر برد شونفلد (هایپرتروفی)</a>
@@ -977,31 +991,31 @@
             </button>
             <a href="videos.html" class="tab-btn" id="tabVid">
                 <span>🎬 Videos Hub</span>
-                <span class="tab-badge badge-free" id="badge_videos">FREE</span>
+                <span class="tab-badge badge-pro" id="badge_videos">PRO</span>
             </a>
             <a href="tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabTools">
                 <span>🛠️ Tools</span>
-                <span class="tab-badge badge-free" id="badge_tools">FREE</span>
+                <span class="tab-badge badge-pro" id="badge_tools">PRO</span>
             </a>
             <a href="free-plans.html" class="tab-btn" style="background:#1e3a2f; color:#34d399; border-color:#34d399;" id="tabFreePlans">
                 <span>📋 Nutrition & Workout Plans</span>
-                <span class="tab-badge badge-free" id="badge_freeplans">FREE</span>
+                <span class="tab-badge badge-pro" id="badge_freeplans">PRO</span>
             </a>
             <a href="advanced_tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabAdvancedTools">
                 <span>⚡ Advanced Tools</span>
-                <span class="tab-badge badge-free" id="badge_advancedtools">FREE</span>
+                <span class="tab-badge badge-pro" id="badge_advancedtools">PRO</span>
             </a>
             <a href="gymandtrainers.html" class="tab-btn" style="background:#003322; color:#34d399; border-color:#003322;" id="tabGymsAndTrainers">
                 <span>🏋️ Gyms & Workouts</span>
-                <span class="tab-badge badge-free" id="badge_gyms">FREE</span>
+                <span class="tab-badge badge-pro" id="badge_gyms">PRO</span>
             </a>
             <a href="trainers.html" class="tab-btn" style="background:#3a1a3a; color:#e040fb; border-color:#e040fb;" id="tabTrainers">
-                <span>🏋️ Trainers Marketplace</span>
-                <span class="tab-badge badge-free" id="badge_trainers">FREE</span>
+                <span>🏋️ Trainers</span>
+                <span class="tab-badge badge-pro" id="badge_trainers">PRO</span>
             </a>
             <a href="news.html" class="tab-btn" style="background:#3a2a1a; color:#ff9800; border-color:#3a2a1a;" id="tabNews">
                 <span>📰 News & Articles</span>
-                <span class="tab-badge badge-free" id="badge_news">FREE</span>
+                <span class="tab-badge badge-pro" id="badge_news">PRO</span>
             </a>
             <a href="account.html" class="tab-btn" style="background:#1a3a2a; color:#4caf50; border-color:#1a3a2a;" id="tabAccount">👤 My Account & Plans</a>
             <a href="admin.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabAdmin">⚡ Admin Portal</a>
@@ -1016,14 +1030,6 @@
                 <p id="uiHeaderSub">Professional Training Hub</p>
             </div>
             <div class="top-controls">
-                <select class="lang-select" id="globalLangSelect" onchange="changeGlobalLanguage(this.value)">
-                    <option value="en">English (EN)</option>
-                    <option value="fa">فارسی (FA)</option>
-                    <option value="de">Deutsch (DE)</option>
-                    <option value="ar">العربية (AR)</option>
-                    <option value="fr">Français (FR)</option>
-                    <option value="es">Español (ES)</option>
-                </select>
                 <button class="top-btn" onclick="openIOSModal()" id="iosTutorialBtn">iOS Guide</button>
                 <button class="top-btn" onclick="openAuthModal()" id="authBtn">Sign In</button>
                 <button class="top-btn" onclick="toggleLanguage()" id="langBtn">فارسی / EN</button>
@@ -1075,9 +1081,9 @@
             </div>
 
             <div id="exercisesLockBanner" class="pro-locked-banner" style="display:none;">
-                <h3>🔒 این بخش اختصاصی اعضای ویژه (PRO) است</h3>
-                <p>جهت دسترسی به دیتابیس کامل تمرینات و برنامه‌ها، اشتراک ویژه فیتنس پرو را فعال کنید.</p>
-                <button class="action-btn" style="max-width:250px; background:var(--accent); color:#000;" onclick="openProfileModal()">ارتقا به حساب پرو</button>
+                <h3 id="exLockTitle">🔒 این بخش اختصاصی اعضای ویژه (PRO) است</h3>
+                <p id="exLockDesc">جهت دسترسی به دیتابیس کامل تمرینات و برنامه‌ها، اشتراک ویژه فیتنس پرو را فعال کنید.</p>
+                <button class="action-btn" style="max-width:250px; background:var(--accent); color:#000;" onclick="openProfileModal()" id="exLockBtn">ارتقا به حساب پرو</button>
             </div>
 
             <div id="exerciseContainer">
@@ -1148,28 +1154,28 @@
             <div id="authEmailSection">
                 <input type="email" id="userEmail" placeholder="Enter your email...">
                 <input type="password" id="userPassword" placeholder="Enter password...">
-                <button class="action-btn" onclick="window.handleFirebaseEmailAuth(false)">Sign In with Email</button>
-                <button class="action-btn" style="background:#008cba; margin-top:8px;" onclick="window.handleFirebaseEmailAuth(true)">Register New Account</button>
+                <button class="action-btn" onclick="window.handleFirebaseEmailAuth(false)" id="signInEmailBtn">Sign In with Email</button>
+                <button class="action-btn" style="background:#008cba; margin-top:8px;" onclick="window.handleFirebaseEmailAuth(true)" id="registerEmailBtn">Register New Account</button>
             </div>
             
             <div id="authPhoneSection" style="display:none;">
                 <input type="tel" id="userPhone" placeholder="Phone (+11234567890)">
                 <div id="recaptcha-container"></div>
-                <button class="action-btn" onclick="window.handleFirebasePhoneAuth()">Send SMS Code</button>
+                <button class="action-btn" onclick="window.handleFirebasePhoneAuth()" id="sendSmsBtn">Send SMS Code</button>
                 <div id="phoneCodeSection" style="display:none; margin-top:10px;">
                     <input type="text" id="userPhoneCode" placeholder="Enter 6-digit SMS code">
-                    <button class="action-btn" onclick="window.verifyPhoneCode()">Verify SMS Code</button>
+                    <button class="action-btn" onclick="window.verifyPhoneCode()" id="verifySmsBtn">Verify SMS Code</button>
                 </div>
             </div>
             
             <div id="authGoogleSection" style="display:none; text-align: center;">
-                <p style="color:var(--text-muted); font-size: 14px;">Connect securely using your Google account profile.</p>
-                <button class="action-btn" onclick="window.handleFirebaseGoogleAuth()">Sign in with Google (Gmail)</button>
+                <p style="color:var(--text-muted); font-size: 14px;" id="googleDesc">Connect securely using your Google account profile.</p>
+                <button class="action-btn" onclick="window.handleFirebaseGoogleAuth()" id="signInGoogleBtn">Sign in with Google (Gmail)</button>
             </div>
         </div>
     </div>
 
-    <!-- USER PROFILE MODAL -->
+    <!-- USER PROFILE MODAL (Localized & Hidden Upgrade Section for Pro Users) -->
     <div id="profileModal" class="modal-overlay">
         <div class="modal">
             <button class="close-modal" onclick="closeProfileModal()">&times;</button>
@@ -1192,16 +1198,13 @@
                 <button class="action-btn" style="margin-top:4px;" onclick="sendOwnerEmail()" id="sendEmailBtn">Send Email to Mohammad</button>
             </div>
 
-            <div class="pro-locked-banner" style="margin-top:15px;">
+            <!-- UPGRADE TO PRO BANNER (Dynamically hidden if user is already PRO) -->
+            <div class="pro-locked-banner" id="proUpgradeContainer" style="margin-top:15px; display:none;">
                 <h3 style="color:var(--accent); margin-top:0;" id="proUpgradeTitle">Upgrade to PRO</h3>
                 <p id="proUpgradeSub">Get full access to all professional guides, advanced databases, and routines for only <b id="proPriceDisplay">40,000</b> <b>Toman / Month</b>.</p>
-                <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
-                    <button class="action-btn" style="background:var(--accent); color:#000;" onclick="startZarinPalPayment('pro')">Pay Pro Membership</button>
-                    <button class="action-btn" style="background:#2196f3; color:#fff;" onclick="startZarinPalPayment('workout')">Buy Workout Routine Only</button>
-                    <button class="action-btn" style="background:#9c27b0; color:#fff;" onclick="startZarinPalPayment('nutrition')">Buy Nutrition Routine Only</button>
-                    <button class="action-btn" style="background:#ff5722; color:#fff;" onclick="startZarinPalPayment('bundle')">Buy Workout + Nutrition Bundle</button>
-                </div>
+                <button class="action-btn" style="background:var(--accent); color:#000;" onclick="startZarinPalPayment('pro')" id="payProBtn">Pay Pro Membership</button>
             </div>
+
             <button class="action-btn" style="background:var(--danger); margin-top:10px;" onclick="signOutUser()" id="signOutBtn">Sign Out</button>
         </div>
     </div>
@@ -1227,7 +1230,6 @@
     <script>
         let allExercises = [];
         let currentExSubCategory = 'all';
-        window.currentLang = 'en';
         const EX_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/free-exercise-db/main/';
         const DB_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/fitness_pro_database/main/';
 
@@ -1284,6 +1286,25 @@
         let currentNewsWidgetIndex = 0;
         let newsWidgetInterval = null;
 
+        window.setInitialLanguage = (lang) => {
+            window.currentLang = lang;
+            localStorage.setItem('app_lang', lang);
+            document.getElementById('langSplashModal').style.display = 'none';
+            applyLanguageUI();
+        };
+
+        // Automatically hide splash or show after 2 seconds if not set
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const savedLang = localStorage.getItem('app_lang');
+                if(savedLang) {
+                    window.currentLang = savedLang;
+                    document.getElementById('langSplashModal').style.display = 'none';
+                    applyLanguageUI();
+                }
+            }, 500);
+        });
+
         function switchTab(tabId) {
             document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -1325,14 +1346,23 @@
 
         function updateProfileUI() {
             const container = document.getElementById('profileDetails');
+            const proContainer = document.getElementById('proUpgradeContainer');
             if(!window.currentUser || !window.currentUserData) return;
             const u = window.currentUserData;
             const isProActive = u.isPro && (!u.proExpiresAt || new Date(u.proExpiresAt) > new Date());
             
+            const isFa = window.currentLang === 'fa';
+            
+            if (isProActive) {
+                if(proContainer) proContainer.style.display = 'none'; // Hide upgrade button if already Pro
+            } else {
+                if(proContainer) proContainer.style.display = 'block';
+            }
+
             container.innerHTML = `
-                <div class="prop-item"><b>Email:</b> ${window.currentUser.email || window.currentUser.phoneNumber}</div>
-                <div class="prop-item"><b>Status:</b> <span class="badge" style="background:${isProActive ? '#1a3a2a' : '#3a2a1a'}; color:${isProActive ? '#4caf50' : '#ff9800'}; font-size:13px;">${isProActive ? 'PRO MEMBER' : 'FREE USER'}</span></div>
-                ${isProActive ? `<div class="prop-item"><b>Expires:</b> ${new Date(u.proExpiresAt).toLocaleDateString()}</div>` : ''}
+                <div class="prop-item"><b>${isFa ? 'ایمیل:' : 'Email:'}</b> ${window.currentUser.email || window.currentUser.phoneNumber}</div>
+                <div class="prop-item"><b>${isFa ? 'وضعیت:' : 'Status:'}</b> <span class="badge" style="background:${isProActive ? '#1a3a2a' : '#3a2a1a'}; color:${isProActive ? '#4caf50' : '#ff9800'}; font-size:13px;">${isProActive ? (isFa ? 'عضو ویژه (PRO)' : 'PRO MEMBER') : (isFa ? 'کاربر عادی (FREE)' : 'FREE USER')}</span></div>
+                ${isProActive ? `<div class="prop-item"><b>${isFa ? 'تاریخ انقضا:' : 'Expires:'}</b> ${new Date(u.proExpiresAt).toLocaleDateString()}</div>` : ''}
             `;
         }
 
@@ -1389,10 +1419,15 @@
 
         function toggleLanguage() {
             window.currentLang = window.currentLang === 'en' ? 'fa' : 'en';
+            localStorage.setItem('app_lang', window.currentLang);
+            applyLanguageUI();
+        }
+
+        function applyLanguageUI() {
             const root = document.getElementById('htmlRoot');
-            root.setAttribute('dir', window.currentLang === 'fa' ? 'rtl' : 'ltr');
-            root.setAttribute('lang', window.currentLang);
             const isFa = window.currentLang === 'fa';
+            root.setAttribute('dir', isFa ? 'rtl' : 'ltr');
+            root.setAttribute('lang', window.currentLang);
             
             document.getElementById('uiTitle').innerText = isFa ? 'فیتنس پرشیا' : 'Fitness Persia';
             document.getElementById('uiSub').innerText = isFa ? 'مرجع تمرینات و دانش' : 'Exercise & Knowledge Hub';
@@ -1414,7 +1449,7 @@
             document.getElementById('tabFreePlans').innerText = isFa ? '📋 برنامه‌های تغذیه و تمرین' : '📋 Nutrition & Workout Plans';
             document.getElementById('tabAdvancedTools').innerText = isFa ? '⚡ ابزارهای پیشرفته' : '⚡ Advanced Tools';
             document.getElementById('tabGymsAndTrainers').innerText = isFa ? '🏋️ باشگاه‌ها و تمرین' : '🏋️ Gyms & Workouts';
-            document.getElementById('tabTrainers').innerText = isFa ? '🏋️ مربیان و بازار' : '🏋️ Trainers Marketplace';
+            document.getElementById('tabTrainers').innerText = isFa ? '🏋️ مربیان' : '🏋️ Trainers';
             document.getElementById('tabNews').innerText = isFa ? '📰 اخبار و مقالات' : '📰 News & Articles';
             document.getElementById('tabAccount').innerText = isFa ? '👤 حساب کاربری' : '👤 My Account & Plans';
             document.getElementById('tabAdmin').innerText = isFa ? '⚡ پنل ادمین' : '⚡ Admin Portal';
@@ -1431,6 +1466,19 @@
             
             document.getElementById('newsWidgetLink').innerText = isFa ? 'مشاهده همه اخبار ←' : 'Read Full Article →';
 
+            // Profile Modal Localization
+            document.getElementById('profileModalHeading').innerText = isFa ? 'اطلاعات و عضویت کاربر' : 'User Membership & Info';
+            document.getElementById('appInfoTitle').innerText = isFa ? 'درباره فیتنس پرشیا' : 'About Fitness Persia';
+            document.getElementById('appInfoDesc').innerText = isFa ? 'فیتنس پرشیا کامل‌ترین مرجع تخصصی بدنسازی همراه با بانک تمرینات، دایره‌المعارف و ابزارهای پیشرفته است.' : 'Fitness Persia is your all-in-one professional fitness hub featuring an extensive exercise database, expert encyclopedias, video guides, and advanced calculators.';
+            document.getElementById('myketLinkBtn').innerText = isFa ? 'دانلود از بازار / مایکت' : 'Download on Myket Store';
+            document.getElementById('contactOwnerTitle').innerText = isFa ? 'تماس با مدیریت (محمد)' : 'Contact App Owner (Mohammad)';
+            document.getElementById('contactOwnerSub').innerText = isFa ? 'بازخورد، گزارش خطا یا سوالات خود را مستقیماً ارسال کنید.' : 'Send your feedback, bug reports, or questions directly via Gmail.';
+            document.getElementById('sendEmailBtn').innerText = isFa ? 'ارسال ایمیل به محمد' : 'Send Email to Mohammad';
+            document.getElementById('proUpgradeTitle').innerText = isFa ? 'ارتقا به حساب پرو (PRO)' : 'Upgrade to PRO';
+            document.getElementById('proUpgradeSub').innerHTML = isFa ? 'دسترسی کامل به تمامی بخش‌های تخصصی، دیتابیس‌ها و مقالات با پرداخت ماهیانه <b id="proPriceDisplay">۴۰,۰۰۰</b> <b>تومان</b>.' : 'Get full access to all professional guides, advanced databases, and routines for only <b id="proPriceDisplay">40,000</b> <b>Toman / Month</b>.';
+            document.getElementById('payProBtn').innerText = isFa ? 'پرداخت اشتراک پرو (زرین‌پال)' : 'Pay Pro Membership';
+            document.getElementById('signOutBtn').innerText = isFa ? 'خروج از حساب' : 'Sign Out';
+
             document.getElementById('legendsHeaderTitle').innerText = isFa ? '🏆 پایگاه داده اسطوره‌های المپیا' : '🏆 Olympia Legends Master Database';
             document.getElementById('legendsHeaderSub').innerText = isFa ? 'قهرمانان افسانه‌ای، بیوگرافی‌ها، رژیم‌های دوره حجم و کات و برنامه‌های تمرینی اختصاصی.' : 'Explore legendary champions, their biographies, off-season & contest diets, and custom training routines.';
             
@@ -1446,6 +1494,7 @@
             renderContest();
             renderCurrentQuote();
             renderNewsWidgetCard();
+            updateProfileUI();
         }
 
         function initNewsWidgetRotator() {
@@ -1611,7 +1660,7 @@
             const banner = document.getElementById('legendsLockBanner');
             if(!container) return;
 
-            const accessState = window.getTabAccessState('legends'); // 'unlocked', 'free', 'pro', 'half'
+            const accessState = window.getTabAccessState('legends');
 
             if(accessState === 'pro') {
                 container.style.display = 'none';

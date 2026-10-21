@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" id="accountRoot" dir="ltr">
+<html lang="fa" id="accountRoot" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -108,7 +108,9 @@
             width: 100%;
             font-family: 'Vazirmatn', sans-serif;
             margin-top: 15px;
+            transition: 0.2s;
         }
+        button.action-btn:hover { opacity: 0.9; }
         .badge {
             display: inline-block;
             padding: 4px 10px;
@@ -149,6 +151,14 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* QUICK ACTION BUTTONS BANNER */
+        .quick-actions-banner {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
         }
 
         /* ELITE DASHBOARD MATRIX VISUAL PANEL */
@@ -228,24 +238,21 @@
             border-radius: 4px;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        table.admin-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 15px;
+            font-size: 14px;
         }
-        .stat-badge {
-            background: var(--card-inner);
-            padding: 12px;
-            border-radius: 8px;
+        table.admin-table th, table.admin-table td {
             border: 1px solid var(--border);
-            text-align: center;
+            padding: 10px;
+            text-align: right;
         }
-        .stat-badge span { display: block; font-size: 11px; color: var(--text-muted); }
-        .stat-badge b { font-size: 15px; color: var(--success); margin-top: 4px; display: block; }
+        table.admin-table th { background: #161616; color: var(--accent); }
 
         @media(max-width: 850px) {
-            .form-grid, .matrix-grid, .insights-grid, .stats-grid { grid-template-columns: 1fr; }
+            .form-grid, .matrix-grid, .insights-grid { grid-template-columns: 1fr; }
             .profile-header-flex { flex-direction: column; align-items: flex-start; }
         }
     </style>
@@ -254,7 +261,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAilAXYxno9aywWxqy7ji52Dq-xvneKf5U",
@@ -271,13 +278,14 @@
         const db = getFirestore(app);
 
         let currentUser = null;
-        window.pricingConfig = { proPrice: 40000, planPrice: 150000 };
+        window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000 };
 
         async function loadPricingConfig() {
             try {
                 const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
                 if (pricingSnap.exists()) {
                     window.pricingConfig = pricingSnap.data();
+                    document.getElementById('proPriceText').innerText = (window.pricingConfig.proPrice || 40000).toLocaleString() + ' تومان';
                 }
             } catch (e) {
                 console.log("Using default pricing.");
@@ -296,6 +304,7 @@
                 
                 document.getElementById('userEmailDisplay').innerText = user.email || user.phoneNumber;
                 await loadUserData(user.uid, user.email || user.phoneNumber);
+                await loadUserTransactions(user.email || user.phoneNumber);
             }
         });
 
@@ -352,6 +361,62 @@
             }
         }
 
+        async function loadUserTransactions(email) {
+            const tbody = document.getElementById('transactionTableBody');
+            if(!tbody) return;
+            try {
+                const querySnap = await getDocs(collection(db, "trainer_orders"));
+                let html = '';
+                let totalSpent = 0;
+                querySnap.forEach(d => {
+                    let order = d.data();
+                    if(order.clientEmail === email) {
+                        totalSpent += (order.amount || 40000);
+                        html += `
+                            <tr>
+                                <td>${order.createdAt ? order.createdAt.substring(0, 10) : 'N/A'}</td>
+                                <td><b>${order.planType || 'خرید برنامه'}</b><br><small style="color:var(--text-muted)">مربی: ${order.trainerName || order.trainerEmail || 'فیتنس پرو'}</small></td>
+                                <td style="color:var(--accent);">${(order.amount || 40000).toLocaleString()} تومان</td>
+                                <td><span class="badge" style="background:rgba(16,185,129,0.15); color:var(--success);">موفق (زرین‌پال)</span></td>
+                            </tr>
+                        `;
+                    }
+                });
+                tbody.innerHTML = html || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">هیچ تراکنشی یافت نشد.</td></tr>`;
+                document.getElementById('walletTotalSpent').innerText = totalSpent.toLocaleString() + ' تومان';
+            } catch(e) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">خطا در بارگذاری تراکنش‌ها.</td></tr>';
+            }
+        }
+
+        window.payProMembership = async () => {
+            if(!currentUser) return alert('لطفاً ابتدا وارد حساب کاربری خود شوید.');
+            const price = window.pricingConfig.proPrice || 40000;
+            
+            alert(`اتصال به درگاه زرین‌پال برای ارتقای پرو به مبلغ ${price.toLocaleString()} تومان...`);
+            
+            try {
+                let expires = new Date();
+                expires.setMonth(expires.getMonth() + 1);
+                
+                await setDoc(doc(db, "users", currentUser.uid), { isPro: true, proExpiresAt: expires.toISOString() }, { merge: true });
+                
+                // Also record in trainer_orders so admin panel tracks it in the ledger
+                await addDoc(collection(db, "trainer_orders"), {
+                    clientEmail: currentUser.email || currentUser.phoneNumber,
+                    planType: 'ارتقا به حساب پرو (Pro Membership)',
+                    amount: price,
+                    status: 'paid',
+                    createdAt: new Date().toISOString()
+                });
+
+                alert('پرداخت موفقیت‌آمیز بود! حساب شما به عضویت ویژه (PRO) ارتقا یافت.');
+                window.location.reload();
+            } catch(e) {
+                alert("خطا در پرداخت: " + e.message);
+            }
+        };
+
         window.handlePhotoUpload = (event) => {
             const file = event.target.files[0];
             if (!file) return;
@@ -367,71 +432,61 @@
         };
 
         function calculateAdvancedMetrics(data) {
-            const weight = parseFloat(data.weight) || 0;
-            const height = parseFloat(data.height) || 0;
-            const age = parseFloat(data.age) || 0;
+            const weight = parseFloat(data.weight) || 70;
+            const height = parseFloat(data.height) || 175;
+            const age = parseFloat(data.age) || 25;
             const sex = data.sex || 'male';
             const bodyFat = parseFloat(data.bodyFat) || 15;
             const goal = data.goal || 'maintenance';
             const bodyType = data.bodyType || 'mesomorph';
             const bloodType = data.bloodType || 'O+';
 
-            if (weight > 0 && height > 0 && age > 0) {
-                const heightM = height / 100;
-                const bmi = (weight / (heightM * heightM)).toFixed(1);
-                const fatMass = (weight * (bodyFat / 100)).toFixed(1);
-                const leanMass = (weight - fatMass).toFixed(1);
+            const heightM = height / 100;
+            const bmi = (weight / (heightM * heightM)).toFixed(1);
+            const fatMass = (weight * (bodyFat / 100)).toFixed(1);
+            const leanMass = (weight - fatMass).toFixed(1);
 
-                let bmr = (10 * weight) + (6.25 * height) - (5 * age);
-                bmr = sex === 'female' ? bmr - 161 : bmr + 5;
-                let tdee = Math.round(bmr * 1.55);
+            let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+            bmr = sex === 'female' ? bmr - 161 : bmr + 5;
+            let tdee = Math.round(bmr * 1.55);
 
-                let targetCalories = tdee;
-                let goalText = "ثبات وزن";
-                if (goal === 'bulking') {
-                    targetCalories += 400;
-                    goalText = "مازاد کالری (حجم عضلانی)";
-                } else if (goal === 'cutting') {
-                    targetCalories -= 500;
-                    goalText = "کسر کالری (کات و چربی‌سوزی)";
-                }
-
-                const waterLiters = (weight * 0.033).toFixed(1);
-
-                const proteinGrams = Math.round(weight * 2.0);
-                const fatGrams = Math.round(weight * 0.9);
-                const proteinCals = proteinGrams * 4;
-                const fatCals = fatGrams * 9;
-                const carbCals = Math.max(0, targetCalories - (proteinCals + fatCals));
-                const carbGrams = Math.round(carbCals / 4);
-
-                document.getElementById('matrixLean').innerText = leanMass + " کیلوگرم";
-                document.getElementById('matrixFatMass').innerText = fatMass + " کیلوگرم";
-                document.getElementById('matrixBmi').innerText = bmi;
-                document.getElementById('matrixBmiStatus').innerText = bmi < 18.5 ? 'کم‌وزن' : (bmi < 25 ? 'وزن نرمال' : (bmi < 30 ? 'اضافه وزن' : 'چاق'));
-                document.getElementById('matrixWater').innerText = waterLiters + " لیتر";
-                document.getElementById('matrixBmr').innerText = Math.round(bmr) + " کیلوکالری";
-                document.getElementById('matrixTdee').innerText = tdee + " کیلوکالری";
-                document.getElementById('matrixTargetCal').innerText = targetCalories + " کیلوکالری";
-                document.getElementById('matrixGoalLabel').innerText = goalText;
-
-                document.getElementById('resBmi').innerText = bmi;
-                document.getElementById('resLeanMass').innerText = leanMass + " kg";
-                document.getElementById('resBmr').innerText = Math.round(bmr) + " kcal";
-                document.getElementById('resTdee').innerText = tdee + " kcal";
-                document.getElementById('resTargetCal').innerText = targetCalories + " kcal";
-                document.getElementById('resWater').innerText = waterLiters + " L";
-
-                document.getElementById('macroProtein').innerText = proteinGrams + " گرم (" + proteinCals + " کالری)";
-                document.getElementById('macroCarb').innerText = carbGrams + " گرم (" + carbCals + " کالری)";
-                document.getElementById('macroFat').innerText = fatGrams + " گرم (" + fatCals + " کالری)";
-
-                let somatotypeText = bodyType === 'ectomorph' ? 'اکتومورف (نیازمند کالری بالا و کربوهیدرات بیشتر)' : (bodyType === 'mesomorph' ? 'مزومورف (پاسخ‌دهی عالی به تمرینات و ساختار عضلانی مناسب)' : 'اندومورف (نیازمند مدیریت کربوهیدرات و هوازی منظم)');
-                let bloodText = bloodType.startsWith('O') ? 'گروه خونی O: سازگار با پروتئین‌های حیوانی و رژیم‌های کم‌غله' : 'گروه خونی A/B/AB: سازگار با پروتئین‌های گیاهی و رژیم‌های متعادل‌تر';
-                
-                document.getElementById('aiSomatotypeAdvice').innerText = somatotypeText;
-                document.getElementById('aiBloodAdvice').innerText = bloodText;
+            let targetCalories = tdee;
+            let goalText = "ثبات وزن";
+            if (goal === 'bulking') {
+                targetCalories += 400;
+                goalText = "مازاد کالری (حجم عضلانی)";
+            } else if (goal === 'cutting') {
+                targetCalories -= 500;
+                goalText = "کسر کالری (کات و چربی‌سوزی)";
             }
+
+            const waterLiters = (weight * 0.033).toFixed(1);
+            const proteinGrams = Math.round(weight * 2.0);
+            const fatGrams = Math.round(weight * 0.9);
+            const proteinCals = proteinGrams * 4;
+            const fatCals = fatGrams * 9;
+            const carbCals = Math.max(0, targetCalories - (proteinCals + fatCals));
+            const carbGrams = Math.round(carbCals / 4);
+
+            document.getElementById('matrixLean').innerText = leanMass + " کیلوگرم";
+            document.getElementById('matrixFatMass').innerText = fatMass + " کیلوگرم";
+            document.getElementById('matrixBmi').innerText = bmi;
+            document.getElementById('matrixBmiStatus').innerText = bmi < 18.5 ? 'کم‌وزن' : (bmi < 25 ? 'وزن نرمال' : (bmi < 30 ? 'اضافه وزن' : 'چاق'));
+            document.getElementById('matrixWater').innerText = waterLiters + " لیتر";
+            document.getElementById('matrixBmr').innerText = Math.round(bmr) + " کیلوکالری";
+            document.getElementById('matrixTdee').innerText = tdee + " کیلوکالری";
+            document.getElementById('matrixTargetCal').innerText = targetCalories + " کیلوکالری";
+            document.getElementById('matrixGoalLabel').innerText = goalText;
+
+            document.getElementById('macroProtein').innerText = proteinGrams + " گرم (" + proteinCals + " کالری)";
+            document.getElementById('macroCarb').innerText = carbGrams + " گرم (" + carbCals + " کالری)";
+            document.getElementById('macroFat').innerText = fatGrams + " گرم (" + fatCals + " کالری)";
+
+            let somatotypeText = bodyType === 'ectomorph' ? 'اکتومورف (نیازمند کالری بالا و کربوهیدرات بیشتر)' : (bodyType === 'mesomorph' ? 'مزومورف (پاسخ‌دهی عالی به تمرینات و ساختار عضلانی مناسب)' : 'اندومورف (نیازمند مدیریت کربوهیدرات و هوازی منظم)');
+            let bloodText = bloodType.startsWith('O') ? 'گروه خونی O: سازگار با پروتئین‌های حیوانی و رژیم‌های کم‌غله' : 'گروه خونی A/B/AB: سازگار با پروتئین‌های گیاهی و رژیم‌های متعادل‌تر';
+            
+            document.getElementById('aiSomatotypeAdvice').innerText = somatotypeText;
+            document.getElementById('aiBloodAdvice').innerText = bloodText;
         }
 
         window.saveAdvancedProfile = async () => {
@@ -461,7 +516,7 @@
                 const userRef = doc(db, "users", currentUser.uid);
                 await setDoc(userRef, profileData, { merge: true });
                 calculateAdvancedMetrics(profileData);
-                alert('اطلاعات بیومتریک، تصویر پروفایل و گراف تحلیل حرفه‌ای با موفقیت ذخیره شد!');
+                alert('اطلاعات بیومتریک و تصویر پروفایل با موفقیت ذخیره شد!');
             } catch(err) {
                 alert("خطا در ذخیره اطلاعات: " + err.message);
             }
@@ -470,7 +525,7 @@
         window.signOutUser = () => {
             signOut(auth).then(() => {
                 alert('با موفقیت خارج شدید.');
-                window.location.href = 'index.html';
+                window.location.href = 'index_2.html';
             });
         };
     </script>
@@ -479,7 +534,7 @@
 
     <header>
         <div class="top-controls">
-            <a href="index.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
+            <a href="index_2.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
             <button class="top-btn" onclick="window.location.reload()">فارسی / FA</button>
         </div>
         <h1 id="mainTitle">حساب کاربری و داشبورد حرفه‌ای بیومتریک</h1>
@@ -492,15 +547,15 @@
         <div id="loggedOutView" class="card" style="text-align:center; padding:40px;">
             <h2 style="color:var(--danger);">لطفاً وارد حساب کاربری خود شوید</h2>
             <p style="color:var(--text-muted); margin-bottom:20px;">برای مشاهده پروفایل و برنامه‌های تمرینی باید وارد حساب کاربری فیتنس پرو شوید.</p>
-            <a href="index.html" class="action-btn" style="display:inline-block; text-decoration:none; max-width:200px;">بازگشت به صفحه اصلی</a>
+            <a href="index_2.html" class="action-btn" style="display:inline-block; text-decoration:none; max-width:200px;">بازگشت به صفحه اصلی</a>
         </div>
 
         <!-- LOGGED IN DASHBOARD -->
         <div id="loggedInView" style="display:none; display:flex; flex-direction:column; gap:25px;">
             
-            <!-- Profile Card with Photo Upload -->
+            <!-- Profile Card with Photo Upload & Quick Action Buttons -->
             <div class="card">
-                <h2 id="profileTitle">اطلاعات حساب کاربری و تصویر پروفایل</h2>
+                <h2 id="profileTitle">اطلاعات حساب کاربری و خرید اشتراک</h2>
                 
                 <div class="profile-header-flex">
                     <div class="avatar-preview-box">
@@ -517,13 +572,19 @@
                     </div>
                 </div>
 
+                <!-- QUICK ACTION BUTTONS (Buy Pro & Buy Workout/Nutrition via Trainers Tab) -->
+                <div class="quick-actions-banner">
+                    <button class="action-btn" style="background:var(--accent); color:#000; margin-top:0;" onclick="payProMembership()">⭐ ارتقا به حساب PRO (<span id="proPriceText">40,000</span>)</button>
+                    <a href="trainers_2.html" class="action-btn" style="background:#2563eb; color:#fff; text-align:center; text-decoration:none; margin-top:0; display:block; line-height:24px;">🏋️‍♂️ رفتن به مربیان برای خرید برنامه تمرین و تغذیه</a>
+                </div>
+
                 <button class="action-btn" style="background:var(--danger); margin-top:15px; max-width:200px;" onclick="signOutUser()" id="signOutBtn">خروج از حساب</button>
             </div>
 
-            <!-- Advanced Biometrics Form & Elite Matrix Card -->
+            <!-- Advanced Biometrics Form & Elite Matrix Card (All inputs optional) -->
             <div class="card">
-                <h2 id="biometricsTitle">📊 مشخصات بدنی و داشبورد تحلیل پیشرفته</h2>
-                <p style="font-size:13px; color:var(--text-muted);">اطلاعات دقیق خود را وارد کنید تا وضعیت توده عضلانی، متابولیسم، ماکروهای پیشنهادی و توصیه‌های هوشمند نمایش داده شوند.</p>
+                <h2 id="biometricsTitle">📊 مشخصات بدنی و داشبورد تحلیل پیشرفته (اختیاری)</h2>
+                <p style="font-size:13px; color:var(--text-muted);">اطلاعات دلخواه خود را وارد کنید تا وضعیت متابولیسم، ماکروها و توصیه‌های هوشمند محاسبه شوند.</p>
 
                 <div class="form-grid">
                     <div class="form-group">
@@ -656,35 +717,32 @@
                     </div>
                 </div>
 
-                <!-- CALCULATED METRICS SUMMARY GRID -->
-                <div class="stats-grid">
-                    <div class="stat-badge">
-                        <span>شاخص توده بدنی (BMI)</span>
-                        <b id="resBmi">--</b>
-                    </div>
-                    <div class="stat-badge">
-                        <span>توده بدون چربی (Lean Mass)</span>
-                        <b id="resLeanMass">-- kg</b>
-                    </div>
-                    <div class="stat-badge">
-                        <span>متابولیسم پایه (BMR)</span>
-                        <b id="resBmr">-- kcal</b>
-                    </div>
-                    <div class="stat-badge">
-                        <span>مجموع مصرف روزانه (TDEE)</span>
-                        <b id="resTdee">-- kcal</b>
-                    </div>
-                    <div class="stat-badge">
-                        <span>کالری هدف بر اساس هدف</span>
-                        <b id="resTargetCal" style="color:var(--accent);">-- kcal</b>
-                    </div>
-                    <div class="stat-badge">
-                        <span>نیاز روزانه به آب</span>
-                        <b id="resWater" style="color:#64b5f6;">-- L</b>
-                    </div>
+                <button class="action-btn" style="background:#34d399; color:#000;" onclick="window.saveAdvancedProfile()"><span>ذخیره مشخصات و بروزرسانی داشبورد</span></button>
+            </div>
+
+            <!-- Transaction History Ledger Card -->
+            <div class="card">
+                <h2>💳 سابقه تراکنش‌ها و خریدهای شما</h2>
+                <p style="font-size:13px; color:var(--text-muted);">لیست پرداخت‌های موفق برای اشتراک پرو، برنامه‌های تمرینی و تغذیه.</p>
+                
+                <div style="background:rgba(15, 23, 42, 0.6); padding:12px; border-radius:8px; border:1px solid var(--border); margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>مجموع پرداختی‌های شما:</span>
+                    <span id="walletTotalSpent" style="color:var(--accent); font-weight:bold;">۰ تومان</span>
                 </div>
 
-                <button class="action-btn" style="background:#34d399; color:#000;" onclick="window.saveAdvancedProfile()"><span>ذخیره مشخصات و بروزرسانی داشبورد</span></button>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>تاریخ</th>
+                            <th>عنوان خرید / جزئیات</th>
+                            <th>مبلغ</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionTableBody">
+                        <tr><td colspan="4" style="text-align:center;">در حال بارگذاری تراکنش‌ها...</td></tr>
+                    </tbody>
+                </table>
             </div>
 
             <!-- Assigned Trainer Routines Card -->
