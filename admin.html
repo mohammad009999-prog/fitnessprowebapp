@@ -273,17 +273,17 @@
                 });
                 document.getElementById('adminUsersTable').innerHTML = userHtml || '<tr><td colspan="4" style="text-align:center;">کاربری یافت نشد.</td></tr>';
 
-                // 4. Load Trainer Programs & Calculate Sales / Payout Ledger
-                const programsSnap = await getDocs(collection(db, "trainer_programs"));
+                // 4. Load Trainer Orders & Calculate Sales / Payout Ledger
+                const ordersSnap = await getDocs(collection(db, "trainer_orders"));
                 let trainerLedger = {};
-                programsSnap.forEach(d => {
-                    let prog = d.data();
-                    let tEmail = prog.trainerEmail || 'Unknown Trainer';
+                ordersSnap.forEach(d => {
+                    let order = d.data();
+                    let tEmail = order.trainerEmail || 'Unknown Trainer';
                     if(!trainerLedger[tEmail]) {
                         trainerLedger[tEmail] = { count: 0, totalEarned: 0 };
                     }
                     trainerLedger[tEmail].count++;
-                    trainerLedger[tEmail].totalEarned += (parseFloat(prog.price) || 150000);
+                    trainerLedger[tEmail].totalEarned += (parseFloat(order.amount) || 40000);
                 });
 
                 let trainerHtml = '';
@@ -292,7 +292,7 @@
                     trainerHtml += `
                         <tr>
                             <td><b>${trainer}</b></td>
-                            <td><span class="badge" style="background:#1e3a2f; color:#34d399;">${stats.count} برنامه</span></td>
+                            <td><span class="badge" style="background:#1e3a2f; color:#34d399;">${stats.count} سفارش</span></td>
                             <td>${stats.totalEarned.toLocaleString()} تومان</td>
                             <td style="color:var(--success); font-weight:bold;">${commissionOwed.toLocaleString()} تومان</td>
                         </tr>
