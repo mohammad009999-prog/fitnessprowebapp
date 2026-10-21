@@ -172,7 +172,78 @@
             display: none;
             line-height: 1.7;
         }
+
+        /* HALF-LOCK & PRO LOCK OVERLAY STYLING */
+        .card-wrapper-locked {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .card-blurred {
+            filter: blur(6px);
+            user-select: none;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        .half-lock-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            border: 1px dashed var(--accent);
+            border-radius: 16px;
+            z-index: 10;
+        }
     </style>
+
+    <!-- ADMIN LOCK SYSTEM INTEGRATION -->
+    <script>
+        window.accessConfig = JSON.parse(localStorage.getItem('cached_access_config') || '{}');
+        window.getTabAccessState = (tabKey) => {
+            if (window.accessConfig.globalFreeExpiry && new Date() < new Date(window.accessConfig.globalFreeExpiry)) {
+                return 'unlocked';
+            }
+            return window.accessConfig[tabKey] || 'free';
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const accessState = window.getTabAccessState('science');
+            if (accessState === 'pro') {
+                const container = document.querySelector('.container');
+                if (container) {
+                    container.innerHTML = `
+                        <div style="background:linear-gradient(135deg, #2c1a00 0%, #161005 100%); border:2px solid #f59e0b; padding:40px; border-radius:12px; text-align:center; margin:40px auto; max-width:600px; box-shadow:0 8px 24px rgba(0,0,0,0.6);">
+                            <h3 style="color:#f59e0b; font-size:24px; margin-top:0;">🔒 این بخش اختصاصی اعضای ویژه (PRO) است</h3>
+                            <p style="color:#94a3b8; font-size:14px; margin:15px 0 25px 0; line-height:1.6;">دسترسی به کتابخانه علمی شونفلد نیازمند اشتراک ویژه پرو می‌باشد.</p>
+                            <a href="index.html" style="display:inline-block; background:#f59e0b; color:#000; padding:10px 24px; border-radius:6px; font-weight:bold; text-decoration:none;">بازگشت به خانه / ارتقا</a>
+                        </div>
+                    `;
+                }
+            } else if (accessState === 'half') {
+                // Apply half lock blur to elements like grid cards or detailed articles
+                const articles = document.querySelectorAll('.detailed-article');
+                articles.forEach((art, idx) => {
+                    if (idx % 2 === 1 || (idx * 3) % 4 === 0) {
+                        art.classList.add('card-wrapper-locked');
+                        const innerHTML = art.innerHTML;
+                        art.innerHTML = `
+                            <div class="card-blurred">${innerHTML}</div>
+                            <div class="half-lock-overlay">
+                                <h4 style="color:#f59e0b; font-size:15px; margin:0 0 6px 0;">🔒 بخش ویژه (Pro Exclusive)</h4>
+                                <p style="font-size:11px; color:#94a3b8; margin-bottom:10px;">برای مشاهده کامل این مقاله، حساب خود را ارتقا دهید.</p>
+                                <a href="index.html" style="background:#f59e0b; color:#000; padding:4px 12px; border-radius:6px; font-weight:bold; font-size:11px; text-decoration:none;">ارتقا به پرو</a>
+                            </div>
+                        `;
+                    }
+                });
+            }
+        });
+    </script>
 
     <script>
         let currentLang = 'fa';
@@ -325,7 +396,7 @@
             }
         };
 
-        // Tool 7: Progressive Overload Predictor (NEW)
+        // Tool 7: Progressive Overload Predictor
         window.calculateOverload = () => {
             const currentWeight = parseFloat(document.getElementById('overloadWeight').value);
             const currentReps = parseInt(document.getElementById('overloadReps').value);
@@ -350,7 +421,7 @@
             }
         };
 
-        // Tool 8: Sticking Point Analyzer (NEW)
+        // Tool 8: Sticking Point Analyzer
         window.calculateSticking = () => {
             const point = document.getElementById('stickingSelect').value;
             const res = document.getElementById('stickingResult');
@@ -482,7 +553,7 @@
                     <div id="matrixResult" class="result-box"></div>
                 </div>
 
-                <!-- Tool 7 (NEW) -->
+                <!-- Tool 7 -->
                 <div class="card" style="margin-bottom:0;">
                     <h3>۷. پیش‌بینی‌کننده اضافه بار تدریجی</h3>
                     <p style="font-size:13px; color:var(--text-muted);">تشخیص زمان دقیق افزایش وزنه یا تکرار برای فرار از استپ.</p>
@@ -494,7 +565,7 @@
                     <div id="overloadResult" class="result-box"></div>
                 </div>
 
-                <!-- Tool 8 (NEW) -->
+                <!-- Tool 8 -->
                 <div class="card" style="margin-bottom:0;">
                     <h3>۸. تحلیل‌گر نقاط ضعف بیومکانیکی</h3>
                     <p style="font-size:13px; color:var(--text-muted);">برطرف کردن نقاط کور و افت نیرو در دامنه حرکات.</p>
@@ -588,7 +659,7 @@
             <div class="card">
                 <h2>📅 مدل‌های پریودی‌زشن و چرخه‌های افزایشی</h2>
                 <p style="color:var(--text-muted); line-height: 1.8;">
-                    پریودی‌زشن (Periodization) یعنی سازماندهی سیستماتیک متغیرهای تمرین در بلوک‌های زمانی مشخص. مدل‌های بررسی‌شده در کتاب شامل:
+                    پریودی‌زشن (Periodization) یعنی سازماندهی سیستماتیک متغیرهای تمرین در بلوک‌های مشخص. مدل‌های بررسی‌شده در کتاب شامل:
                     <br>• <b>خطی (Linear):</b> افزایش تدریجی شدت و کاهش حجم در طول زمان (عالی برای قدرت و هایپرتروفی پایه).
                     <br>• <b>موجی (Undulating / DUP):</b> تغییر مکرر حجم و شدت در طول هفته (نتایج بسیار درخشان در هایپرتروفی مدرن).
                 </p>

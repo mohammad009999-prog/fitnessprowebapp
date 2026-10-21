@@ -171,7 +171,77 @@
             display: none;
             line-height: 1.7;
         }
+
+        /* HALF-LOCK & PRO LOCK OVERLAY STYLING */
+        .card-wrapper-locked {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .card-blurred {
+            filter: blur(6px);
+            user-select: none;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        .half-lock-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            border: 1px dashed var(--accent);
+            border-radius: 16px;
+            z-index: 10;
+        }
     </style>
+
+    <!-- ADMIN LOCK SYSTEM INTEGRATION -->
+    <script>
+        window.accessConfig = JSON.parse(localStorage.getItem('cached_access_config') || '{}');
+        window.getTabAccessState = (tabKey) => {
+            if (window.accessConfig.globalFreeExpiry && new Date() < new Date(window.accessConfig.globalFreeExpiry)) {
+                return 'unlocked';
+            }
+            return window.accessConfig[tabKey] || 'free';
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const accessState = window.getTabAccessState('science');
+            if (accessState === 'pro') {
+                const container = document.querySelector('.container');
+                if (container) {
+                    container.innerHTML = `
+                        <div style="background:linear-gradient(135deg, #2c1a00 0%, #161005 100%); border:2px solid #3b82f6; padding:40px; border-radius:12px; text-align:center; margin:40px auto; max-width:600px; box-shadow:0 8px 24px rgba(0,0,0,0.6);">
+                            <h3 style="color:#3b82f6; font-size:24px; margin-top:0;">🔒 این بخش اختصاصی اعضای ویژه (PRO) است</h3>
+                            <p style="color:#94a3b8; font-size:14px; margin:15px 0 25px 0; line-height:1.6;">دسترسی به کتابخانه قدرت ریپه‌تو نیازمند اشتراک ویژه پرو می‌باشد.</p>
+                            <a href="index.html" style="display:inline-block; background:#3b82f6; color:#fff; padding:10px 24px; border-radius:6px; font-weight:bold; text-decoration:none;">بازگشت به خانه / ارتقا</a>
+                        </div>
+                    `;
+                }
+            } else if (accessState === 'half') {
+                const articles = document.querySelectorAll('.detailed-article');
+                articles.forEach((art, idx) => {
+                    if (idx % 2 === 1 || (idx * 3) % 4 === 0) {
+                        art.classList.add('card-wrapper-locked');
+                        const innerHTML = art.innerHTML;
+                        art.innerHTML = `
+                            <div class="card-blurred">${innerHTML}</div>
+                            <div class="half-lock-overlay">
+                                <h4 style="color:#3b82f6; font-size:15px; margin:0 0 6px 0;">🔒 بخش ویژه (Pro Exclusive)</h4>
+                                <p style="font-size:11px; color:#94a3b8; margin-bottom:10px;">برای مشاهده کامل این مقاله، حساب خود را ارتقا دهید.</p>
+                                <a href="index.html" style="background:#3b82f6; color:#fff; padding:4px 12px; border-radius:6px; font-weight:bold; font-size:11px; text-decoration:none;">ارتقا به پرو</a>
+                            </div>
+                        `;
+                    }
+                });
+            }
+        });
+    </script>
 
     <script>
         let currentLang = 'fa';
@@ -240,7 +310,7 @@
         window.calculate1RM = () => {
             const w = parseFloat(document.getElementById('rmWeight').value);
             const r = parseInt(document.getElementById('rmReps').value);
-            const res = byte = document.getElementById('rmResult');
+            const res = document.getElementById('rmResult');
             res.style.display = 'block';
 
             if(isNaN(w) || isNaN(r)) {
@@ -248,7 +318,6 @@
                 return;
             }
 
-            // Epley Formula
             const est1RM = Math.round(w * (1 + r / 30));
             res.innerHTML = currentLang === 'fa' ? 
                 `💪 تخمین یک تکرار بیشینه (1RM): حدود <b>${est1RM} کیلوگرم</b>.<br>این عدد قدرت حداکثری اسکلتی شما را در این حرکت تخمین می‌زند.` :

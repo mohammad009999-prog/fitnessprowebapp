@@ -26,7 +26,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
+        
+        /* HALF-LOCK BLUR & OVERLAY STYLING */
+        .card-wrapper-locked {
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .card-blurred {
+            filter: blur(6px);
+            user-select: none;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        .half-lock-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(17, 24, 39, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            border: 1px dashed #ff9800;
+            border-radius: 1rem;
+            z-index: 10;
+        }
     </style>
+
+    <!-- ADMIN LOCK SYSTEM INTEGRATION -->
+    <script>
+        // Load local cache instantly for zero-delay locking over VPN
+        window.accessConfig = JSON.parse(localStorage.getItem('cached_access_config') || '{}');
+        window.adminTestingMode = localStorage.getItem('cached_admin_testing') === 'true';
+
+        window.getTabAccessState = (tabKey) => {
+            if (window.accessConfig.globalFreeExpiry) {
+                if (new Date() < new Date(window.accessConfig.globalFreeExpiry)) {
+                    return 'unlocked';
+                }
+            }
+            return window.accessConfig[tabKey] || 'free';
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const accessState = window.getTabAccessState('freeplans');
+            
+            if (accessState === 'pro') {
+                const mainContainer = document.querySelector('main');
+                if (mainContainer) {
+                    mainContainer.innerHTML = `
+                        <div style="background:linear-gradient(135deg, #2c1a00 0%, #161005 100%); border:2px solid #ff9800; padding:40px; border-radius:12px; text-align:center; margin:40px auto; max-width:600px; box-shadow:0 8px 24px rgba(0,0,0,0.6);">
+                            <h3 style="color:#ff9800; font-size:24px; margin-top:0;">🔒 این بخش اختصاصی اعضای ویژه (PRO) است</h3>
+                            <p style="color:#9ca3af; font-size:14px; margin:15px 0 25px 0; line-height:1.6;">این صفحه توسط مدیریت سیستم برای کاربران عادی قفل شده است. جهت مشاهده برنامه‌ها، حساب خود را ارتقا دهید.</p>
+                            <a href="index.html" style="display:inline-block; background:#ff9800; color:#000; padding:10px 24px; border-radius:6px; font-weight:bold; text-decoration:none;">بازگشت به صفحه اصلی / ارتقا</a>
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
 
@@ -192,14 +252,16 @@
                 filtered = workoutPlansData.filter(p => ['soccer', 'volleyball', 'basketball', 'tennis', 'running'].includes(p.category));
             }
 
-            filtered.forEach(plan => {
+            const accessState = window.getTabAccessState('freeplans'); // 'unlocked', 'free', 'pro', 'half'
+
+            filtered.forEach((plan, idx) => {
+                const isLockedHalf = (accessState === 'half' && (idx % 2 === 1 || (idx * 3) % 4 === 0));
+
                 const title = currentLang === 'fa' ? plan.title_fa : plan.title_en;
                 const desc = currentLang === 'fa' ? plan.description_fa : plan.description_en;
                 const audText = plan.target_audience === 'women' ? (currentLang === 'fa' ? 'بانوان' : 'Women') : (plan.target_audience === 'men' ? (currentLang === 'fa' ? 'آقایان' : 'Men') : (currentLang === 'fa' ? 'عمومی' : 'General'));
 
-                const card = document.createElement('div');
-                card.className = 'bg-slate-800 border border-slate-700/80 rounded-2xl p-5 hover:border-emerald-500/50 transition flex flex-col justify-between shadow-lg';
-                card.innerHTML = `
+                let cardInner = `
                     <div>
                         <div class="flex justify-between items-center mb-3">
                             <span class="bg-emerald-500/10 text-emerald-400 text-xs px-2.5 py-1 rounded-full font-semibold">${plan.category.toUpperCase()}</span>
@@ -218,6 +280,24 @@
                         </button>
                     </div>
                 `;
+
+                const card = document.createElement('div');
+
+                if (isLockedHalf) {
+                    card.className = 'card-wrapper-locked bg-slate-800 border border-slate-700/80 rounded-2xl p-5 shadow-lg';
+                    card.innerHTML = `
+                        <div class="card-blurred">${cardInner}</div>
+                        <div class="half-lock-overlay">
+                            <h4 style="color:#ff9800; font-size:15px; margin:0 0 6px 0; font-weight:bold;">🔒 ${currentLang === 'fa' ? 'این بخش اختصاصی اعضای ویژه است' : 'Pro Member Exclusive'}</h4>
+                            <p style="font-size:11px; color:#9ca3af; margin-bottom:10px;">${currentLang === 'fa' ? 'جهت مشاهده کامل این برنامه، حساب خود را ارتقا دهید.' : 'Upgrade your account to unlock.'}</p>
+                            <a href="index.html" style="background:#ff9800; color:#000; padding:6px 14px; border-radius:6px; font-weight:bold; font-size:11px; text-decoration:none;">${currentLang === 'fa' ? 'ارتقا به پرو' : 'Upgrade to Pro'}</a>
+                        </div>
+                    `;
+                } else {
+                    card.className = 'bg-slate-800 border border-slate-700/80 rounded-2xl p-5 hover:border-emerald-500/50 transition flex flex-col justify-between shadow-lg';
+                    card.innerHTML = cardInner;
+                }
+
                 grid.appendChild(card);
             });
         }

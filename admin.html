@@ -194,10 +194,8 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const ADMIN_EMAIL = "mohammad009999@gmail.com";
-        const CLOUD_NAME = 'djibtdplp';
-        const UPLOAD_PRESET = 'FITNESS PRO WEB';
 
-        let currentLang = 'fa';
+        const allTabsList = ['exercises', 'encyclopedia', 'science', 'legends', 'steroids', 'contest', 'videos', 'tools', 'freeplans', 'advancedtools', 'gyms', 'trainers', 'news'];
 
         onAuthStateChanged(auth, async (user) => {
             if (!user || user.email !== ADMIN_EMAIL) {
@@ -212,22 +210,41 @@
 
         window.loadAdminData = async () => {
             try {
-                // 1. Load Pricing Settings
+                // 1. Load Pricing Settings & Discount Percent
                 const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
                 if (pricingSnap.exists()) {
                     const pData = pricingSnap.data();
                     document.getElementById('adminProPrice').value = pData.proPrice || 40000;
-                    document.getElementById('adminPlanPrice').value = pData.planPrice || 150000;
+                    document.getElementById('adminWorkoutPrice').value = pData.workoutPrice || 100000;
+                    document.getElementById('adminNutritionPrice').value = pData.nutritionPrice || 100000;
+                    document.getElementById('adminBundlePrice').value = pData.bundlePrice || 150000;
+                    document.getElementById('adminDiscountPercent').value = pData.discountPercent || 0;
                 }
 
-                // 2. Load Feature Access Controls (Free vs Pro)
+                // 2. Load Feature Access Controls, Admin Testing Mode & Global Free Promo
                 const accessSnap = await getDoc(doc(db, "settings", "access_control"));
                 if (accessSnap.exists()) {
                     const aData = accessSnap.data();
-                    document.getElementById('lock_legends').value = aData.legends ? "pro" : "free";
-                    document.getElementById('lock_steroids').value = aData.steroids ? "pro" : "free";
-                    document.getElementById('lock_contest').value = aData.contest ? "pro" : "free";
-                    document.getElementById('lock_exercises').value = aData.exercises ? "pro" : "free";
+                    document.getElementById('adminTestingModeToggle').value = aData.adminTestingMode ? "true" : "false";
+                    
+                    // Calculate remaining days for global free promo if active
+                    if (aData.globalFreeExpiry) {
+                        const expiryDate = new Date(aData.globalFreeExpiry);
+                        const diffTime = expiryDate - new Date();
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        if (diffDays > 0) {
+                            document.getElementById('globalFreeDaysInput').value = diffDays;
+                        } else {
+                            document.getElementById('globalFreeDaysInput').value = 0;
+                        }
+                    }
+
+                    allTabsList.forEach(tabKey => {
+                        const selectEl = document.getElementById(`lock_${tabKey}`);
+                        if(selectEl) {
+                            selectEl.value = aData[tabKey] || 'free';
+                        }
+                    });
                 }
 
                 // 3. Load Users & Biometrics
@@ -261,6 +278,33 @@
                 });
                 document.getElementById('adminUsersTable').innerHTML = userHtml || '<tr><td colspan="4" style="text-align:center;">کاربری یافت نشد.</td></tr>';
 
+                // 4. Load Trainer Programs & Calculate Sales / Payout Ledger
+                const programsSnap = await getDocs(collection(db, "trainer_programs"));
+                let trainerLedger = {};
+                programsSnap.forEach(d => {
+                    let prog = d.data();
+                    let tEmail = prog.trainerEmail || 'Unknown Trainer';
+                    if(!trainerLedger[tEmail]) {
+                        trainerLedger[tEmail] = { count: 0, totalEarned: 0 };
+                    }
+                    trainerLedger[tEmail].count++;
+                    trainerLedger[tEmail].totalEarned += (parseFloat(prog.price) || 150000);
+                });
+
+                let trainerHtml = '';
+                for(let [trainer, stats] of Object.entries(trainerLedger)) {
+                    let commissionOwed = Math.round(stats.totalEarned * 0.80); // Trainer gets 80%
+                    trainerHtml += `
+                        <tr>
+                            <td><b>${trainer}</b></td>
+                            <td><span class="badge" style="background:#1e3a2f; color:#34d399;">${stats.count} برنامه</span></td>
+                            <td>${stats.totalEarned.toLocaleString()} تومان</td>
+                            <td style="color:var(--success); font-weight:bold;">${commissionOwed.toLocaleString()} تومان</td>
+                        </tr>
+                    `;
+                }
+                document.getElementById('adminTrainerTable').innerHTML = trainerHtml || '<tr><td colspan="4" style="text-align:center;">هیچ فروشی ثبت نشده است.</td></tr>';
+
                 // Load Analytics Summary
                 document.getElementById('statTotalUsers').innerText = totalUsers;
                 document.getElementById('statProUsers').innerText = proUsers;
@@ -272,22 +316,64 @@
 
         window.savePricingSettings = async () => {
             const proPrice = parseInt(document.getElementById('adminProPrice').value) || 40000;
-            const planPrice = parseInt(document.getElementById('adminPlanPrice').value) || 150000;
+            const workoutPrice = parseInt(document.getElementById('adminWorkoutPrice').value) || 100000;
+            const nutritionPrice = parseInt(document.getElementById('adminNutritionPrice').value) || 100000;
+            const bundlePrice = parseInt(document.getElementById('adminBundlePrice').value) || 150000;
+            const discountPercent = parseInt(document.getElementById('adminDiscountPercent').value) || 0;
 
-            await setDoc(doc(db, "settings", "pricing"), { proPrice, planPrice }, { merge: true });
-            alert("تنظیمات جدید قیمت‌ها با موفقیت ذخیره و روی سایت اعمال شد!");
+            await setDoc(doc(db, "settings", "pricing"), { proPrice, workoutPrice, nutritionPrice, bundlePrice, discountPercent }, { merge: true });
+            alert("تنظیمات جدید قیمت‌ها و تخفیف‌ها با موفقیت ذخیره و روی سایت اعمال شد!");
         };
 
         window.saveAccessControlSettings = async () => {
-            const accessObj = {
-                legends: document.getElementById('lock_legends').value === 'pro',
-                steroids: document.getElementById('lock_steroids').value === 'pro',
-                contest: document.getElementById('lock_contest').value === 'pro',
-                exercises: document.getElementById('lock_exercises').value === 'pro'
+            const freeDaysInput = parseInt(document.getElementById('globalFreeDaysInput').value) || 0;
+            let globalFreeExpiry = null;
+            if (freeDaysInput > 0) {
+                let expDate = new Date();
+                expDate.setDate(expDate.getDate() + freeDaysInput);
+                globalFreeExpiry = expDate.toISOString();
+            }
+
+            let accessObj = {
+                adminTestingMode: document.getElementById('adminTestingModeToggle').value === 'true',
+                globalFreeExpiry: globalFreeExpiry
             };
+            allTabsList.forEach(tabKey => {
+                const selectEl = document.getElementById(`lock_${tabKey}`);
+                if(selectEl) {
+                    accessObj[tabKey] = selectEl.value; // 'free', 'pro', 'half'
+                }
+            });
 
             await setDoc(doc(db, "settings", "access_control"), accessObj, { merge: true });
-            alert("سطوح دسترسی بخش‌های اصلی با موفقیت ذخیره شد!");
+            
+            // Cache instantly to localStorage for instantaneous loading
+            localStorage.setItem('cached_access_config', JSON.stringify(accessObj));
+            localStorage.setItem('cached_admin_testing', accessObj.adminTestingMode);
+
+            alert("تنظیمات دسترسی، حالت تست و کمپین رایگان با موفقیت ذخیره شد!");
+        };
+
+        window.resetAllLocks = async () => {
+            if(!confirm("آیا مطمئن هستید که می‌خواهید قفل تمام تب‌ها را ریست کرده و همه را به حالت رایگان (Free) برگردانید؟")) return;
+            
+            let accessObj = {
+                adminTestingMode: false,
+                globalFreeExpiry: null
+            };
+            allTabsList.forEach(tabKey => {
+                accessObj[tabKey] = 'free';
+                const selectEl = document.getElementById(`lock_${tabKey}`);
+                if(selectEl) selectEl.value = 'free';
+            });
+            document.getElementById('adminTestingModeToggle').value = "false";
+            document.getElementById('globalFreeDaysInput').value = 0;
+
+            await setDoc(doc(db, "settings", "access_control"), accessObj, { merge: true });
+            localStorage.setItem('cached_access_config', JSON.stringify(accessObj));
+            localStorage.setItem('cached_admin_testing', false);
+
+            alert("تمام قفل‌ها ریست شدند و تمام بخش‌های سایت به حالت رایگان برگشتند!");
         };
 
         window.grantPro = async (uid) => {
@@ -342,10 +428,34 @@
             </div>
         </div>
 
-        <!-- PRICING MANAGEMENT CARD -->
+        <!-- GLOBAL FREE DAYS PROMO & ADMIN TESTING -->
+        <div class="card" style="border: 2px solid var(--accent);">
+            <h2>🎁 کمپین رایگان‌سازی موقت کل سایت و تست ادمین</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">با وارد کردن تعداد روز، تمام بخش‌های سایت برای همه کاربران به مدت مشخص رایگان می‌شود. همچنین می‌توانید حالت تست ادمین را فعال کنید.</p>
+            
+            <div class="form-grid" style="margin-bottom:15px;">
+                <div class="form-group">
+                    <label>رایگان کردن کل سایت به مدت (تعداد روز - 0 برای غیرفعال)</label>
+                    <input type="number" id="globalFreeDaysInput" placeholder="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label>حالت تست ادمین (Admin Testing Mode)</label>
+                    <select id="adminTestingModeToggle">
+                        <option value="false">غیرفعال (ادمین دسترسی کامل دارد)</option>
+                        <option value="true">فعال (تست سایت به عنوان کاربر عادی)</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="action-btn" style="background:var(--accent); color:#000; flex:1;" onclick="saveAccessControlSettings()">ذخیره تنظیمات ویژه (رایگان‌سازی و تست)</button>
+                <button class="action-btn" style="background:var(--danger); color:#fff; max-width:220px;" onclick="resetAllLocks()">🔄 ریست کلی قفل‌ها (همه رایگان)</button>
+            </div>
+        </div>
+
+        <!-- PRICING & DISCOUNT MANAGEMENT CARD -->
         <div class="card">
-            <h2>💰 مدیریت قیمت‌گذاری اشتراک‌ها و برنامه‌های تمرینی</h2>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">قیمت‌های مدنظر خود به تومان را وارد کنید تا مستقیماً روی دکمه‌های پرداخت و صفحه اصلی سایت اعمال گردند.</p>
+            <h2>💰 مدیریت قیمت‌گذاری ۳ محصول، تخفیف‌ها و پلن‌ها</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">قیمت هر محصول را به تومان تعیین کنید و در صورت نیاز درصد تخفیف عمومی اعمال نمایید.</p>
 
             <div class="form-grid">
                 <div class="form-group">
@@ -353,49 +463,156 @@
                     <input type="number" id="adminProPrice" placeholder="40000">
                 </div>
                 <div class="form-group">
-                    <label>قیمت برنامه اختصاصی تمرین و تغذیه (تومان)</label>
-                    <input type="number" id="adminPlanPrice" placeholder="150000">
+                    <label>درصد تخفیف عمومی (%)</label>
+                    <input type="number" id="adminDiscountPercent" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>قیمت برنامه اختصاصی تمرین (تومان)</label>
+                    <input type="number" id="adminWorkoutPrice" placeholder="100000">
+                </div>
+                <div class="form-group">
+                    <label>قیمت برنامه اختصاصی تغذیه (تومان)</label>
+                    <input type="number" id="adminNutritionPrice" placeholder="100000">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>قیمت پکیج کامل (تمرین + تغذیه) (تومان)</label>
+                    <input type="number" id="adminBundlePrice" placeholder="150000">
                 </div>
             </div>
-            <button class="action-btn" style="margin-top:15px; background:var(--accent); color:#000;" onclick="savePricingSettings()">ذخیره و به‌روزرسانی قیمت‌ها</button>
+            <button class="action-btn" style="margin-top:15px; background:var(--accent); color:#000;" onclick="savePricingSettings()">ذخیره و به‌روزرسانی قیمت‌ها و تخفیف</button>
         </div>
 
-        <!-- FEATURE ACCESS CONTROL CARD -->
+        <!-- UNIVERSAL TAB ACCESS CONTROL CARD (ALL SIDEBAR TABS + HALF-LOCK) -->
         <div class="card">
-            <h2>🔒 کنترل سطح دسترسی بخش‌های اصلی (رایگان / اختصاصی PRO)</h2>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">مشخص کنید کدام بخش‌های صفحه اصلی برای همه کاربران رایگان باشد یا فقط برای اعضای پرو باز شود.</p>
+            <h2>🔒 کنترل سطح دسترسی جهانی تمام تب‌های منو (رایگان / نیمه‌قفل تصادفی / قفل کامل PRO)</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">برای هر بخش می‌توانید حالت رایگان، قفل کامل یا «نیمه‌قفل 50% با پیش‌نمایش تار» را انتخاب کنید.</p>
 
             <div class="toggle-grid">
                 <div class="toggle-item">
+                    <span>🏋️ تمرینات (Exercises)</span>
+                    <select id="lock_exercises" style="width:140px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>📖 دایره‌المعارف (Encyclopedia)</span>
+                    <select id="lock_encyclopedia" style="width:140px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>📚 کتابخانه علمی (Science Library)</span>
+                    <select id="lock_science" style="width:140px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
                     <span>🏆 اسطوره‌های المپیا (Olympia Legends)</span>
-                    <select id="lock_legends" style="width:130px;">
-                        <option value="pro">قفل (PRO)</option>
+                    <select id="lock_legends" style="width:140px;">
+                        <option value="pro">قفل کامل (PRO)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
                         <option value="free">رایگان (FREE)</option>
                     </select>
                 </div>
                 <div class="toggle-item">
-                    <span>💉 داروشناسی و استروئیدها (Steroids)</span>
-                    <select id="lock_steroids" style="width:130px;">
-                        <option value="pro">قفل (PRO)</option>
+                    <span>💉 داروشناسی (Steroids)</span>
+                    <select id="lock_steroids" style="width:140px;">
+                        <option value="pro">قفل کامل (PRO)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
                         <option value="free">رایگان (FREE)</option>
                     </select>
                 </div>
                 <div class="toggle-item">
                     <span>🥇 اسرار مسابقات (Contest Secrets)</span>
-                    <select id="lock_contest" style="width:130px;">
-                        <option value="pro">قفل (PRO)</option>
+                    <select id="lock_contest" style="width:140px;">
+                        <option value="pro">قفل کامل (PRO)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
                         <option value="free">رایگان (FREE)</option>
                     </select>
                 </div>
                 <div class="toggle-item">
-                    <span>🏋️ دیتابیس کامل تمرینات (Exercises)</span>
-                    <select id="lock_exercises" style="width:130px;">
+                    <span>🎬 کتابخانه ویدیوها (Videos Hub)</span>
+                    <select id="lock_videos" style="width:140px;">
                         <option value="free">رایگان (FREE)</option>
-                        <option value="pro">قفل (PRO)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>🛠️ ابزارها (Tools)</span>
+                    <select id="lock_tools" style="width:140px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>📋 برنامه‌های تغذیه و تمرین (Nutrition & Workout Plans)</span>
+                    <select id="lock_freeplans" style="width:140px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>⚡ ابزارهای پیشرفته (Advanced Tools)</span>
+                    <select id="lock_advancedtools" style="width:140px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>🏋️ باشگاه‌ها و تمرین (Gyms & Workouts)</span>
+                    <select id="lock_gyms" style="width:140px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
+                    </select>
+                </div>
+                <div class="toggle-item">
+                    <span>🏋️ بازار مربیان (Trainers Marketplace)</span>
+                    <select id="lock_trainers" style="width:140px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
+                    </select>
+                </div>
+                <div class="toggle-item" style="grid-column: span 2;">
+                    <span>📰 اخبار و مقالات (News & Articles)</span>
+                    <select id="lock_news" style="width:140px;">
+                        <option value="free">رایگان (FREE)</option>
+                        <option value="half">نیمه‌قفل (50% Random)</option>
+                        <option value="pro">قفل کامل (PRO)</option>
                     </select>
                 </div>
             </div>
-            <button class="action-btn" style="margin-top:15px;" onclick="saveAccessControlSettings()">ذخیره سطوح دسترسی</button>
+            <button class="action-btn" style="margin-top:15px;" onclick="saveAccessControlSettings()">ذخیره سطوح دسترسی جهانی تب‌ها</button>
+        </div>
+
+        <!-- TRAINER SALES & PAYOUT LEDGER -->
+        <div class="card">
+            <h2>📊 آمار فروش مربیان و وضعیت تسویه حساب</h2>
+            <p style="font-size:13px; color:var(--text-muted);">تعداد برنامه‌های فروخته شده توسط هر مربی و مبلغ قابل پرداخت (یا دریافت شده).</p>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>نام مربی (ایمیل)</th>
+                        <th>تعداد فروش</th>
+                        <th>مجموع فروش ناخالص</th>
+                        <th>سهم مربی (قابل پرداخت)</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTrainerTable">
+                    <tr><td colspan="4" style="text-align:center;">در حال بارگذاری آمار مربیان...</td></tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- Users & Biometrics Intelligence Card -->
