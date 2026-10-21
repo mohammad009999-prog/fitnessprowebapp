@@ -347,11 +347,11 @@
 
             await setDoc(doc(db, "settings", "access_control"), accessObj, { merge: true });
             
-            // Cache instantly to localStorage for instantaneous loading
+            // Clear and update local cache for immediate feedback
+            localStorage.removeItem('cached_access_config');
             localStorage.setItem('cached_access_config', JSON.stringify(accessObj));
-            localStorage.setItem('cached_admin_testing', accessObj.adminTestingMode);
 
-            alert("تنظیمات دسترسی، حالت تست و کمپین رایگان با موفقیت ذخیره شد!");
+            alert("تنظیمات دسترسی، حالت تست و کمپین رایگان با موفقیت در فایربیس ذخیره شد!");
         };
 
         window.resetAllLocks = async () => {
@@ -371,7 +371,6 @@
 
             await setDoc(doc(db, "settings", "access_control"), accessObj, { merge: true });
             localStorage.setItem('cached_access_config', JSON.stringify(accessObj));
-            localStorage.setItem('cached_admin_testing', false);
 
             alert("تمام قفل‌ها ریست شدند و تمام بخش‌های سایت به حالت رایگان برگشتند!");
         };
