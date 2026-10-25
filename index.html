@@ -769,7 +769,8 @@
             getDoc, 
             setDoc, 
             collection, 
-            getDocs 
+            getDocs,
+            onSnapshot 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -790,8 +791,16 @@
         window.firebaseDb = db;
 
         const ADMIN_EMAIL = "mohammad009999@gmail.com";
-        // بدون مقادیر پیش‌فرض ثابت؛ همه قیمت‌ها از ادمین یا فایربیس دریافت می‌شوند
-        window.pricingConfig = { proPrice: null, workoutPrice: null, nutritionPrice: null, bundlePrice: null, discountPercent: 0, transactionsStopped: false };
+        
+        // مقادیر پیش‌فرض ایمن برای اینکه کاربر مهمان قبل از دریافت کامل از فایربیس معطل نشود
+        window.pricingConfig = { 
+            proPrice: 40000, 
+            workoutPrice: 100000, 
+            nutritionPrice: 100000, 
+            bundlePrice: 150000, 
+            discountPercent: 0, 
+            transactionsStopped: false 
+        };
         
         window.currentLang = localStorage.getItem('app_lang') || 'fa';
         window.accessConfig = JSON.parse(localStorage.getItem('cached_access_config') || '{}');
@@ -801,27 +810,37 @@
         let currentAnnouncementIndex = 0;
         let announcementInterval = null;
 
-        async function loadAppConfigs() {
-            try {
-                const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
-                if (pricingSnap.exists()) {
-                    window.pricingConfig = pricingSnap.data();
+        // استفاده از لیسنر زنده (onSnapshot) برای اینکه تغییرات پنل ادمین آنی روی سایت اعمال شود
+        function initRealtimeListeners() {
+            // شنود زنده تغییرات قیمت‌ها
+            onSnapshot(doc(db, "settings", "pricing"), (docSnap) => {
+                if (docSnap.exists()) {
+                    window.pricingConfig = docSnap.data();
+                    updatePublicPricesDisplay();
                 }
+            }, (error) => {
+                console.log("Pricing listener fallback error (using defaults):", error);
+                updatePublicPricesDisplay();
+            });
 
-                const accessSnap = await getDoc(doc(db, "settings", "access_control"));
-                if (accessSnap.exists()) {
-                    const data = accessSnap.data();
+            // شنود زنده کنترل دسترسی‌ها
+            onSnapshot(doc(db, "settings", "access_control"), (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
                     window.accessConfig = data;
                     window.adminTestingMode = data.adminTestingMode === true;
                     localStorage.setItem('cached_access_config', JSON.stringify(data));
                     localStorage.setItem('cached_admin_testing', window.adminTestingMode);
+                    updateSidebarBadges();
                 }
+            }, (error) => {
+                console.log("Access control listener error:", error);
+            });
 
-                updatePublicPricesDisplay();
-
-                const bannerSnap = await getDoc(doc(db, "settings", "top_banner"));
-                if (bannerSnap.exists()) {
-                    const bData = bannerSnap.data();
+            // شنود زنده بنرها و اطلاعیه‌ها
+            onSnapshot(doc(db, "settings", "top_banner"), (docSnap) => {
+                if (docSnap.exists()) {
+                    const bData = docSnap.data();
                     if(bData.active && bData.items && bData.items.length > 0) {
                         adminAnnouncementsList = bData.items;
                         initAnnouncementRotator();
@@ -830,14 +849,15 @@
                         if(box) box.style.display = 'none';
                     }
                 }
-                updateSidebarBadges();
-            } catch (e) {
-                console.log("Error loading app configs from Firebase.");
-                updatePublicPricesDisplay();
-            }
+            }, (error) => {
+                console.log("Banner listener error:", error);
+            });
         }
 
-        loadAppConfigs();
+        // اجرای اولیه نمایش قیمت‌های پیش‌فرض
+        updatePublicPricesDisplay();
+        // فعال‌سازی گوش‌به‌زنگ‌های ابری فایربیس
+        initRealtimeListeners();
 
         function updatePublicPricesDisplay() {
             const isFa = window.currentLang === 'fa';
@@ -867,28 +887,28 @@
                 if(mainProDisplay) mainProDisplay.innerText = `${proVal} ${isFa ? 'تومان' : 'Toman'}`;
             } else {
                 if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ خرید پرو` : `⭐ Buy Pro`;
-                if(mainProDisplay) mainProDisplay.innerText = isFa ? 'در حال دریافت...' : 'Receiving...';
+                if(mainProDisplay) mainProDisplay.innerText = '40,000 تومان';
             }
 
             if (window.pricingConfig.workoutPrice !== null && window.pricingConfig.workoutPrice !== undefined) {
                 const woVal = Number(window.pricingConfig.workoutPrice).toLocaleString();
                 if(mainWoDisplay) mainWoDisplay.innerText = `${woVal} ${isFa ? 'تومان' : 'Toman'}`;
             } else {
-                if(mainWoDisplay) mainWoDisplay.innerText = isFa ? 'در حال دریافت...' : 'Receiving...';
+                if(mainWoDisplay) mainWoDisplay.innerText = '100,000 تومان';
             }
 
             if (window.pricingConfig.nutritionPrice !== null && window.pricingConfig.nutritionPrice !== undefined) {
                 const nuVal = Number(window.pricingConfig.nutritionPrice).toLocaleString();
                 if(mainNuDisplay) mainNuDisplay.innerText = `${nuVal} ${isFa ? 'تومان' : 'Toman'}`;
             } else {
-                if(mainNuDisplay) mainNuDisplay.innerText = isFa ? 'در حال دریافت...' : 'Receiving...';
+                if(mainNuDisplay) mainNuDisplay.innerText = '100,000 تومان';
             }
 
             if (window.pricingConfig.bundlePrice !== null && window.pricingConfig.bundlePrice !== undefined) {
                 const bunVal = Number(window.pricingConfig.bundlePrice).toLocaleString();
                 if(mainBunDisplay) mainBunDisplay.innerText = `${bunVal} ${isFa ? 'تومان' : 'Toman'}`;
             } else {
-                if(mainBunDisplay) mainBunDisplay.innerText = isFa ? 'در حال دریافت...' : 'Receiving...';
+                if(mainBunDisplay) mainBunDisplay.innerText = '150,000 تومان';
             }
         }
 
@@ -935,7 +955,6 @@
         onAuthStateChanged(auth, async (user) => {
             const authBtn = document.getElementById('authBtn');
             window.currentUser = user;
-            await loadAppConfigs();
             
             if (user) {
                 authBtn.innerText = user.email || user.phoneNumber || (window.currentLang === 'fa' ? 'پروفایل' : 'Profile');
@@ -1064,12 +1083,7 @@
                 return;
             }
 
-            if (window.pricingConfig.proPrice === null || window.pricingConfig.proPrice === undefined) {
-                alert(window.currentLang === 'fa' ? 'قیمت پرو هنوز از سرور دریافت نشده است. لطفاً چند لحظه صبر کنید.' : 'Pro price not loaded yet. Please wait.');
-                return;
-            }
-            
-            let basePrice = window.pricingConfig.proPrice;
+            let basePrice = window.pricingConfig.proPrice || 40000;
             const discount = window.pricingConfig.discountPercent || 0;
             const finalPrice = discount > 0 ? Math.round(basePrice * (1 - discount / 100)) : basePrice;
             const amountRials = finalPrice * 10;
@@ -1259,22 +1273,22 @@
             <div class="pricing-cards-grid">
                 <div class="p-card">
                     <h4 id="pCardProTitle">⭐ عضویت پرو (PRO)</h4>
-                    <div class="p-amount" id="mainProPriceDisplay">در حال دریافت...</div>
+                    <div class="p-amount" id="mainProPriceDisplay">40,000 تومان</div>
                     <button onclick="openProfileModal()" id="btnBuyProCard">ارتقا حساب</button>
                 </div>
                 <div class="p-card">
                     <h4 id="pCardWoTitle">🏋️ برنامه تمرین اختصاصی</h4>
-                    <div class="p-amount" id="mainWoPriceDisplay">در حال دریافت...</div>
+                    <div class="p-amount" id="mainWoPriceDisplay">100,000 تومان</div>
                     <button onclick="selectTrainerForPlan('برنامه تمرین')" id="btnSelectTrainerWo">انتخاب مربی</button>
                 </div>
                 <div class="p-card">
                     <h4 id="pCardNuTitle">🥗 برنامه تغذیه اختصاصی</h4>
-                    <div class="p-amount" id="mainNutritionPriceDisplay">در حال دریافت...</div>
+                    <div class="p-amount" id="mainNutritionPriceDisplay">100,000 تومان</div>
                     <button onclick="selectTrainerForPlan('برنامه تغذیه')" id="btnSelectTrainerNu">انتخاب مربی</button>
                 </div>
                 <div class="p-card" style="border-color:var(--success);">
                     <h4 id="pCardBunTitle" style="color:var(--success);">🎁 پکیج طلایی (هر دو)</h4>
-                    <div class="p-amount" id="mainBundlePriceDisplay" style="color:var(--accent);">در حال دریافت...</div>
+                    <div class="p-amount" id="mainBundlePriceDisplay" style="color:var(--accent);">150,000 تومان</div>
                     <button style="background:var(--success); color:#000;" onclick="selectTrainerForPlan('پکیج کامل (تمرین + تغذیه)')" id="btnSelectTrainerBun">انتخاب مربی و سفارش</button>
                 </div>
             </div>
@@ -1699,8 +1713,8 @@
             document.getElementById('uiSub').innerText = isFa ? 'مرجع تمرینات و دانش' : 'Exercise & Knowledge Hub';
             document.getElementById('uiHeaderSub').innerText = isFa ? 'مرجع تخصصی تمرین و بدنسازی' : 'Professional Training Hub';
             
-            const proVal = (window.pricingConfig.proPrice !== null && window.pricingConfig.proPrice !== undefined) ? Number(window.pricingConfig.proPrice).toLocaleString() : '';
-            document.getElementById('buyProTopBtn').innerText = isFa ? (proVal ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ خرید پرو`) : (proVal ? `⭐ Buy Pro (${proVal} Toman)` : `⭐ Buy Pro`);
+            const proVal = (window.pricingConfig.proPrice !== null && window.pricingConfig.proPrice !== undefined) ? Number(window.pricingConfig.proPrice).toLocaleString() : '40,000';
+            document.getElementById('buyProTopBtn').innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
             
             document.getElementById('userAccountTopBtn').innerText = isFa ? '👤 حساب' : '👤 Account';
             document.getElementById('tabEx').innerText = isFa ? 'تمرینات' : 'Exercises';
@@ -2244,7 +2258,7 @@
                         <div>
                             <h3>${name}</h3>
                             <div>
-                                <span class="badge">${ex.level || 'N/A'}</span>
+                                <span class="badge">${ex.level || 'N/A'}</i></span>
                                 <span class="badge" style="background:#1a2b3c; color:#64b5f6;">${muscles}</span>
                             </div>
                         </div>
