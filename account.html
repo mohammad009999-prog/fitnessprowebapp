@@ -268,7 +268,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAilAXYxno9aywWxqy7ji52Dq-xvneKf5U",
@@ -287,17 +287,22 @@
         let currentUser = null;
         window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000, transactionsStopped: false };
 
-        async function loadPricingConfig() {
-            try {
-                const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
-                if (pricingSnap.exists()) {
-                    window.pricingConfig = pricingSnap.data();
+        // Real-time listener for admin pricing and transaction settings
+        function initPricingListener() {
+            onSnapshot(doc(db, "settings", "pricing"), (docSnap) => {
+                if (docSnap.exists()) {
+                    window.pricingConfig = docSnap.data();
+                } else {
+                    window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000, transactionsStopped: false };
                 }
-            } catch (e) {
-                console.log("Using default pricing.");
-            }
-            
-            // Update Public Pricing Cards
+                updatePricingUI();
+            }, (error) => {
+                console.log("Pricing listener error, using defaults:", error);
+                updatePricingUI();
+            });
+        }
+
+        function updatePricingUI() {
             document.getElementById('pubProPrice').innerText = (window.pricingConfig.proPrice || 40000).toLocaleString() + ' تومان';
             document.getElementById('pubWorkoutPrice').innerText = (window.pricingConfig.workoutPrice || 100000).toLocaleString() + ' تومان';
             document.getElementById('pubNutritionPrice').innerText = (window.pricingConfig.nutritionPrice || 100000).toLocaleString() + ' تومان';
@@ -305,9 +310,10 @@
             document.getElementById('proPriceText').innerText = (window.pricingConfig.proPrice || 40000).toLocaleString() + ' تومان';
         }
 
+        initPricingListener();
+
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
-            await loadPricingConfig();
             if (!user) {
                 document.getElementById('loggedOutNotice').style.display = 'block';
                 document.getElementById('loggedInView').style.display = 'none';
@@ -404,7 +410,7 @@
 
         window.payProMembership = async () => {
             if (window.pricingConfig.transactionsStopped) {
-                alert('تمامی تراکنش‌های مالی تا اطلاع ثانوی متوقف شده است / All money transactions are stopped until further notice.');
+                alert('تمامی تراکنش‌های مالی تا اطلاع ثانوی متوقف شده است.');
                 return;
             }
 
@@ -562,34 +568,34 @@
 
         <!-- PUBLIC PRICING & TARIFFS CARD (ALWAYS VISIBLE - ZARINPAL PUBLIC COMPLIANCE) -->
         <div class="card" style="border: 2px solid var(--accent);">
-            <h2>💰 جدول قیمت‌ها و تعرفه‌های عمومی خدمات (بدون نیاز به لاگین)</h2>
-            <p style="font-size:13px; color:var(--text-muted);">تمامی قیمت‌های زیر به‌صورت شفاف تعیین شده‌اند و می‌توانید جهت سفارش برنامه به بخش مربیان مراجعه فرمایید.</p>
+            <h2>💰 جدول قیمت‌ها و تعرفه‌های عمومی خدمات</h2>
+            <p style="font-size:13px; color:var(--text-muted);">تمامی قیمت‌های زیر به‌صورت زنده از پنل ادمین دریافت می‌شوند و می‌توانید جهت سفارش برنامه به بخش مربیان مراجعه فرمایید.</p>
             
             <div class="pricing-grid">
                 <div class="price-card">
                     <h3>⭐ اشتراک ماهانه پرو (PRO)</h3>
-                    <div class="amount" id="pubProPrice">40,000 تومان</div>
+                    <div class="amount" id="pubProPrice">در حال بارگذاری...</div>
                     <p>دسترسی کامل به تمام بانک تمرینات، مقالات، کتابخانه‌ها و ابزارهای پیشرفته سایت.</p>
                     <button class="action-btn" style="margin-top:auto;" onclick="payProMembership()">ارتقا به پرو</button>
                 </div>
 
                 <div class="price-card">
                     <h3>🏋️ برنامه اختصاصی تمرین</h3>
-                    <div class="amount" id="pubWorkoutPrice">100,000 تومان</div>
+                    <div class="amount" id="pubWorkoutPrice">در حال بارگذاری...</div>
                     <p>برنامه تمرینی ۴ الی ۶ هفته‌ای سفارشی‌سازی شده توسط مربیان رسمی.</p>
                     <a href="trainers.html" class="action-btn" style="margin-top:auto; text-decoration:none; display:block; text-align:center; line-height:24px;">انتخاب مربی</a>
                 </div>
 
                 <div class="price-card">
                     <h3>🥗 برنامه اختصاصی تغذیه</h3>
-                    <div class="amount" id="pubNutritionPrice">100,000 تومان</div>
+                    <div class="amount" id="pubNutritionPrice">در حال بارگذاری...</div>
                     <p>رژیم غذایی علمی بر اساس کالری، ماکروها و هدف بدنی شما.</p>
                     <a href="trainers.html" class="action-btn" style="margin-top:auto; text-decoration:none; display:block; text-align:center; line-height:24px;">انتخاب مربی</a>
                 </div>
 
                 <div class="price-card" style="border-color: var(--success);">
                     <h3 style="color:var(--success);">🎁 پکیج کامل (تمرین + تغذیه)</h3>
-                    <div class="amount" id="pubBundlePrice" style="color:var(--accent);">150,000 تومان</div>
+                    <div class="amount" id="pubBundlePrice" style="color:var(--accent);">در حال بارگذاری...</div>
                     <p>پکیج طلایی دو برنامه همزمان با تخفیف ویژه مربیان.</p>
                     <a href="trainers.html" class="action-btn" style="margin-top:auto; background:var(--success); color:#000; text-decoration:none; display:block; text-align:center; line-height:24px;">سفارش پکیج کامل</a>
                 </div>
@@ -673,7 +679,7 @@
                         <label>تیپ بدنی (Somatotype)</label>
                         <select id="profBodyType">
                             <option value="ectomorph">اکتومورف (لاغراندام و سخت‌رشد)</option>
-                            <option value="mesomorph">مزومورف (ورزشی و عضلانی)</option>
+                            <option value="mesomorph">مزومورف (پاسخ‌دهی عالی به تمرینات و ساختار عضلانی مناسب)</option>
                             <option value="endomorph">اندومورف (چربی‌پذیر و درشت)</option>
                         </select>
                     </div>

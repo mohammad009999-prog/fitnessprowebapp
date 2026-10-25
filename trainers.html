@@ -297,35 +297,37 @@
         const EX_BASE = 'https://raw.githubusercontent.com/mohammad009999-prog/free-exercise-db/main/';
 
         let currentUser = null;
-        let currentLang = 'fa'; // Default to Farsi as preferred
+        let currentLang = 'fa';
         let allExercises = [];
         let selectedTrainerForOrder = null;
         let approvedTrainersList = [];
         
-        // Admin Pricing Configuration Cache
+        // Admin Pricing & Transaction Stop Configuration Cache
         window.pricingConfig = {
             workoutPrice: 100000,
             nutritionPrice: 100000,
             bundlePrice: 150000,
-            proPrice: 40000
+            proPrice: 40000,
+            transactionsStopped: false
         };
 
-        async function loadAdminPricingConfig() {
-            try {
-                const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
-                if (pricingSnap.exists()) {
-                    window.pricingConfig = pricingSnap.data();
+        function initAdminPricingListener() {
+            onSnapshot(doc(db, "settings", "pricing"), (docSnap) => {
+                if (docSnap.exists()) {
+                    window.pricingConfig = docSnap.data();
                 }
-            } catch (e) {
-                console.log("Using default fallback pricing.");
-            }
-            updateModalPriceDisplay();
-            loadApprovedTrainers();
+                updateModalPriceDisplay();
+                loadApprovedTrainers();
+            }, (error) => {
+                console.log("Pricing listener error:", error);
+                loadApprovedTrainers();
+            });
         }
+
+        initAdminPricingListener();
 
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
-            await loadAdminPricingConfig();
             const trainerPortalTab = document.getElementById('tabTrainerPortal');
             if(!user) {
                 document.getElementById('applySection').style.opacity = '0.5';
@@ -482,8 +484,13 @@
         };
 
         window.openOrderModal = (trainerEmail, trainerName) => {
+            if (window.pricingConfig.transactionsStopped) {
+                alert(currentLang === 'fa' ? 'تمامی تراکنش‌های مالی و خریدها تا اطلاع ثانوی متوقف شده است.' : 'All financial transactions are currently stopped.');
+                return;
+            }
+
             if(!currentUser) {
-                alert(currentLang === 'fa' ? 'لطفاً ابتدا وارد حساب کاربری خود شوید.' : 'Please sign in first to purchase a workout plan.');
+                alert(currentLang === 'fa' ? 'لطفاً ابتدا برای سفارش برنامه اختصاصی وارد حساب کاربری خود شوید.' : 'Please sign in first to purchase a workout plan.');
                 return;
             }
             selectedTrainerForOrder = { email: trainerEmail, name: trainerName };
@@ -496,7 +503,6 @@
             document.getElementById('orderModal').style.display = 'none';
         };
 
-        // Dynamically update modal price text based on selection and admin configuration
         window.updateModalPriceDisplay = () => {
             const planType = document.getElementById('orderPlanType').value;
             const btnText = document.getElementById('payZarinBtnText');
@@ -518,6 +524,12 @@
         };
 
         window.submitClientOrderAndPay = async () => {
+            // Check if transactions are stopped by admin
+            if (window.pricingConfig.transactionsStopped) {
+                alert(currentLang === 'fa' ? 'تمامی تراکنش‌های مالی تا اطلاع ثانوی متوقف شده است.' : 'All financial transactions are currently stopped until further notice.');
+                return;
+            }
+
             if(!selectedTrainerForOrder) return;
 
             const planType = document.getElementById('orderPlanType').value;
@@ -631,7 +643,6 @@
                     <div class="prop-line"><b>${currentLang === 'fa' ? 'سابقه:' : 'Experience:'}</b> ${t.experience}</div>
                     <p style="font-size:13px; color:var(--text-main); line-height:1.4; margin-top:4px;">${t.bio}</p>
                     
-                    <!-- Dynamic Price Tags for All 3 States Under Purchase Button -->
                     <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border); border-radius: 8px; padding: 8px; width: 100%; margin: 8px 0; font-size: 11px; text-align: ${currentLang === 'fa' ? 'right' : 'left'};">
                         <div style="color:var(--text-muted);">🏋️‍♂️ ${currentLang === 'fa' ? 'برنامه تمرین' : 'Workout Plan'}: <b style="color:var(--accent);">${workoutP} تومان</b></div>
                         <div style="color:var(--text-muted); margin: 3px 0;">🥗 ${currentLang === 'fa' ? 'برنامه تغذیه' : 'Nutrition Plan'}: <b style="color:var(--accent);">${nutritionP} تومان</b></div>
@@ -832,7 +843,6 @@
         <p style="color:var(--text-muted); font-size:14px;" id="mainSub">مشاهده مربیان تایید شده، انتخاب مربی یا مدیریت حساب</p>
     </header>
 
-    <!-- Navigation Tabs Bar -->
     <div class="tabs-container">
         <button class="tab-btn active" onclick="switchTab('tabMarketplace')"><span id="tabMarketText">🏋️‍♂️ بازار مربیان</span></button>
         <button class="tab-btn" onclick="switchTab('tabBecomeTrainer')"><span id="tabApplyText">📝 ثبت‌نام مربی</span></button>
@@ -842,7 +852,6 @@
 
     <div class="container">
 
-        <!-- TAB 1: MARKETPLACE & SEARCH -->
         <div id="tabMarketplace" class="tab-content active">
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
@@ -858,7 +867,6 @@
             </div>
         </div>
 
-        <!-- TAB 2: BECOME A TRAINER (SIGN UP) -->
         <div id="tabBecomeTrainer" class="tab-content">
             <div class="card" id="applySection">
                 <h2 id="applyTitle">آیا مربی بدنسازی هستید؟ اینجا ثبت‌نام کنید</h2>
@@ -884,7 +892,6 @@
             </div>
         </div>
 
-        <!-- TAB 3: WALLET & TRANSACTION HISTORY -->
         <div id="tabWalletSection" class="tab-content">
             <div class="card">
                 <h2 id="walletTitle">کیف پول و سابقه تراکنش‌های زرین‌پال</h2>
@@ -911,14 +918,12 @@
             </div>
         </div>
 
-        <!-- TAB 4: EXCLUSIVE TRAINER MANAGEMENT PANEL -->
         <div id="tabPortalSection" class="tab-content">
             <div class="trainer-exclusive-panel" id="trainerPortalSection" style="display:none;">
                 <h2 style="color:var(--success); margin-top:0;">🏋️‍♂️ پنل داشبورد مربی: <span id="welcomeTrainerName" style="color:var(--accent);"></span></h2>
                 <p style="font-size:13px; color:var(--text-muted);">مدیریت سفارشات پرداخت‌شده مشتریان و ساخت تمرینات سفارشی یا آپلود مستقیم عکس‌های برنامه.</p>
                 <div id="liveNotificationBadge" class="badge" style="background:var(--accent); color:#000; display:none; margin-bottom:10px;">۰ سفارش فعال</div>
                 
-                <!-- PAID CLIENT ORDERS LIST -->
                 <div style="background:rgba(15, 23, 42, 0.6); padding:16px; border-radius:10px; border:1px solid var(--border); margin-top:15px;">
                     <h3 style="color:var(--accent); margin-top:0; font-size:16px;">سفارشات پرداخت‌شده مشتریان و آمار کاربر</h3>
                     <table class="admin-table">
@@ -936,7 +941,6 @@
                     </table>
                 </div>
 
-                <!-- WORKOUT & NUTRITION ROUTINE BUILDER -->
                 <div style="background:rgba(15, 23, 42, 0.6); padding:16px; border-radius:10px; border:1px solid var(--border); margin-top:20px;">
                     <h3 style="color:var(--accent); margin-top:0; font-size:16px;">ساخت و انتشار برنامه برای مشتری</h3>
                     <input type="email" id="clientEmail" placeholder="ایمیل مشتری (انتخاب از سفارشات پرداخت‌شده بالا)">
@@ -961,7 +965,6 @@
 
     </div>
 
-    <!-- CLIENT CONSULTATION & ORDER MODAL (Modern Persian Translation & Compact Design) -->
     <div id="orderModal" class="modal-overlay">
         <div class="modal">
             <button class="close-modal" onclick="closeOrderModal()">&times;</button>
