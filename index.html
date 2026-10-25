@@ -807,6 +807,15 @@
                     window.pricingConfig = pricingSnap.data();
                 }
 
+                const accessSnap = await getDoc(doc(db, "settings", "access_control"));
+                if (accessSnap.exists()) {
+                    const data = accessSnap.data();
+                    window.accessConfig = data;
+                    window.adminTestingMode = data.adminTestingMode === true;
+                    localStorage.setItem('cached_access_config', JSON.stringify(data));
+                    localStorage.setItem('cached_admin_testing', window.adminTestingMode);
+                }
+
                 updatePublicPricesDisplay();
 
                 const bannerSnap = await getDoc(doc(db, "settings", "top_banner"));
@@ -820,46 +829,51 @@
                         if(box) box.style.display = 'none';
                     }
                 }
-
-                const accessSnap = await getDoc(doc(db, "settings", "access_control"));
-                if (accessSnap.exists()) {
-                    const data = accessSnap.data();
-                    window.accessConfig = data;
-                    window.adminTestingMode = data.adminTestingMode === true;
-                    localStorage.setItem('cached_access_config', JSON.stringify(data));
-                    localStorage.setItem('cached_admin_testing', window.adminTestingMode);
-                }
                 updateSidebarBadges();
             } catch (e) {
                 console.log("Using cached/default config values.");
+                updatePublicPricesDisplay();
             }
         }
 
-        // بارگذاری اولیه و مستقل تنظیمات برای اینکه کاربران مهمان بدون نیاز به لاگین فوراً قیمت‌ها را ببینند
+        // بارگذاری اولیه و مستقل تنظیمات برای اینکه کاربران مهمان بدون نیاز به لاگین فوراً قیمت‌ها و وضعیت را ببینند
         loadAppConfigs();
 
         function updatePublicPricesDisplay() {
             const isFa = window.currentLang === 'fa';
-            const proVal = (window.pricingConfig.proPrice || 40000).toLocaleString();
+            
+            // بررسی اینکه آیا حالت رایگان موقت (Global Free) فعال است یا خیر
+            let isGlobalFreeActive = false;
+            let freeExpiryText = '';
+            if (window.accessConfig.globalFreeExpiry) {
+                const expDate = new Date(window.accessConfig.globalFreeExpiry);
+                if (new Date() < expDate) {
+                    isGlobalFreeActive = true;
+                    freeExpiryText = expDate.toLocaleString();
+                }
+            }
+
+            const buyProBtn = document.getElementById('buyProTopBtn');
+            const mainProDisplay = document.getElementById('mainProPriceDisplay');
+            const mainWoDisplay = document.getElementById('mainWoPriceDisplay');
+            const mainNuDisplay = document.getElementById('mainNutritionPriceDisplay') || document.getElementById('mainNuPriceDisplay');
+            const mainBunDisplay = document.getElementById('mainBundlePriceDisplay');
+
+            if (isGlobalFreeActive) {
+                if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ پرو رایگان موقت` : `⭐ Pro Free Time`;
+                if(mainProDisplay) mainProDisplay.innerHTML = `<span style="color:var(--success); font-size:15px;">رایگان موقت تا<br>${freeExpiryText}</span>`;
+            } else {
+                const proVal = (window.pricingConfig.proPrice || 40000).toLocaleString();
+                if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
+                if(mainProDisplay) mainProDisplay.innerText = `${proVal} ${isFa ? 'تومان' : 'Toman'}`;
+            }
+
             const woVal = (window.pricingConfig.workoutPrice || 100000).toLocaleString();
             const nuVal = (window.pricingConfig.nutritionPrice || 100000).toLocaleString();
             const bunVal = (window.pricingConfig.bundlePrice || 150000).toLocaleString();
 
-            const buyProBtn = document.getElementById('buyProTopBtn');
-            if(buyProBtn) {
-                buyProBtn.innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
-            }
-
-            const mainProDisplay = document.getElementById('mainProPriceDisplay');
-            if(mainProDisplay) mainProDisplay.innerText = `${proVal} ${isFa ? 'تومان' : 'Toman'}`;
-
-            const mainWoDisplay = document.getElementById('mainWoPriceDisplay');
             if(mainWoDisplay) mainWoDisplay.innerText = `${woVal} ${isFa ? 'تومان' : 'Toman'}`;
-
-            const mainNuDisplay = document.getElementById('mainNuPriceDisplay');
             if(mainNuDisplay) mainNuDisplay.innerText = `${nuVal} ${isFa ? 'تومان' : 'Toman'}`;
-
-            const mainBunDisplay = document.getElementById('mainBundlePriceDisplay');
             if(mainBunDisplay) mainBunDisplay.innerText = `${bunVal} ${isFa ? 'تومان' : 'Toman'}`;
         }
 
@@ -1029,8 +1043,9 @@
                 return;
             }
 
+            // چک کردن اجباری لاگین بودن کاربر قبل از پرداخت
             if(!window.currentUser) {
-                alert(window.currentLang === 'fa' ? 'لطفاً ابتدا برای تکمیل خرید وارد حساب شوید.' : 'Please sign in first to complete purchase.');
+                alert(window.currentLang === 'fa' ? 'لطفاً ابتدا برای خرید اشتراک وارد حساب کاربری خود شوید.' : 'Please sign in first to complete purchase.');
                 openAuthModal();
                 return;
             }
@@ -1053,6 +1068,12 @@
 
         window.selectTrainerForPlan = (planType) => {
             const isFa = window.currentLang === 'fa';
+            // بررسی لاگین برای سفارش برنامه‌ها
+            if(!window.currentUser) {
+                alert(isFa ? 'لطفاً ابتدا برای سفارش برنامه اختصاصی وارد حساب کاربری خود شوید.' : 'Please sign in first to order custom plans.');
+                openAuthModal();
+                return;
+            }
             alert(isFa ? `در حال هدایت به بخش مربیان جهت انتخاب مربی برای ${planType}...` : `Redirecting to Trainers Marketplace to choose a trainer for ${planType}...`);
             window.location.href = 'trainers.html';
         };
@@ -1205,37 +1226,37 @@
             </div>
             <div class="top-controls">
                 <button class="top-btn" style="background:#2c1a00; color:var(--accent); border-color:var(--accent);" onclick="openProfileModal()" id="buyProTopBtn">⭐ Buy Pro</button>
-                <a href="account.html" class="top-btn" style="background:#1a3a2a; color:#4caf50; border-color:#4caf50;" id="userAccountTopBtn">👤 Account</a>
+                <a href="account.html" class="top-btn" style="background:#1a3a2a; color:#4caf50; border-color:#1a3a2a;" id="userAccountTopBtn">👤 Account</a>
                 <button class="top-btn" onclick="openIOSModal()" id="iosTutorialBtn">iOS Guide</button>
                 <button class="top-btn" onclick="openAuthModal()" id="authBtn">Sign In</button>
                 <button class="top-btn" onclick="toggleLanguage()" id="langBtn">فارسی / EN</button>
             </div>
         </header>
 
-        <!-- PUBLIC TRANSPARENT PRICING BANNER (ZARINPAL COMPLIANCE) -->
+        <!-- PUBLIC PRICING BANNER (ZARINPAL COMPLIANCE) -->
         <div class="public-pricing-banner" id="publicPricingBanner">
-            <h3 id="pubPricingTitle">💳 تعرفه شفاف خدمات و پرو</h3>
+            <h3 id="pubPricingTitle">💳 تعرفه خدمات و پرو</h3>
             <p id="pubPricingSub">تمامی قیمت‌ها به‌صورت زنده از سیستم مدیریت فرستاده می‌شوند. سفارش برنامه‌های اختصاصی همراه با انتخاب مربی صورت می‌گیرد.</p>
             
             <div class="pricing-cards-grid">
                 <div class="p-card">
                     <h4 id="pCardProTitle">⭐ عضویت پرو (PRO)</h4>
-                    <div class="p-amount" id="mainProPriceDisplay">40,000 تومان</div>
+                    <div class="p-amount" id="mainProPriceDisplay">در حال دریافت...</div>
                     <button onclick="openProfileModal()" id="btnBuyProCard">ارتقا حساب</button>
                 </div>
                 <div class="p-card">
                     <h4 id="pCardWoTitle">🏋️ برنامه تمرین اختصاصی</h4>
-                    <div class="p-amount" id="mainWoPriceDisplay">100,000 تومان</div>
+                    <div class="p-amount" id="mainWoPriceDisplay">در حال دریافت...</div>
                     <button onclick="selectTrainerForPlan('برنامه تمرین')" id="btnSelectTrainerWo">انتخاب مربی</button>
                 </div>
                 <div class="p-card">
                     <h4 id="pCardNuTitle">🥗 برنامه تغذیه اختصاصی</h4>
-                    <div class="p-amount" id="mainNuPriceDisplay">100,000 تومان</div>
+                    <div class="p-amount" id="mainNuPriceDisplay">در حال دریافت...</div>
                     <button onclick="selectTrainerForPlan('برنامه تغذیه')" id="btnSelectTrainerNu">انتخاب مربی</button>
                 </div>
                 <div class="p-card" style="border-color:var(--success);">
                     <h4 id="pCardBunTitle" style="color:var(--success);">🎁 پکیج طلایی (هر دو)</h4>
-                    <div class="p-amount" id="mainBundlePriceDisplay" style="color:var(--accent);">150,000 تومان</div>
+                    <div class="p-amount" id="mainBundlePriceDisplay" style="color:var(--accent);">در حال دریافت...</div>
                     <button style="background:var(--success); color:#000;" onclick="selectTrainerForPlan('پکیج کامل (تمرین + تغذیه)')" id="btnSelectTrainerBun">انتخاب مربی و سفارش</button>
                 </div>
             </div>
@@ -1688,7 +1709,7 @@
             document.getElementById('tabAdmin').innerText = isFa ? '⚡ پنل ادمین' : '⚡ Admin Portal';
             document.getElementById('iosTutorialBtn').innerText = isFa ? 'راهنمای آیفون' : 'iOS Guide';
             
-            document.getElementById('pubPricingTitle').innerText = isFa ? '💳 تعرفه شفاف خدمات و پرو' : '💳 Transparent Tariffs & Services';
+            document.getElementById('pubPricingTitle').innerText = isFa ? '💳 تعرفه خدمات و پرو' : '💳 Tariffs & Services';
             document.getElementById('pubPricingSub').innerText = isFa ? 'تمامی قیمت‌ها به‌صورت زنده از سیستم مدیریت فرستاده می‌شوند. سفارش برنامه‌های اختصاصی همراه با انتخاب مربی صورت می‌گیرد.' : 'All pricing updates live from Admin Panel. Ordering custom plans redirects to trainer marketplace.';
             document.getElementById('pCardProTitle').innerText = isFa ? '⭐ عضویت پرو (PRO)' : '⭐ Pro Membership';
             document.getElementById('btnBuyProCard').innerText = isFa ? 'ارتقا حساب' : 'Upgrade Account';
