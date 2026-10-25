@@ -145,7 +145,6 @@
         .analytic-card span { font-size: 11px; color: var(--text-muted); display: block; }
         .analytic-card b { font-size: 20px; color: var(--success); display: block; margin-top: 5px; }
 
-        /* TOGGLE LIST FOR SECTIONS LOCK */
         .toggle-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -163,6 +162,18 @@
         }
         .toggle-item span { font-size: 13px; font-weight: bold; }
 
+        .announcement-item-box {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
         #accessDenied {
             text-align: center;
             padding: 50px;
@@ -174,7 +185,7 @@
         }
     </style>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK & Cloudinary Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -195,7 +206,11 @@
         const db = getFirestore(app);
         const ADMIN_EMAIL = "mohammad009999@gmail.com";
 
+        const CLOUD_NAME = 'djibtdplp';
+        const UPLOAD_PRESET = 'FITNESS PRO WEB';
+
         const allTabsList = ['exercises', 'encyclopedia', 'science', 'legends', 'steroids', 'contest', 'videos', 'tools', 'freeplans', 'advancedtools', 'gyms', 'trainers', 'news'];
+        let announcementsList = [];
 
         onAuthStateChanged(auth, async (user) => {
             if (!user || user.email !== ADMIN_EMAIL) {
@@ -210,7 +225,7 @@
 
         window.loadAdminData = async () => {
             try {
-                // 1. Load Pricing Settings & Discount Percent
+                // 1. Load Pricing Settings & Transactions Stop Flag
                 const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
                 if (pricingSnap.exists()) {
                     const pData = pricingSnap.data();
@@ -219,9 +234,19 @@
                     document.getElementById('adminNutritionPrice').value = pData.nutritionPrice || 100000;
                     document.getElementById('adminBundlePrice').value = pData.bundlePrice || 150000;
                     document.getElementById('adminDiscountPercent').value = pData.discountPercent || 0;
+                    document.getElementById('transactionsStopToggle').value = pData.transactionsStopped ? "true" : "false";
                 }
 
-                // 2. Load Feature Access Controls, Admin Testing Mode & Global Free Promo
+                // 2. Load Multiple Top Banners / Announcements
+                const bannerSnap = await getDoc(doc(db, "settings", "top_banner"));
+                if (bannerSnap.exists()) {
+                    const bData = bannerSnap.data();
+                    document.getElementById('bannerActiveToggle').value = bData.active ? "true" : "false";
+                    announcementsList = bData.items || [];
+                    renderAnnouncementsAdminList();
+                }
+
+                // 3. Load Feature Access Controls, Admin Testing Mode & Global Free Promo
                 const accessSnap = await getDoc(doc(db, "settings", "access_control"));
                 if (accessSnap.exists()) {
                     const aData = accessSnap.data();
@@ -242,7 +267,7 @@
                     });
                 }
 
-                // 3. Load Users & Biometrics
+                // 4. Load Users & Biometrics
                 const usersSnap = await getDocs(collection(db, "users"));
                 let userHtml = '';
                 let totalUsers = 0;
@@ -258,7 +283,7 @@
                     userHtml += `
                         <tr>
                             <td>
-                                <b>${u.email || uid}</b><br>
+                                <b>${u.email || u.phone || uid}</b><br>
                                 <small style="color:var(--text-muted);">وزن: ${u.weight || '--'} kg | قد: ${u.height || '--'} cm | سن: ${u.age || '--'}</small><br>
                                 <small style="color:var(--accent);">تیپ: ${u.bodyType || '--'} | چربی: ${u.bodyFat || '--'}% | هدف: ${u.goal || '--'}</small>
                             </td>
@@ -273,7 +298,7 @@
                 });
                 document.getElementById('adminUsersTable').innerHTML = userHtml || '<tr><td colspan="4" style="text-align:center;">کاربری یافت نشد.</td></tr>';
 
-                // 4. Load Trainer Orders & Calculate Sales / Payout Ledger
+                // 5. Load Trainer Orders
                 const ordersSnap = await getDocs(collection(db, "trainer_orders"));
                 let trainerLedger = {};
                 ordersSnap.forEach(d => {
@@ -308,17 +333,160 @@
             }
         };
 
+        // UPLOAD MEDIA TO CLOUDINARY FOR NEW ANNOUNCEMENT ITEM
+        window.uploadBannerMediaToCloudinary = async () => {
+            const fileInput = document.getElementById('newBannerMediaFile');
+            const progress = document.getElementById('newBannerUploadProgress');
+            if(fileInput.files.length === 0) return alert('لطفاً ابتدا یک فایل (عکس یا ویدیو) انتخاب کنید.');
+
+            progress.style.display = 'block';
+            progress.innerText = 'در حال آپلود به کلادیناری...';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                formData.append('upload_preset', UPLOAD_PRESET);
+
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if(data.secure_url) {
+                    document.getElementById('newBannerMediaUrl').value = data.secure_url;
+                    progress.style.color = 'var(--success)';
+                    progress.innerText = '✅ فایل با موفقیت آپلود شد!';
+                } else {
+                    throw new Error('Upload failed.');
+                }
+            } catch(err) {
+                progress.style.color = 'var(--danger)';
+                progress.innerText = '❌ خطا در آپلود: ' + err.message;
+            }
+        };
+
+        window.addNewAnnouncementItem = () => {
+            const text = document.getElementById('newBannerText').value.trim();
+            const mediaType = document.getElementById('newBannerMediaType').value;
+            const mediaUrl = document.getElementById('newBannerMediaUrl').value.trim();
+
+            if(!text && !mediaUrl) return alert('لطفاً حداقل متن یا فایل رسانه را وارد کنید.');
+
+            announcementsList.push({
+                id: Date.now(),
+                text: text,
+                mediaType: mediaType,
+                mediaUrl: mediaUrl
+            });
+
+            document.getElementById('newBannerText').value = '';
+            document.getElementById('newBannerMediaUrl').value = '';
+            document.getElementById('newBannerMediaFile').value = '';
+            document.getElementById('newBannerUploadProgress').style.display = 'none';
+
+            renderAnnouncementsAdminList();
+            alert('اطلاعیه جدید به لیست اضافه شد. برای ذخیره نهایی روی دکمه ذخیره کلیک کنید.');
+        };
+
+        window.deleteAnnouncementItem = (id) => {
+            announcementsList = announcementsList.filter(item => item.id !== id);
+            renderAnnouncementsAdminList();
+        };
+
+        function renderAnnouncementsAdminList() {
+            const container = document.getElementById('announcementsAdminContainer');
+            if(!container) return;
+
+            if(announcementsList.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">هیچ اطلاعیه‌ای اضافه نشده است.</p>';
+                return;
+            }
+
+            container.innerHTML = announcementsList.map((item, idx) => `
+                <div class="announcement-item-box">
+                    <div>
+                        <b style="color:var(--accent);">مورد #${idx+1} (${item.mediaType}):</b>
+                        <p style="margin:4px 0 0 0; font-size:13px; color:var(--text-main);">${item.text || '(فقط رسانه)'}</p>
+                        ${item.mediaUrl ? `<small style="color:var(--success); word-break:break-all;">${item.mediaUrl}</small>` : ''}
+                    </div>
+                    <button class="action-btn" style="background:var(--danger); width:auto; padding:6px 12px; font-size:12px;" onclick="deleteAnnouncementItem(${item.id})">حذف</button>
+                </div>
+            `).join('');
+        }
+
+        // DIRECT MANUAL USER PROVISIONING & PRO MANAGEMENT
+        window.manualManageUserPro = async () => {
+            const identifier = document.getElementById('manualUserIdentifier').value.trim();
+            const actionType = document.getElementById('manualUserAction').value; // 'grant' or 'revoke'
+
+            if (!identifier) {
+                alert('لطفاً ایمیل (Gmail) یا شماره تلفن کاربر را وارد کنید.');
+                return;
+            }
+
+            try {
+                // Search existing users collection or create a new doc ID based on identifier
+                const usersSnap = await getDocs(collection(db, "users"));
+                let targetDocId = null;
+
+                usersSnap.forEach(d => {
+                    let uData = d.data();
+                    if ((uData.email && uData.email.toLowerCase() === identifier.toLowerCase()) || 
+                        (uData.phone && uData.phone === identifier) || 
+                        d.id === identifier) {
+                        targetDocId = d.id;
+                    }
+                });
+
+                // If user doesn't exist yet in Firestore, create a new document with this identifier
+                if (!targetDocId) {
+                    targetDocId = identifier.replace(/[@.]/g, '_'); // safe Firestore ID
+                }
+
+                let userRef = doc(db, "users", targetDocId);
+                let expires = new Date();
+                expires.setMonth(expires.getMonth() + 1);
+
+                if (actionType === 'grant') {
+                    await setDoc(userRef, {
+                        email: identifier.includes('@') ? identifier : '',
+                        phone: !identifier.includes('@') ? identifier : '',
+                        isPro: true,
+                        proExpiresAt: expires.toISOString(),
+                        updatedAt: new Date().toISOString()
+                    }, { merge: true });
+                    alert(`✅ اشتراک PRO با موفقیت برای کاربر (${identifier}) فعال شد!`);
+                } else {
+                    await setDoc(userRef, {
+                        isPro: false,
+                        proExpiresAt: null,
+                        updatedAt: new Date().toISOString()
+                    }, { merge: true });
+                    alert(`❌ اشتراک PRO برای کاربر (${identifier}) لغو شد.`);
+                }
+
+                document.getElementById('manualUserIdentifier').value = '';
+                loadAdminData();
+            } catch (err) {
+                alert("خطا در مدیریت کاربر: " + err.message);
+            }
+        };
+
         // MASTER SAVE ALL FUNCTION
         window.saveAllAdminSettings = async () => {
             try {
-                // 1. Gather Pricing Data
                 const proPrice = parseInt(document.getElementById('adminProPrice').value) || 40000;
                 const workoutPrice = parseInt(document.getElementById('adminWorkoutPrice').value) || 100000;
                 const nutritionPrice = parseInt(document.getElementById('adminNutritionPrice').value) || 100000;
                 const bundlePrice = parseInt(document.getElementById('adminBundlePrice').value) || 150000;
                 const discountPercent = parseInt(document.getElementById('adminDiscountPercent').value) || 0;
+                const transactionsStopped = document.getElementById('transactionsStopToggle').value === 'true';
 
-                // 2. Gather Access Controls & Promo Data
+                const bannerObj = {
+                    active: document.getElementById('bannerActiveToggle').value === 'true',
+                    items: announcementsList
+                };
+
                 const freeDaysInput = parseInt(document.getElementById('globalFreeDaysInput').value) || 0;
                 let globalFreeExpiry = null;
                 if (freeDaysInput > 0) {
@@ -334,19 +502,18 @@
                 allTabsList.forEach(tabKey => {
                     const selectEl = document.getElementById(`lock_${tabKey}`);
                     if(selectEl) {
-                        accessObj[tabKey] = selectEl.value; // 'free', 'pro', 'half'
+                        accessObj[tabKey] = selectEl.value;
                     }
                 });
 
-                // 3. Save to Firestore simultaneously
-                await setDoc(doc(db, "settings", "pricing"), { proPrice, workoutPrice, nutritionPrice, bundlePrice, discountPercent }, { merge: true });
+                await setDoc(doc(db, "settings", "pricing"), { proPrice, workoutPrice, nutritionPrice, bundlePrice, discountPercent, transactionsStopped }, { merge: true });
+                await setDoc(doc(db, "settings", "top_banner"), bannerObj, { merge: true });
                 await setDoc(doc(db, "settings", "access_control"), accessObj, { merge: true });
 
-                // 4. Update local cache
                 localStorage.removeItem('cached_access_config');
                 localStorage.setItem('cached_access_config', JSON.stringify(accessObj));
 
-                alert("✅ تمام تغییرات (قیمت‌ها، تخفیف‌ها، قفل تب‌ها و کمپین رایگان) با موفقیت در فایربیس ذخیره و روی سایت اعمال شد!");
+                alert("✅ تمام تغییرات با موفقیت در فایربیس ذخیره شد!");
             } catch(err) {
                 console.error("Error saving settings:", err);
                 alert("❌ خطا در ذخیره تنظیمات: " + err.message);
@@ -354,12 +521,9 @@
         };
 
         window.resetAllLocks = async () => {
-            if(!confirm("آیا مطمئن هستید که می‌خواهید قفل تمام تب‌ها را ریست کرده و همه را به حالت رایگان (Free) برگردانید؟")) return;
+            if(!confirm("آیا مطمئن هستید که می‌خواهید قفل تمام تب‌ها را ریست کنید؟")) return;
             
-            let accessObj = {
-                adminTestingMode: false,
-                globalFreeExpiry: null
-            };
+            let accessObj = { adminTestingMode: false, globalFreeExpiry: null };
             allTabsList.forEach(tabKey => {
                 accessObj[tabKey] = 'free';
                 const selectEl = document.getElementById(`lock_${tabKey}`);
@@ -371,14 +535,14 @@
             await setDoc(doc(db, "settings", "access_control"), accessObj, { merge: true });
             localStorage.setItem('cached_access_config', JSON.stringify(accessObj));
 
-            alert("تمام قفل‌ها ریست شدند و تمام بخش‌های سایت به حالت رایگان برگشتند!");
+            alert("تمام قفل‌ها ریست شدند!");
         };
 
         window.grantPro = async (uid) => {
             let expires = new Date();
             expires.setMonth(expires.getMonth() + 1);
             await setDoc(doc(db, "users", uid), { isPro: true, proExpiresAt: expires.toISOString() }, { merge: true });
-            alert("اشتراک پرو با موفقیت برای یک ماه فعال شد!");
+            alert("اشتراک پرو فعال شد!");
             loadAdminData();
         };
 
@@ -400,13 +564,12 @@
 
     <div id="accessDenied">
         <h2 style="color:var(--danger);">دسترسی غیرمجاز (Access Denied)</h2>
-        <p style="color:var(--text-muted);">شما باید به عنوان مدیر اصلی (mohammad009999@gmail.com) وارد سیستم شده باشید.</p>
+        <p style="color:var(--text-muted);">شما باید به عنوان مدیر اصلی وارد سیستم شده باشید.</p>
         <a href="index.html" class="top-btn" style="display:inline-block; margin-top:15px;">بازگشت به صفحه اصلی</a>
     </div>
 
     <div id="adminContent" class="container" style="display:none;">
         
-        <!-- ANALYTICS SUMMARY CARDS -->
         <div class="analytics-grid">
             <div class="analytic-card">
                 <span>کل کاربران ثبت‌نامی</span>
@@ -418,7 +581,7 @@
             </div>
             <div class="analytic-card">
                 <span>درگاه پرداخت فعال</span>
-                <b style="color:#64b5f6;">زرین‌پال (ZarinPal)</b>
+                <b style="color:#64b5f6;">زرین‌پال و کارت‌به‌کارت (WhatsApp)</b>
             </div>
             <div class="analytic-card">
                 <span>وضعیت سیستم</span>
@@ -426,11 +589,109 @@
             </div>
         </div>
 
-        <!-- GLOBAL FREE DAYS PROMO & ADMIN TESTING -->
+        <!-- DIRECT BANK CARD & WHATSAPP PAYMENT INFO CARD -->
+        <div class="card" style="border: 2px solid var(--success);">
+            <h2 style="color: var(--success);">💳 اطلاعات کارت بانکی برای پرداخت مستقیم و واریز (WhatsApp)</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">این اطلاعات به همراه دکمه واتساپ جهت ارسال فیش واریزی در بخش خرید کاربران نمایش داده می‌شود.</p>
+            
+            <div style="background:var(--card-inner); padding:15px; border-radius:8px; border:1px solid var(--border); display:flex; flex-direction:column; gap:8px;">
+                <div><b>شماره کارت بانکی (Card Number):</b> <span style="color:var(--accent); font-family:monospace; font-size:16px;">5047 0610 5577 5783</span></div>
+                <div><b>نام صاحب حساب (Account Holder):</b> Seyed Mohammad Hosein Hoseini / سید محمد حسین حسینی</div>
+                <div><b>شماره واتساپ جهت ارسال فیش (WhatsApp):</b> <span style="color:var(--success);">09176001268</span></div>
+            </div>
+        </div>
+
+        <!-- MANUAL USER PROVISIONING & PRO GRANT/REVOKE CARD -->
+        <div class="card" style="border: 2px solid var(--accent);">
+            <h2>⚙️ افزودن و مدیریت دستی کاربر (اعطای پرو با جیمیل یا شماره)</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">اگر کاربری از طریق واتساپ فیش واریزی ارسال کرد، می‌توانید ایمیل یا شماره او را در اینجا وارد کرده و اشتراک PRO او را فعال یا غیرفعال کنید.</p>
+            
+            <div class="form-grid" style="margin-bottom:12px;">
+                <div class="form-group">
+                    <label>جیمیل (Gmail) یا شماره تلفن کاربر</label>
+                    <input type="text" id="manualUserIdentifier" placeholder="example@gmail.com یا 09123456789">
+                </div>
+                <div class="form-group">
+                    <label>عملیات مورد نظر</label>
+                    <select id="manualUserAction">
+                        <option value="grant">اعطای اشتراک ویژه PRO (یک ماهه)</option>
+                        <option value="revoke">لغو / حذف اشتراک PRO</option>
+                    </select>
+                </div>
+            </div>
+            <button class="action-btn" style="background:var(--accent); color:#000;" onclick="manualManageUserPro()">⚡ اعمال تغییرات روی کاربر</button>
+        </div>
+
+        <div class="card" style="border: 2px solid var(--danger);">
+            <h2 style="color: var(--danger);">🛑 کلید توقف اضطراری تراکنش‌های مالی</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">با فعال کردن این گزینه، تمامی پرداخت‌ها و خرید اشتراک در سایت متوقف می‌شود.</p>
+            
+            <div class="form-group">
+                <label>وضعیت درگاه‌های پرداخت و خرید</label>
+                <select id="transactionsStopToggle" style="border-color: var(--danger);">
+                    <option value="false">فعال (پرداخت‌ها و خریدها برقرار است)</option>
+                    <option value="true">توقف کامل تراکنش‌ها (All transactions are stopped)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- MULTIPLE ANNOUNCEMENTS & MEDIA BUILDER CARD -->
+        <div class="card" style="border: 2px solid var(--accent);">
+            <h2>📢 مدیریت چندگانه اطلاعیه‌ها، متون و فایل‌های رسانه (عکس/ویدیو + متن)</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">می‌توانید چندین آیتم (ترکیبی از متن و عکس/ویدیو) ایجاد کنید تا در بالای صفحه اصلی نمایش داده شوند.</p>
+            
+            <div class="form-group" style="margin-bottom:15px;">
+                <label>نمایش کلی باکس‌های اطلاعیه در بالای صفحه اصلی</label>
+                <select id="bannerActiveToggle">
+                    <option value="false">غیرفعال (مخفی)</option>
+                    <option value="true">فعال (نمایش در بالای صفحه)</option>
+                </select>
+            </div>
+
+            <!-- Builder for New Item -->
+            <div style="background:var(--card-inner); border:1px dashed var(--accent); padding:15px; border-radius:8px; margin-bottom:20px;">
+                <h3 style="color:var(--accent); margin-top:0; font-size:15px;">افزودن اطلاعیه جدید</h3>
+                
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label>متن اطلاعیه / آموزش / تبلیغ</label>
+                    <textarea id="newBannerText" placeholder="متن مورد نظر..." rows="2"></textarea>
+                </div>
+
+                <div class="form-grid" style="margin-bottom:12px;">
+                    <div class="form-group">
+                        <label>نوع رسانه</label>
+                        <select id="newBannerMediaType">
+                            <option value="none">بدون رسانه (فقط متن)</option>
+                            <option value="image">تصویر (Image)</option>
+                            <option value="video">ویدیو (Video)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>آپلود فایل به کلادیناری</label>
+                        <div style="display:flex; gap:6px;">
+                            <input type="file" id="newBannerMediaFile" accept="image/*,video/*" style="padding:4px; font-size:12px;">
+                            <button class="action-btn" style="width:auto; padding:0 12px; font-size:12px; background:var(--accent); color:#000;" onclick="uploadBannerMediaToCloudinary()">آپلود</button>
+                        </div>
+                        <div id="newBannerUploadProgress" style="font-size:11px; color:var(--accent); display:none; margin-top:3px;"></div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label>لینک مستقیم فایل رسانه (Cloudinary URL)</label>
+                    <input type="text" id="newBannerMediaUrl" placeholder="https://res.cloudinary.com/...">
+                </div>
+
+                <button class="action-btn" style="background:var(--accent); color:#000;" onclick="addNewAnnouncementItem()">➕ افزودن این اطلاعیه به لیست</button>
+            </div>
+
+            <h3 style="color:var(--text-main); font-size:14px; margin-bottom:8px;">لیست اطلاعیه‌های ثبت‌شده:</h3>
+            <div id="announcementsAdminContainer">
+                <p style="color:var(--text-muted); font-size:13px;">در حال بارگذاری...</p>
+            </div>
+        </div>
+
         <div class="card" style="border: 2px solid var(--accent);">
             <h2>🎁 کمپین رایگان‌سازی موقت کل سایت و تست ادمین</h2>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">با وارد کردن تعداد روز، تمام بخش‌های سایت برای همه کاربران به مدت مشخص رایگان می‌شود. همچنین می‌توانید حالت تست ادمین را فعال کنید.</p>
-            
             <div class="form-grid" style="margin-bottom:15px;">
                 <div class="form-group">
                     <label>رایگان کردن کل سایت به مدت (تعداد روز - 0 برای غیرفعال)</label>
@@ -446,11 +707,8 @@
             </div>
         </div>
 
-        <!-- PRICING & DISCOUNT MANAGEMENT CARD -->
         <div class="card">
             <h2>💰 مدیریت قیمت‌گذاری ۳ محصول، تخفیف‌ها و پلن‌ها</h2>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">قیمت هر محصول را به تومان تعیین کنید و در صورت نیاز درصد تخفیف عمومی اعمال نمایید.</p>
-
             <div class="form-grid">
                 <div class="form-group">
                     <label>قیمت اشتراک ماهانه پرو (تومان)</label>
@@ -475,11 +733,8 @@
             </div>
         </div>
 
-        <!-- UNIVERSAL TAB ACCESS CONTROL CARD (ALL SIDEBAR TABS + HALF-LOCK) -->
         <div class="card">
-            <h2>🔒 کنترل سطح دسترسی جهانی تمام تب‌های منو (رایگان / نیمه‌قفل تصادفی / قفل کامل PRO)</h2>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">برای هر بخش می‌توانید حالت رایگان، قفل کامل یا «نیمه‌قفل 50% با پیش‌نمایش تار» را انتخاب کنید.</p>
-
+            <h2>🔒 کنترل سطح دسترسی جهانی تمام تب‌های منو</h2>
             <div class="toggle-grid">
                 <div class="toggle-item">
                     <span>🏋️ تمرینات (Exercises)</span>
@@ -588,20 +843,16 @@
             </div>
         </div>
 
-        <!-- MASTER SAVE ALL BUTTON CARD -->
         <div class="card" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid var(--success); text-align: center; padding: 30px;">
             <h2 style="color: var(--success); margin-top: 0;">💾 ذخیره‌سازی جامع تمام تغییرات پنل</h2>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">با کلیک روی دکمه زیر، قیمت‌ها، تنظیمات تخفیف، قفل تمامی تب‌ها و کمپین رایگان همگی به صورت یکجا در فایربیس ذخیره شده و روی کل سایت اعمال می‌شوند.</p>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                 <button class="action-btn" style="background: var(--success); color: #000; font-size: 16px; padding: 16px 30px; max-width: 400px;" onclick="saveAllAdminSettings()">💾 ذخیره همه تغییرات در فایربیس (Save All)</button>
                 <button class="action-btn" style="background: var(--danger); color: #fff; font-size: 14px; padding: 16px 20px; max-width: 220px;" onclick="resetAllLocks()">🔄 ریست کلی قفل‌ها</button>
             </div>
         </div>
 
-        <!-- TRAINER SALES & PAYOUT LEDGER -->
         <div class="card">
             <h2>📊 آمار فروش مربیان و وضعیت تسویه حساب</h2>
-            <p style="font-size:13px; color:var(--text-muted);">تعداد برنامه‌های فروخته شده توسط هر مربی و مبلغ قابل پرداخت (یا دریافت شده).</p>
             <table class="admin-table">
                 <thead>
                     <tr>
@@ -612,12 +863,11 @@
                     </tr>
                 </thead>
                 <tbody id="adminTrainerTable">
-                    <tr><td colspan="4" style="text-align:center;">در حال بارگذاری آمار مربیان...</td></tr>
+                    <tr><td colspan="4" style="text-align:center;">در حال بارگذاری...</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Users & Biometrics Intelligence Card -->
         <div class="card">
             <h2>👥 لیست تمامی خریداران و اعضای سیستم</h2>
             <table class="admin-table">
@@ -630,7 +880,7 @@
                     </tr>
                 </thead>
                 <tbody id="adminUsersTable">
-                    <tr><td colspan="4" style="text-align:center;">در حال بارگذاری کاربران...</td></tr>
+                    <tr><td colspan="4" style="text-align:center;">در حال بارگذاری...</td></tr>
                 </tbody>
             </table>
         </div>

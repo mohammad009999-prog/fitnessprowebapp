@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro - User Account & Elite Biometrics</title>
+    <title>Fitness Pro - User Account & Tariff Prices</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -118,16 +118,26 @@
             font-size: 12px;
             font-weight: bold;
         }
-        .routine-box {
-            background: var(--card-inner);
-            border: 1px solid var(--accent);
-            padding: 15px;
-            border-radius: 8px;
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
             margin-top: 15px;
         }
-        .routine-box h3 { color: #4caf50; margin-top: 0; }
+        .price-card {
+            background: var(--card-inner);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .price-card h3 { color: var(--accent); margin: 0 0 8px 0; font-size: 16px; }
+        .price-card .amount { font-size: 20px; font-weight: 900; color: var(--success); margin: 10px 0; }
+        .price-card p { font-size: 12px; color: var(--text-muted); margin: 0 0 12px 0; line-height: 1.5; }
 
-        /* PROFILE PHOTO & AVATAR UPLOAD */
         .profile-header-flex {
             display: flex;
             align-items: center;
@@ -153,7 +163,6 @@
             object-fit: cover;
         }
 
-        /* QUICK ACTION BUTTONS BANNER */
         .quick-actions-banner {
             display: flex;
             gap: 12px;
@@ -161,7 +170,6 @@
             margin-top: 15px;
         }
 
-        /* ELITE DASHBOARD MATRIX VISUAL PANEL */
         .elite-dashboard-panel {
             background: linear-gradient(135deg, #181822 0%, #111116 100%);
             border: 1px solid var(--accent);
@@ -207,7 +215,6 @@
             color: var(--accent);
         }
 
-        /* MACRO BREAKDOWN & AI ADVICE ROW */
         .insights-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -252,7 +259,7 @@
         table.admin-table th { background: #161616; color: var(--accent); }
 
         @media(max-width: 850px) {
-            .form-grid, .matrix-grid, .insights-grid { grid-template-columns: 1fr; }
+            .form-grid, .matrix-grid, .insights-grid, .pricing-grid { grid-template-columns: 1fr; }
             .profile-header-flex { flex-direction: column; align-items: flex-start; }
         }
     </style>
@@ -278,28 +285,34 @@
         const db = getFirestore(app);
 
         let currentUser = null;
-        window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000 };
+        window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000, transactionsStopped: false };
 
         async function loadPricingConfig() {
             try {
                 const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
                 if (pricingSnap.exists()) {
                     window.pricingConfig = pricingSnap.data();
-                    document.getElementById('proPriceText').innerText = (window.pricingConfig.proPrice || 40000).toLocaleString() + ' تومان';
                 }
             } catch (e) {
                 console.log("Using default pricing.");
             }
+            
+            // Update Public Pricing Cards
+            document.getElementById('pubProPrice').innerText = (window.pricingConfig.proPrice || 40000).toLocaleString() + ' تومان';
+            document.getElementById('pubWorkoutPrice').innerText = (window.pricingConfig.workoutPrice || 100000).toLocaleString() + ' تومان';
+            document.getElementById('pubNutritionPrice').innerText = (window.pricingConfig.nutritionPrice || 100000).toLocaleString() + ' تومان';
+            document.getElementById('pubBundlePrice').innerText = (window.pricingConfig.bundlePrice || 150000).toLocaleString() + ' تومان';
+            document.getElementById('proPriceText').innerText = (window.pricingConfig.proPrice || 40000).toLocaleString() + ' تومان';
         }
 
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             await loadPricingConfig();
             if (!user) {
-                document.getElementById('loggedOutView').style.display = 'block';
+                document.getElementById('loggedOutNotice').style.display = 'block';
                 document.getElementById('loggedInView').style.display = 'none';
             } else {
-                document.getElementById('loggedOutView').style.display = 'none';
+                document.getElementById('loggedOutNotice').style.display = 'none';
                 document.getElementById('loggedInView').style.display = 'block';
                 
                 document.getElementById('userEmailDisplay').innerText = user.email || user.phoneNumber;
@@ -390,6 +403,11 @@
         }
 
         window.payProMembership = async () => {
+            if (window.pricingConfig.transactionsStopped) {
+                alert('تمامی تراکنش‌های مالی تا اطلاع ثانوی متوقف شده است / All money transactions are stopped until further notice.');
+                return;
+            }
+
             if(!currentUser) return alert('لطفاً ابتدا وارد حساب کاربری خود شوید.');
             const price = window.pricingConfig.proPrice || 40000;
             
@@ -401,7 +419,6 @@
                 
                 await setDoc(doc(db, "users", currentUser.uid), { isPro: true, proExpiresAt: expires.toISOString() }, { merge: true });
                 
-                // Also record in trainer_orders so admin panel tracks it in the ledger
                 await addDoc(collection(db, "trainer_orders"), {
                     clientEmail: currentUser.email || currentUser.phoneNumber,
                     planType: 'ارتقا به حساب پرو (Pro Membership)',
@@ -525,7 +542,7 @@
         window.signOutUser = () => {
             signOut(auth).then(() => {
                 alert('با موفقیت خارج شدید.');
-                window.location.href = 'index_2.html';
+                window.location.href = 'index.html';
             });
         };
     </script>
@@ -534,20 +551,54 @@
 
     <header>
         <div class="top-controls">
-            <a href="index_2.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
+            <a href="index.html" class="top-btn" id="homeLink">🏠 خانه / Home</a>
             <button class="top-btn" onclick="window.location.reload()">فارسی / FA</button>
         </div>
-        <h1 id="mainTitle">حساب کاربری و داشبورد حرفه‌ای بیومتریک</h1>
-        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">آنالیز کامل ترکیب بدنی، تصویر پروفایل، محاسبات هوشمند ماکروها و وضعیت سلامت</p>
+        <h1 id="mainTitle">حساب کاربری و جدول قیمت خدمات</h1>
+        <p style="color:var(--text-muted); font-size:14px;" id="mainSub">شفافیت کامل قیمت‌ها، برنامه‌های تخصصی تمرین و تغذیه و آنالیز بیومتریک</p>
     </header>
 
     <div class="container">
 
+        <!-- PUBLIC PRICING & TARIFFS CARD (ALWAYS VISIBLE - ZARINPAL PUBLIC COMPLIANCE) -->
+        <div class="card" style="border: 2px solid var(--accent);">
+            <h2>💰 جدول قیمت‌ها و تعرفه‌های عمومی خدمات (بدون نیاز به لاگین)</h2>
+            <p style="font-size:13px; color:var(--text-muted);">تمامی قیمت‌های زیر به‌صورت شفاف تعیین شده‌اند و می‌توانید جهت سفارش برنامه به بخش مربیان مراجعه فرمایید.</p>
+            
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3>⭐ اشتراک ماهانه پرو (PRO)</h3>
+                    <div class="amount" id="pubProPrice">40,000 تومان</div>
+                    <p>دسترسی کامل به تمام بانک تمرینات، مقالات، کتابخانه‌ها و ابزارهای پیشرفته سایت.</p>
+                    <button class="action-btn" style="margin-top:auto;" onclick="payProMembership()">ارتقا به پرو</button>
+                </div>
+
+                <div class="price-card">
+                    <h3>🏋️ برنامه اختصاصی تمرین</h3>
+                    <div class="amount" id="pubWorkoutPrice">100,000 تومان</div>
+                    <p>برنامه تمرینی ۴ الی ۶ هفته‌ای سفارشی‌سازی شده توسط مربیان رسمی.</p>
+                    <a href="trainers.html" class="action-btn" style="margin-top:auto; text-decoration:none; display:block; text-align:center; line-height:24px;">انتخاب مربی</a>
+                </div>
+
+                <div class="price-card">
+                    <h3>🥗 برنامه اختصاصی تغذیه</h3>
+                    <div class="amount" id="pubNutritionPrice">100,000 تومان</div>
+                    <p>رژیم غذایی علمی بر اساس کالری، ماکروها و هدف بدنی شما.</p>
+                    <a href="trainers.html" class="action-btn" style="margin-top:auto; text-decoration:none; display:block; text-align:center; line-height:24px;">انتخاب مربی</a>
+                </div>
+
+                <div class="price-card" style="border-color: var(--success);">
+                    <h3 style="color:var(--success);">🎁 پکیج کامل (تمرین + تغذیه)</h3>
+                    <div class="amount" id="pubBundlePrice" style="color:var(--accent);">150,000 تومان</div>
+                    <p>پکیج طلایی دو برنامه همزمان با تخفیف ویژه مربیان.</p>
+                    <a href="trainers.html" class="action-btn" style="margin-top:auto; background:var(--success); color:#000; text-decoration:none; display:block; text-align:center; line-height:24px;">سفارش پکیج کامل</a>
+                </div>
+            </div>
+        </div>
+
         <!-- LOGGED OUT NOTICE -->
-        <div id="loggedOutView" class="card" style="text-align:center; padding:40px;">
-            <h2 style="color:var(--danger);">لطفاً وارد حساب کاربری خود شوید</h2>
-            <p style="color:var(--text-muted); margin-bottom:20px;">برای مشاهده پروفایل و برنامه‌های تمرینی باید وارد حساب کاربری فیتنس پرو شوید.</p>
-            <a href="index_2.html" class="action-btn" style="display:inline-block; text-decoration:none; max-width:200px;">بازگشت به صفحه اصلی</a>
+        <div id="loggedOutNotice" class="card" style="text-align:center; padding:25px;">
+            <p style="color:var(--text-muted); margin:0;">جهت مشاهده سابقه تراکنش‌ها و برنامه‌های دریافتی شخصی، می‌توانید وارد حساب کاربری خود شوید: <a href="index.html" style="color:var(--accent); font-weight:bold;">ورود به حساب کاربری</a></p>
         </div>
 
         <!-- LOGGED IN DASHBOARD -->
@@ -555,7 +606,7 @@
             
             <!-- Profile Card with Photo Upload & Quick Action Buttons -->
             <div class="card">
-                <h2 id="profileTitle">اطلاعات حساب کاربری و خرید اشتراک</h2>
+                <h2 id="profileTitle">اطلاعات حساب کاربری و مدیریت اشتراک</h2>
                 
                 <div class="profile-header-flex">
                     <div class="avatar-preview-box">
@@ -572,16 +623,16 @@
                     </div>
                 </div>
 
-                <!-- QUICK ACTION BUTTONS (Buy Pro & Buy Workout/Nutrition via Trainers Tab) -->
+                <!-- QUICK ACTION BUTTONS -->
                 <div class="quick-actions-banner">
                     <button class="action-btn" style="background:var(--accent); color:#000; margin-top:0;" onclick="payProMembership()">⭐ ارتقا به حساب PRO (<span id="proPriceText">40,000</span>)</button>
-                    <a href="trainers_2.html" class="action-btn" style="background:#2563eb; color:#fff; text-align:center; text-decoration:none; margin-top:0; display:block; line-height:24px;">🏋️‍♂️ رفتن به مربیان برای خرید برنامه تمرین و تغذیه</a>
+                    <a href="trainers.html" class="action-btn" style="background:#2563eb; color:#fff; text-align:center; text-decoration:none; margin-top:0; display:block; line-height:24px;">🏋️‍♂️ مشاهده مربیان و سفارش برنامه آنلاین</a>
                 </div>
 
                 <button class="action-btn" style="background:var(--danger); margin-top:15px; max-width:200px;" onclick="signOutUser()" id="signOutBtn">خروج از حساب</button>
             </div>
 
-            <!-- Advanced Biometrics Form & Elite Matrix Card (All inputs optional) -->
+            <!-- Advanced Biometrics Form & Elite Matrix Card -->
             <div class="card">
                 <h2 id="biometricsTitle">📊 مشخصات بدنی و داشبورد تحلیل پیشرفته (اختیاری)</h2>
                 <p style="font-size:13px; color:var(--text-muted);">اطلاعات دلخواه خود را وارد کنید تا وضعیت متابولیسم، ماکروها و توصیه‌های هوشمند محاسبه شوند.</p>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="fa" id="htmlRoot" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">مرجع فوق‌حرفه‌ای و تخصصی مسابقات بانوان | Women's Ultimate Pro Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0b0e;
+            --card-bg: #16161c;
+            --card-inner: #1f1f28;
+            --accent: #e040fb; 
+            --accent-hover: #d500f9;
+            --success: #00e676;
+            --danger: #ff3b30;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --border: #2a2a35;
+        }
+        body {
+            font-family: 'Vazirmatn', Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+        * { box-sizing: border-box; }
+
+        /* SIDEBAR NAVIGATION */
+        aside.app-sidebar {
+            width: 290px;
+            background: #18181a;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 15px;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        [dir="ltr"] aside.app-sidebar {
+            border-left: none;
+            border-right: 1px solid var(--border);
+        }
+        .sidebar-logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+        .sidebar-logo span {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: normal;
+            margin-top: 2px;
+        }
+        .tab-btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+            text-decoration: none;
+            text-align: right;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Vazirmatn', sans-serif;
+            width: 100%;
+        }
+        [dir="ltr"] .tab-btn { text-align: left; }
+        .tab-btn:hover, .tab-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        /* MAIN CONTENT */
+        main.app-main {
+            flex-grow: 1;
+            padding: 20px;
+            width: calc(100% - 290px);
+            max-width: calc(100% - 290px);
+            overflow-x: hidden;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #181818;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-title-area h1 {
+            color: var(--accent);
+            margin: 0;
+            font-size: 22px;
+        }
+        .header-title-area p {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .top-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .top-btn {
+            background: var(--card-bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            text-decoration: none;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .top-btn:hover { background: var(--accent); color: #000; }
+
+        .section-content { display: none; }
+        .section-content.active { display: block; }
+
+        .category-header {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 6px;
+            margin: 25px 0 15px 0;
+            font-size: 20px;
+        }
+
+        /* GRID & CARDS */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 22px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .card h3 {
+            margin: 0;
+            color: var(--accent);
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .card p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .prop-box {
+            background: var(--card-inner);
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .prop-box b { color: var(--accent); display: block; margin-bottom: 4px; font-size: 14px; }
+        
+        .warning-box {
+            background: rgba(255, 59, 48, 0.1);
+            border: 2px solid var(--danger);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            color: #ff8a80;
+        }
+        .warning-box b { color: var(--danger); font-size: 16px; display: block; margin-bottom: 8px; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Vazirmatn', sans-serif;
+            margin-bottom: 10px;
+        }
+        button.action-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: 0.2s;
+        }
+        button.action-btn:hover { background: var(--accent-hover); color: #fff; }
+
+        @media(max-width: 850px) {
+            body { flex-direction: column; }
+            aside.app-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border: none;
+                border-bottom: 1px solid var(--border);
+            }
+            main.app-main { width: 100%; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="app-sidebar">
+        <div class="sidebar-logo">
+            Fitness Persia
+            <span id="sidebarSub">Women's Elite Pro Hub</span>
+        </div>
+        <div class="tabs">
+            <a href="index.html" class="tab-btn" id="navHome">🏠 داشبورد اصلی / Home</a>
+            <button class="tab-btn active" onclick="switchMainTab('guide')" id="navGuide">📖 مرجع جامع فیزیولوژی و تمرین</button>
+            <button class="tab-btn" onclick="switchMainTab('divisions')" id="navDivisions">🏆 دسته‌های مسابقه‌ای (Division Standards)</button>
+            <button class="tab-btn" onclick="switchMainTab('pharmacology')" id="navPharma">💊 داروها، استروئیدها و هشدار جدی</button>
+            <button class="tab-btn" onclick="switchMainTab('stageprep')" id="navStagePrep">🎨 رنگ استیج، برنزه کردن و گریم کامل</button>
+            <button class="tab-btn" onclick="switchMainTab('posing')" id="navPosing">👠 پوزینگ تخصصی و استیج‌پرزنتیشن</button>
+            <button class="tab-btn" onclick="switchMainTab('hormones')" id="navHormones">🌸 ردیاب سیکل قاعدگی و هورمون‌ها</button>
+            <button class="tab-btn" onclick="data-target" onclick="switchMainTab('tools')" id="navTools">🛠️ ابزارها و هفته پایانی (Peak Week)</button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+        <header>
+            <div class="header-title-area">
+                <h1 id="headerTitle">پایگاه جامع قهرمانان پرو و فیتنس بانوان</h1>
+                <p id="headerSub">راهنمای کامل استیج، دسته‌بندی‌ها، راهنمای دارویی و هشدارها، رنگ تخصصی، پوزینگ و ردیاب سیکل</p>
+            </div>
+            <div class="top-controls">
+                <button class="top-btn" onclick="toggleLanguage()" id="langBtn">English / فارسی</button>
+                <a href="account.html" class="top-btn" id="accountBtn">👤 حساب کاربری</a>
+            </div>
+        </header>
+
+        <!-- TAB 0: SCIENTIFIC GUIDE -->
+        <div id="tabGuide" class="section-content active">
+            <h2 class="category-header" id="guideHeader">📖 مرجع علمی و فیزیولوژیک بدنسازی بانوان</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;" id="guideDesc">پایه‌ریزی علمی اصول تمرین، تغذیه و بارگذاری مکانیکی برای ورزشکاران جدی و حرفه‌ای.</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3 id="g1Title">🧬 تفاوت‌های هورمونی و بیولوژیک</h3>
+                    <p id="g1Desc">نقش استروژن در محافظت از مفاصل و ریکاوری سیستم عصبی مرکزی در برابر تمرینات پرفشار.</p>
+                    <div class="prop-box">
+                        <b>پاسخ به بار سنگین:</b>
+                        <span>عضلات بانوان به دلیل درصد بالای فیبرهای کندزن (Type I) قابلیت تحمل حجم تکرار بالا و ریکاوری سریع‌تر بین ست‌ها را دارند.</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 id="g2Title">❌ تصحیح باورهای غلط رایج</h3>
+                    <p id="g2Desc">رد شایعات باشگاهی درباره مردانه شدن یا عدم توانایی بانوان در وزنه زدن سنگین.</p>
+                    <div class="prop-box">
+                        <b>واقعیت هورمونی:</b>
+                        <span>بدون وجود دوزهای بالای هورمون‌های آندروژنیک خارجی، ساخت حجم عضلانی مردانه برای زنان از نظر بیولوژیک غیرممکن است.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 1: DIVISIONS & STANDARDS -->
+        <div id="tabDivisions" class="section-content">
+            <h2 class="category-header" id="divHeader">🏆 راهنمای جامع دسته‌های مسابقه‌ای IFBB Pro & Amateur</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;" id="divDesc">شناخت دقیق استانداردهای داوری، میزان حجم، کات و فرم بدنی مورد انتظار در هر دسته.</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>👙 دسته بیکینی (Bikini Pro/Amateur)</h3>
+                    <p>محبوب‌ترین دسته مسابقاتی جهان با تمرکز بر تعادل، زیبایی‌شناسی زنانه و شادابی چهره.</p>
+                    <div class="prop-box">
+                        <b>استاندارد داوری:</b>
+                        <span>بدون خط‌خطی عضلانی شدید یا کات عمیق. تمرکز اصلی روی گردی بالای باسن (Glute Shelf)، کمر بسیار باریک، V-Taper ملایم، و راه رفتن همراه با اعتماد به نفس روی پاشنه بلند.</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🍑 دسته ولنس (Wellness Pro/Amateur)</h3>
+                    <p>مختص بانوان با ساختار پایین‌تنه غالب (رون‌ها و باسن بسیار حجیم و پر).</p>
+                    <div class="prop-box">
+                        <b>استاندارد داوری:</b>
+                        <span>حجم عضلات چهارسر ران، همسترینگ و باسن باید چشمگیر و تفکیک‌شده باشد. بالاتنه باید تناسب ورزشی داشته باشد اما حجم آن نباید با پایین‌تنه رقابت کند.</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🏆 دسته فیگور (Figure / Bodyfitness)</h3>
+                    <p>ورزشکاران با حجم بیشتر، شانه چهارگوش و کات نمایان‌تر عضلات.</p>
+                    <div class="prop-box">
+                        <b>استاندارد داوری:</b>
+                        <span>عضلات پشتی بزرگ (Latissimus) پهن، خطوط تفکیک در سرشانه و پشت، و کات شکم مشخص‌تر نسبت به بیکینی.</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>⚡ دسته فیزیک و بدنسازی زنانه (Women's Physique & BB)</h3>
+                    <p>بالاترین سطح حجم عضلانی، خشکی و تفکیک فیبری در بدنسازی بانوان.</p>
+                    <div class="prop-box">
+                        <b>استاندارد داوری:</b>
+                        <span>حجم عضلانی چشمگیر، کات عمیق فیبرهای عضلانی در سراسر بدن و اجرای پوزهای اجباری پیچیده.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: PHARMACOLOGY, STEROIDS & SERIOUS WARNING (FULLY EXPANDED) -->
+        <div id="tabPharmacology" class="section-content">
+            <h2 class="category-header" id="pharmaHeader">💊 راهنمای دارویی، استروئیدها، عوارض جبران‌ناپذیر و پروتکل پاکسازی</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;" id="pharmaDesc">آموزش تخصصی کاهش آسیب (Harm Reduction)، آگاهی از عوارض دائمی آندروژن‌ها، و لزوم دوری از ترکیبات پرخطر در بانوان.</p>
+            
+            <!-- CRITICAL WARNING BOX -->
+            <div class="warning-box">
+                <b>🚨 هشدار بسیار جدی و حیاتی درباره مصرف استروئیدها در بانوان:</b>
+                سیستم هورمونی بانوان بسیار ظریف و حساس است. مصرف داروهای استروئیدی و آندروژنیک در زنان می‌تواند منجر به <b>ویرایلیزاسیون (مردانه‌شدن غیرقابل بازگشت)</b> شامل: کلفت‌شدن دائمی صدا، ریزش موی سر الگوی مردانه، رشد موهای زائد ضخیم در صورت، تغییر شکل فک و استخوان‌بندی صورت، و اختلالات شدید کبدی و باروری شود. <u>توصیه اکید مربیان و پزشکان ارشد این است که تا جای ممکن از مصرف هرگونه دارو و استروئید پرهیز کرده</u> و پیشرفت طبیعی و سلامت بلندمدت را در اولویت قرار دهید.
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>⚠️ واقعیت‌های تلخ استفاده از ترکیبات در سطح حرفه‌ای</h3>
+                    <p>بررسی علمی ترکیباتی که متأسفانه در سطح مسابقات پرو (Pro Level) بحث می‌شوند و عوارض واقعی آن‌ها:</p>
+                    <div class="prop-box">
+                        <b>اکاندرولون (Anavar) و پریموبولان (Primobolan):</b>
+                        <span>این ترکیبات به دلیل ساختار ملایم‌ترشان بیشترین شناخت را در سطح پرو دارند، اما به این معنا نیست که «بدون عارضه» هستند. مصرف آن‌ها در دوزهای بالا یا طولانی‌مدت همچنان سرکوب‌کننده محور هورمونی طبیعی بدن (HPGA) و آسیب‌زننده به کبد است.</span>
+                    </div>
+                    <div class="prop-box" style="border-color: var(--danger);">
+                        <b style="color: var(--danger);">خط قرمز مطلق (سم مهلک برای زنان):</b>
+                        <span>ترکیباتی مانند <b>Trenbolone (ترنبولون)، Testosterone (تستسترون با دوز بالا)، Nandrolone (ناندرولون) و Dianabol (دیانابل)</b> در همان هفته‌های اول مصرف باعث بروز تغییرات دائمی و غیرقابل برگشت در صدای زن و ساختار صورت او می‌شوند. استفاده از این ترکیبات خودکشی بیولوژیک است.</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🛡️ پروتکل پاکسازی، دی‌توکس و بازسازی ارگان‌ها (Organ Protection)</h3>
+                    <p>اگر ورزشکاری به هر دلیلی در معرض پاکسازی پس از دوره قرار گیرد، رویکردهای حمایتی ارگان‌ها به چه صورت است؟</p>
+                    <div class="prop-box">
+                        <b>محافظت از کبد و پروفایل چربی خون:</b>
+                        <span>• <b>TUDCA و Silymarin:</b> جهت کاهش آنزیم‌های آسیب‌دیده کبد.<br>
+                        • <b>Omega-3 با دوز درمانی:</b> جهت مقابله با افت شدید کلسترول خوب (HDL) و افزایش کلسترول بد (LDL).<br>
+                        • <b>NAC (ان-استیل سیستئین):</b> جهت تولید گلوتاتیون و پاکسازی رادیکال‌های آزاد.</span>
+                    </div>
+                    <div class="prop-box">
+                        <b>بازگردانی تعادل هورمونی (Hormonal Recovery):</b>
+                        <span>کنترل کورتیزول با مکمل‌هایی مانند فسفاتیدیل‌سرین، ویتامین D3 و زینک بالا، و استراحت کامل فصلی (Off-season طولانی) جهت دادن فرصت به سیستم غدد داخلی برای بازسازی.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: STAGE PREP & TANNING (FULL DETAILED EXHAUSTIVE MODULE) -->
+        <div id="tabStagePrep" class="section-content">
+            <h2 class="category-header" id="tanHeader">🎨 رنگ استیج، برنزه کردن تخصصی و گریم حرفه‌ای مسابقه</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;" id="tanDesc">نورپردازی ۵۰,۰۰۰ واتی استیج تا ۸۰٪ کات و رنگ پوست طبیعی را محو می‌کند. استراتژی گام‌به‌گام رنگ‌آمیزی و براق‌سازی بدن.</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>🤎 مرحله‌بندی رنگ‌آمیزی استیج (Tanning Timeline)</h3>
+                    <p>پروتکل استاندارد جهانی استفاده از رنگ‌های تخصصی فدراسیون (مثل Pro Tan یا Jan Tana) طی ۴۸ ساعت منتهی به مسابقه.</p>
+                    <div class="prop-box">
+                        <b>تایم‌لاین اجرایی رنگ:</b>
+                        <span><b>۴۸ ساعت مانده (Exfoliation):</b> لایه‌برداری کامل تمام سلول‌های مرده پوست با اسکراب‌های بدون چربی جهت جلوگیری از لکه‌دار شدن رنگ.<br>
+                        <b>۲۴ ساعت مانده (Base Coat):</b> زدن لایه اول بیس‌تان؛ این لایه زمینه تیره و عمیق را روی پوست ایجاد می‌کند.<br>
+                        <b>صبح روز مسابقه (Stage Coats):</b> اعمال ۲ الی ۳ لایه رنگ فشرده با دستکش یا پد مخصوص. هر لایه باید کاملاً خشک شود (با سشوار باد ملایم) قبل از اینکه لایه بعدی زده شود.</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🚫 اشتباهات مرگبار در رنگ استیج (Common Pitfalls)</h3>
+                    <p>چگونه از افتادن سایه‌های سبز، نارنجی یا رگه‌رگه شدن رنگ زیر نور داوران جلوگیری کنیم؟</p>
+                    <div class="prop-box">
+                        <b>نکات حیاتی پیشگیری:</b>
+                        <span>• <b>پرهیز از دئودورانت و عطر:</b> الکل و مواد معطر موجود در مام یا ادکلن با رنگ استیج واکنش داده و زیر بغل را سبز یا لکه‌دار می‌کنند.<br>
+                        • <b>کنترل تعریق در پمپ‌روم:</b> در اتاق گرم کردن (Pump-room)، از نشستن مستقیم روی صندلی‌های پلاستیکی یا تعریق شدید بدون حوله تمیز خودداری کنید تا رنگ پاک نشود.<br>
+                        • <b>اصلاح موهای زائد:</b> اصلاح بدن باید حداقل ۲۴ الی ۳۶ ساعت پیش از زدن رنگ انجام شود تا منافذ پوست بسته شوند و رنگ درون آن‌ها جمع نشود.</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>✨ براق‌کننده‌ها، روغن و گریم نهایی (Glaze & Oils)</h3>
+                    <p>استفاده هوشمندانه از روغن یا ژل‌های براق‌کننده (Stage Glaze) جهت انعکاس نور و نمایش عمق تفکیک عضلات.</p>
+                    <div class="prop-box">
+                        <b>نحوه استفاده از گلیز:</b>
+                        <span>گلیز یا روغن نباید به صورت مایع و چکنده روی بدن مالیده شود. مقدار کمی از آن را کف دست مالیده و به آرامی روی عضلات کلیدی (سرشانه، چهارسر ران، شکم و باسن) ضربه بزنید تا سایه عضلات زیر پروژکتورهای صحنه برجسته‌تر دیده شود.</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>💎 انتخاب رنگ و نگین‌دوزی بیکینی مسابقه</h3>
+                    <p>هارمونی رنگ بیکینی با تناژ رنگ پوست برنزه شده و رنگ موی ورزشکار.</p>
+                    <div class="prop-box">
+                        <b>قوانین طلایی بیکینی:</b>
+                        <span>• پوست‌های بسیار تیره: رنگ‌های جیغ مثل سرخابی، زرد نئون، سبز زمردی.<br>
+                        • پوست‌های برنزه استاندارد: قرمز یاقوتی، آبی سلطنتی، بنفش تیره.<br>
+                        • کریستال‌ها و سنگ‌ها: استراس‌های سواروسکی (Swarovski) با انعکاس نور بالا که توجه داوران را در ثانیه‌های اول حضور روی استیج جلب می‌کند.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: POSING & STAGE PRESENTATION -->
+        <div id="tabPosing" class="section-content">
+            <h2 class="category-header" id="posingHeader">👠 پوزینگ تخصصی و استیج‌پرزنتیشن (Stage Presence)</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;" id="posingDesc">تسلط بر صحنه، پوزهای کوارتر ترن و نحوه راه رفتن با کفش‌های پاشنه‌بلند مسابقه‌ای.</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>🔄 پوزهای چهار چرخش (Quarter Turns Mechanics)</h3>
+                    <p>نحوه ایستادن صحیح رو به جلو، پهلو و پشت برای نمایش بی‌نقص تقارن و خطوط بدن.</p>
+                    <div class="prop-box">
+                        <b>پوز رو به جلو (Front Pose):</b>
+                        <span>انتقال وزن به یک پا، متمایل کردن لگن به سمت عقب برای برجسته کردن سرین و باریک نشان دادن کمر، لبخند طبیعی و نگاه مستقیم به داوران.<br>
+                        <b>پوز پشت (Back Pose):</b>
+                        <span>نشان دادن گردی بالای باسن (Glute Shelf) و عضلات همسترینگ بدون قوس بیش از حد مهره‌های کمر (Avoid Hyperlordosis).</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🚶 راه رفتن استیج و T-Walk</h3>
+                    <p>تسلط بر راه رفتن با کفش پاشنه ۱۲ سانتی‌متری استیج و حفظ تعادل کامل.</p>
+                    <div class="prop-box">
+                        <b>تمرینات کلیدی پوزینگ:</b>
+                        <span>تمرین روزانه حداقل ۳۰ دقیقه با کفش مسابقه، کنترل تنفس در حالت انقباض شکم (Vacuum)، و حفظ اعتماد به نفس بالا در حرکات نمایشی انفرادی (I-Walk).</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: HORMONAL CYCLE TRACKER -->
+        <div id="tabHormones" class="section-content">
+            <h2 class="category-header" id="hormoneHeader">🌸 ردیاب هوشمند سیکل قاعدگی و تعادل هورمونی</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;" id="hormoneDesc">تنظیم خودکار تمرینات و تغذیه بر اساس فازهای هورمونی با ابزار تعاملی ثبت سیکل.</p>
+            
+            <div class="grid">
+                <div class="card" style="border: 2px solid var(--accent);">
+                    <h3 id="trackerTitle">📅 ردیاب و پیش‌بینی‌کننده هوشمند سیکل (Cycle Tracker)</h3>
+                    <p id="trackerDesc">روز شروع آخرین قاعدگی خود را وارد کنید تا وضعیت فعلی هورمون‌ها و توصیه تمرینی صادر شود:</p>
+                    
+                    <label id="lblCycleStart">تاریخ روز اول آخرین قاعدگی:</label>
+                    <input type="date" id="inputCycleStart">
+                    
+                    <label id="lblCycleLength">میانگین طول دوره (تعداد روز):</label>
+                    <input type="number" id="inputCycleLength" value="28" placeholder="28">
+                    
+                    <button class="action-btn" onclick="calculateCyclePhase()" id="btnCalcCycle">محاسبه فاز هورمونی و برنامه امروز</button>
+                    
+                    <div id="cycleResultBox" class="prop-box" style="margin-top:10px; display:none;"></div>
+                </div>
+
+                <div class="card">
+                    <h3 id="cardCycleTitle">🔄 موتور تمرین همگام با سیکل هورمونی (Cycle-Synced Training)</h3>
+                    <p id="cardCycleDesc">فازهای چهارگانه قاعدگی مستقیماً بر استقامت و توان سیستم عصبی تأثیر می‌گذارند:</p>
+                    <div class="prop-box">
+                        <b>فاز قاعدگی (Days 1-5):</b>
+                        <span>انرژی پایین‌تر. تمرکز روی ریکاوری، کششی و وزنه‌های سبک.</span>
+                    </div>
+                    <div class="prop-box">
+                        <b>فاز فولیکولار و تخمک‌گذاری (Days 6-16):</b>
+                        <span>اوج استروژن و قدرت بدنی! بهترین زمان برای شکستن رکوردهای وزنه.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: TOOLS & PEAK WEEK -->
+        <div id="tabTools" class="section-content">
+            <h2 class="category-header" id="toolHeader">🛠️ موتور هوشمند آنالیز استیج و هفته پایانی (Peak Week)</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;" id="toolDesc">محاسبه‌گر نسبت طلایی دور کمر به باسن (WHR) و پروتکل گام‌به‌گام هفته پایانی مسابقه.</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3 id="whrCalcTitle">📐 ماشین‌حساب نسبت طلایی استیج (WHR Calculator)</h3>
+                    <label id="lblWaist">دور کمر (سانتی‌متر):</label>
+                    <input type="number" id="inputWaist" placeholder="مثلاً 64">
+                    <label id="lblHip">دور باسن / لگن (سانتی‌متر):</label>
+                    <input type="number" id="inputHip" placeholder="مثلاً 96">
+                    <button class="action-btn" onclick="calculateWHR()" id="btnCalcWHR">محاسبه و تحلیل تناسب</button>
+                    <div id="whrResult" class="prop-box" style="margin-top:10px; display:none;"></div>
+                </div>
+
+                <div class="card">
+                    <h3 id="peakTitle">🎯 راهنمای تعاملی پروتکل هفته پایانی (Peak Week Protocol)</h3>
+                    <select id="peakDaySelect" onchange="updatePeakProtocol()">
+                        <option value="7">T-7 (هفت روز تا مسابقه: شروع بارگیری آب و سدیم بالا)</option>
+                        <option value="4">T-4 (چهار روز تا مسابقه: تخلیه کربوهیدرات و کاهش سدیم)</option>
+                        <option value="2">T-2 (دو روز تا مسابقه: شروع بارگیری کربوهیدرات و خشک‌سازی)</option>
+                        <option value="0">Stage Day (روز مسابقه: پمپاژ نهایی و اتوژه)</option>
+                    </select>
+                    <div id="peakProtocolOutput" class="prop-box" style="margin-top:10px;">
+                        <b>دستورالعمل T-7:</b> مصرف آب روزانه را به ۸ الی ۱۰ لیتر برسانید. سدیم را در بالاترین حد نرمال نگه دارید.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentLang = 'fa';
+
+        function switchMainTab(tabId) {
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('aside .tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab' + capitalize(tabId)).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            const root = document.getElementById('htmlRoot');
+            root.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+            root.setAttribute('lang', currentLang);
+
+            if (currentLang === 'en') {
+                document.getElementById('sidebarSub').innerText = "Women's Elite Pro Hub";
+                document.getElementById('navHome').innerText = "🏠 Main Dashboard / Home";
+                document.getElementById('navGuide').innerText = "📖 Science & Physiology Guide";
+                document.getElementById('navDivisions').innerText = "🏆 Competition Divisions Standards";
+                document.getElementById('navPharma').innerText = "💊 Steroids, Drugs & Serious Warning";
+                document.getElementById('navStagePrep').innerText = "🎨 Stage Tan, Color & Full Makeup";
+                document.getElementById('navPosing').innerText = "👠 Posing & Stage Presentation";
+                document.getElementById('navHormones').innerText = "🌸 Hormone & Cycle Tracker";
+                document.getElementById('navTools').innerText = "🛠️ Tools & Peak Week";
+                
+                document.getElementById('headerTitle').innerText = "Women's Ultimate Pro & Fitness Hub";
+                document.getElementById('headerSub').innerText = "Complete Stage Guide, Divisions, Drug Guidance & Warnings, Pro Tanning, Posing & Cycle Tracking";
+                document.getElementById('langBtn').innerText = "فارسی / English";
+                document.getElementById('accountBtn').innerText = "👤 Account";
+            } else {
+                window.location.reload();
+            }
+        }
+
+        function calculateCyclePhase() {
+            const startDateVal = document.getElementById('inputCycleStart').value;
+            const cycleLength = parseInt(document.getElementById('inputCycleLength').value) || 28;
+            const resBox = document.getElementById('cycleResultBox');
+
+            if (!startDateVal) {
+                alert(currentLang === 'fa' ? 'لطفاً تاریخ شروع آخرین قاعدگی را وارد کنید.' : 'Please enter the start date of your last period.');
+                return;
+            }
+
+            const startDate = new Date(startDateVal);
+            const today = new Date();
+            const diffTime = today - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+            if (diffDays < 1 || diffDays > 60) {
+                alert(currentLang === 'fa' ? 'تاریخ وارد شده نامعتبر یا بسیار قدیمی است.' : 'Entered date is invalid or too far in the past.');
+                return;
+            }
+
+            const currentDayInCycle = ((diffDays - 1) % cycleLength) + 1;
+            resBox.style.display = 'block';
+
+            let phaseName = '';
+            let advice = '';
+
+            if (currentDayInCycle >= 1 && currentDayInCycle <= 5) {
+                phaseName = currentLang === 'fa' ? 'فاز قاعدگی (Menstrual Phase - Days 1-5)' : 'Menstrual Phase (Days 1-5)';
+                advice = currentLang === 'fa' ? 'انرژی و استروژن پایین. تمرکز روی ریکاوری فعال، یوگا و وزنه‌های سبک.' : 'Lowest estrogen & energy. Focus on active recovery, mobility, and light lifting.';
+            } else if (currentDayInCycle >= 6 && currentDayInCycle <= 13) {
+                phaseName = currentLang === 'fa' ? 'فاز فولیکولار (Follicular Phase - Days 6-13)' : 'Follicular Phase (Days 6-13)';
+                advice = currentLang === 'fa' ? 'افزایش استروژن و تستسترون. اوج قدرت بدنی! بهترین زمان برای شکستن رکوردهای وزنه.' : 'Rising estrogen & testosterone. Peak strength! Perfect time for PRs.';
+            } else if (currentDayInCycle >= 14 && currentDayInCycle <= 16) {
+                phaseName = currentLang === 'fa' ? 'فاز تخمک‌گذاری (Ovulation Phase - Days 14-16)' : 'Ovulation Phase (Days 14-16)';
+                advice = currentLang === 'fa' ? 'اوج انرژی و اعتماد به نفس. تمرینات پرفشار و هوازی سنگین.' : 'Peak energy and confidence. High-intensity workouts and heavy cardio.';
+            } else {
+                phaseName = currentLang === 'fa' ? 'فاز لوتئال (Luteal Phase - Days 17-28)' : 'Luteal Phase (Days 17-28)';
+                advice = currentLang === 'fa' ? 'افزایش پروژسترون و احتباس آب. تمرکز روی حجم متوسط، مدیریت استرس و کنترل کربوهیدرات.' : 'Rising progesterone & water retention. Moderate volume, carb control.';
+            }
+
+            resBox.innerHTML = `<b>${currentLang === 'fa' ? 'نتیجه تحلیل سیکل امروز:' : 'Today Cycle Analysis Result:'}</b><br>
+            • ${currentLang === 'fa' ? 'روز جاری در سیکل:' : 'Current Day in Cycle:'} <b>${currentDayInCycle}</b><br>
+            • ${currentLang === 'fa' ? 'فاز هورمونی فعال:' : 'Active Hormone Phase:'} <span style="color:var(--accent);">${phaseName}</span><br>
+            • ${currentLang === 'fa' ? 'دستورالعمل مربی:' : 'Coach Prescription:'} ${advice}`;
+        }
+
+        function calculateWHR() {
+            const waist = parseFloat(document.getElementById('inputWaist').value);
+            const hip = parseFloat(document.getElementById('inputHip').value);
+            const resBox = document.getElementById('whrResult');
+
+            if (!waist || !hip || hip <= 0) {
+                alert(currentLang === 'fa' ? 'لطفاً اعداد معتبر برای کمر و باسن وارد کنید.' : 'Please enter valid waist and hip values.');
+                return;
+            }
+
+            const whr = waist / hip;
+            resBox.style.display = 'block';
+            let analysis = whr <= 0.72 ? (currentLang === 'fa' ? 'فوق‌العاده عالی! ایده‌آل برای استیج پرو.' : 'Outstanding! Perfect for PRO stage.') : (currentLang === 'fa' ? 'استاندارد خوب. نیاز به تمرکز روی سرین و بالاتنه.' : 'Good standard. Needs glute and upper body focus.');
+            resBox.innerHTML = `<b>${currentLang === 'fa' ? 'نتیجه تحلیل تناسب:' : 'Proportion Analysis Result:'}</b> WHR: ${whr.toFixed(2)} - ${analysis}`;
+        }
+
+        function updatePeakProtocol() {
+            const dayVal = document.getElementById('peakDaySelect').value;
+            const output = document.getElementById('peakProtocolOutput');
+            let textFa = dayVal === '7' ? "<b>T-7:</b> آب ۸-۱۰ لیتر و سدیم بالا جهت آماده‌سازی آلدوسترون." : (dayVal === '4' ? "<b>T-4:</b> تخلیه کربوهیدرات جهت خالی کردن گلیکوژن." : (dayVal === '2' ? "<b>T-2:</b> بارگیری کربوهیدرات تمیز و کاهش آب." : "<b>Stage Day:</b> پمپاژ نهایی، آب محدود و اتوژه استیج."));
+            output.innerHTML = textFa;
+        }
+    </script>
+</body>
+</html>

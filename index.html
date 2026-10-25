@@ -109,7 +109,7 @@
             padding: 2px 6px;
             border-radius: 4px;
             font-weight: bold;
-            display: none; /* Hidden by default; only shown if PRO */
+            display: none;
         }
         .badge-pro { background: #3a2a1a; color: #ff9800; display: inline-block; }
 
@@ -209,6 +209,87 @@
         .top-btn:hover {
             background: var(--accent);
             color: #000;
+        }
+
+        /* PUBLIC PRICING BANNER CARD */
+        .public-pricing-banner {
+            background: linear-gradient(135deg, #181820 0%, #111116 100%);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .public-pricing-banner h3 {
+            color: var(--accent);
+            margin: 0 0 6px 0;
+            font-size: 18px;
+        }
+        .public-pricing-banner p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin: 0 0 15px 0;
+        }
+        .pricing-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .p-card {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .p-card h4 { color: #fff; margin: 0 0 6px 0; font-size: 14px; }
+        .p-card .p-amount { font-size: 18px; font-weight: bold; color: var(--success); margin: 6px 0; }
+        .p-card button, .p-card a {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 8px;
+            display: block;
+        }
+
+        /* DYNAMIC ADMIN TOP BROADCAST BANNER */
+        .admin-top-broadcast-box {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            display: none;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .admin-top-broadcast-box h3 {
+            color: var(--accent);
+            margin: 0 0 8px 0;
+            font-size: 16px;
+        }
+        .admin-top-broadcast-box p {
+            color: var(--text-main);
+            font-size: 13px;
+            margin: 0 0 10px 0;
+            line-height: 1.5;
+        }
+        .admin-top-broadcast-box img, .admin-top-broadcast-box video {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 8px;
+            background: #000;
         }
 
         /* WIDGET GRID (NEWS & QUOTES TOP ROW) */
@@ -410,7 +491,6 @@
             line-height: 1.6;
         }
         
-        /* ADMIN PORTAL TAB VISIBILITY (HIDDEN BY DEFAULT, SHOWN ONLY FOR ADMIN) */
         #tabAdmin {
             display: none !important;
         }
@@ -418,7 +498,6 @@
             display: flex !important;
         }
 
-        /* BLURRED / SECRET HALF-LOCK PREVIEW STYLING */
         .card-wrapper-locked {
             position: relative;
             border-radius: 14px;
@@ -451,10 +530,6 @@
             border-radius: 8px;
             border: 1px solid var(--border);
             margin-bottom: 20px;
-        }
-        .add-panel h3 {
-            margin-top: 0;
-            color: #4caf50;
         }
         .grid {
             display: grid;
@@ -504,7 +579,6 @@
         }
         .prop-box b { color: var(--accent); display: block; margin-bottom: 4px; font-size: 14px; }
 
-        /* Routine & Diet Plan Styling */
         .routine-container {
             background: var(--card-inner);
             border-radius: 10px;
@@ -627,7 +701,6 @@
             background: none; border: none; color: var(--text-muted); float: right; cursor: pointer; font-size: 18px;
         }
 
-        /* RESPONSIVE BREAKPOINT FOR MOBILE PHONES & IOS */
         @media(max-width: 850px) {
             body {
                 flex-direction: column;
@@ -656,7 +729,7 @@
                 width: 100%;
                 padding: 12px;
             }
-            .dashboard-top-grid {
+            .dashboard-top-grid, .pricing-cards-grid {
                 grid-template-columns: 1fr;
             }
             .grid {
@@ -716,20 +789,36 @@
         window.firebaseDb = db;
 
         const ADMIN_EMAIL = "mohammad009999@gmail.com";
-        window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000, discountPercent: 0 };
+        window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000, discountPercent: 0, transactionsStopped: false };
         
-        // Persistent Language Storage & Setup
         window.currentLang = localStorage.getItem('app_lang') || 'fa';
-        
-        // Instant load from localStorage to ensure 0-delay load speed even over slow VPNs
         window.accessConfig = JSON.parse(localStorage.getItem('cached_access_config') || '{}');
         window.adminTestingMode = localStorage.getItem('cached_admin_testing') === 'true';
+
+        let adminAnnouncementsList = [];
+        let currentAnnouncementIndex = 0;
+        let announcementInterval = null;
 
         async function loadAppConfigs() {
             try {
                 const pricingSnap = await getDoc(doc(db, "settings", "pricing"));
                 if (pricingSnap.exists()) {
                     window.pricingConfig = pricingSnap.data();
+                }
+
+                // Update Public Pricing Banner & Top Pro Price Button
+                updatePublicPricesDisplay();
+
+                const bannerSnap = await getDoc(doc(db, "settings", "top_banner"));
+                if (bannerSnap.exists()) {
+                    const bData = bannerSnap.data();
+                    if(bData.active && bData.items && bData.items.length > 0) {
+                        adminAnnouncementsList = bData.items;
+                        initAnnouncementRotator();
+                    } else {
+                        const box = document.getElementById('adminTopBroadcastBox');
+                        if(box) box.style.display = 'none';
+                    }
                 }
 
                 const accessSnap = await getDoc(doc(db, "settings", "access_control"));
@@ -744,6 +833,71 @@
             } catch (e) {
                 console.log("Using cached/default config values.");
             }
+        }
+
+        function updatePublicPricesDisplay() {
+            const isFa = window.currentLang === 'fa';
+            const proVal = (window.pricingConfig.proPrice || 40000).toLocaleString();
+            const woVal = (window.pricingConfig.workoutPrice || 100000).toLocaleString();
+            const nuVal = (window.pricingConfig.nutritionPrice || 100000).toLocaleString();
+            const bunVal = (window.pricingConfig.bundlePrice || 150000).toLocaleString();
+
+            const buyProBtn = document.getElementById('buyProTopBtn');
+            if(buyProBtn) {
+                buyProBtn.innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
+            }
+
+            const mainProDisplay = document.getElementById('mainProPriceDisplay');
+            if(mainProDisplay) mainProDisplay.innerText = `${proVal} ${isFa ? 'تومان' : 'Toman'}`;
+
+            const mainWoDisplay = document.getElementById('mainWoPriceDisplay');
+            if(mainWoDisplay) mainWoDisplay.innerText = `${woVal} ${isFa ? 'تومان' : 'Toman'}`;
+
+            const mainNuDisplay = document.getElementById('mainNuPriceDisplay');
+            if(mainNuDisplay) mainNuDisplay.innerText = `${nuVal} ${isFa ? 'تومان' : 'Toman'}`;
+
+            const mainBunDisplay = document.getElementById('mainBundlePriceDisplay');
+            if(mainBunDisplay) mainBunDisplay.innerText = `${bunVal} ${isFa ? 'تومان' : 'Toman'}`;
+        }
+
+        function initAnnouncementRotator() {
+            if(!adminAnnouncementsList || adminAnnouncementsList.length === 0) return;
+            renderCurrentAnnouncement();
+            if(announcementInterval) clearInterval(announcementInterval);
+            
+            if(adminAnnouncementsList.length > 1) {
+                announcementInterval = setInterval(() => {
+                    currentAnnouncementIndex = (currentAnnouncementIndex + 1) % adminAnnouncementsList.length;
+                    renderCurrentAnnouncement();
+                }, 10000);
+            }
+        }
+
+        function renderCurrentAnnouncement() {
+            const box = document.getElementById('adminTopBroadcastBox');
+            if(!box || adminAnnouncementsList.length === 0) return;
+            const item = adminAnnouncementsList[currentAnnouncementIndex];
+
+            box.style.display = 'block';
+            box.style.opacity = 0;
+
+            let mediaHtml = '';
+            if(item.mediaType === 'image' && item.mediaUrl) {
+                mediaHtml = `<img src="${item.mediaUrl}" alt="Announcement Image">`;
+            } else if(item.mediaType === 'video' && item.mediaUrl) {
+                mediaHtml = `<video src="${item.mediaUrl}" controls autoplay muted></video>`;
+            }
+
+            setTimeout(() => {
+                box.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <h3 style="margin:0;">${window.currentLang === 'fa' ? '📢 اطلاعیه مهم / آموزش ویژه' : '📢 Special Announcement / Tutorial'} (${currentAnnouncementIndex + 1}/${adminAnnouncementsList.length})</h3>
+                    </div>
+                    ${item.text ? `<p>${item.text}</p>` : ''}
+                    ${mediaHtml}
+                `;
+                box.style.opacity = 1;
+            }, 300);
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -864,6 +1018,11 @@
         };
 
         window.startZarinPalPayment = async (tier = 'pro') => {
+            if (window.pricingConfig.transactionsStopped) {
+                alert(window.currentLang === 'fa' ? 'تمامی تراکنش‌های مالی تا اطلاع ثانوی متوقف شده است.' : 'All money transactions are stopped until further notice.');
+                return;
+            }
+
             if(!window.currentUser) {
                 alert(window.currentLang === 'fa' ? 'لطفاً ابتدا برای تکمیل خرید وارد حساب شوید.' : 'Please sign in first to complete purchase.');
                 openAuthModal();
@@ -886,6 +1045,12 @@
             window.location.reload();
         };
 
+        window.selectTrainerForPlan = (planType) => {
+            const isFa = window.currentLang === 'fa';
+            alert(isFa ? `در حال هدایت به بخش مربیان جهت انتخاب مربی برای ${planType}...` : `Redirecting to Trainers Marketplace to choose a trainer for ${planType}...`);
+            window.location.href = 'trainers.html';
+        };
+
         function updateSidebarBadges() {
             const allTabs = ['exercises', 'encyclopedia', 'science', 'legends', 'steroids', 'contest', 'videos', 'tools', 'freeplans', 'advancedtools', 'gyms', 'trainers', 'news'];
             
@@ -904,7 +1069,7 @@
                         badgeEl.innerText = 'PRO';
                         badgeEl.className = 'tab-badge badge-pro';
                     } else {
-                        badgeEl.style.display = 'none'; // Only show badge if PRO
+                        badgeEl.style.display = 'none';
                     }
                 }
             });
@@ -933,7 +1098,7 @@
 </head>
 <body id="bodyRoot">
 
-    <!-- LANGUAGE SELECTION SPLASH MODAL (Appears only if no language is saved) -->
+    <!-- LANGUAGE SELECTION SPLASH MODAL -->
     <div id="langSplashModal" class="modal-overlay" style="display:none; z-index:9999;">
         <div class="modal" style="text-align:center; padding:35px; background:#18181c; border:2px solid var(--accent);">
             <h2 style="color:var(--accent); font-size:24px; margin-bottom:10px;">Fitness Persia / فیتنس پرشیا</h2>
@@ -993,6 +1158,9 @@
                 <span>🎬 Videos Hub</span>
                 <span class="tab-badge badge-pro" id="badge_videos">PRO</span>
             </a>
+            <a href="womens_hub.html" class="tab-btn" style="background:#3a1a3a; color:#e040fb; border-color:#e040fb;" id="tabWomensHubNav">
+                <span>🌸 بخش تخصصی بانوان (Women's Hub)</span>
+            </a>
             <a href="tools.html" class="tab-btn" style="background:#2c1a00; color:var(--accent); border-color:#2c1a00;" id="tabTools">
                 <span>🛠️ Tools</span>
                 <span class="tab-badge badge-pro" id="badge_tools">PRO</span>
@@ -1030,11 +1198,45 @@
                 <p id="uiHeaderSub">Professional Training Hub</p>
             </div>
             <div class="top-controls">
+                <button class="top-btn" style="background:#2c1a00; color:var(--accent); border-color:var(--accent);" onclick="openProfileModal()" id="buyProTopBtn">⭐ Buy Pro</button>
+                <a href="account.html" class="top-btn" style="background:#1a3a2a; color:#4caf50; border-color:#4caf50;" id="userAccountTopBtn">👤 Account</a>
                 <button class="top-btn" onclick="openIOSModal()" id="iosTutorialBtn">iOS Guide</button>
                 <button class="top-btn" onclick="openAuthModal()" id="authBtn">Sign In</button>
                 <button class="top-btn" onclick="toggleLanguage()" id="langBtn">فارسی / EN</button>
             </div>
         </header>
+
+        <!-- PUBLIC TRANSPARENT PRICING BANNER (ZARINPAL COMPLIANCE) -->
+        <div class="public-pricing-banner" id="publicPricingBanner">
+            <h3 id="pubPricingTitle">💳 تعرفه شفاف خدمات و پرو</h3>
+            <p id="pubPricingSub">تمامی قیمت‌ها به‌صورت زنده از سیستم مدیریت فرستاده می‌شوند. سفارش برنامه‌های اختصاصی همراه با انتخاب مربی صورت می‌گیرد.</p>
+            
+            <div class="pricing-cards-grid">
+                <div class="p-card">
+                    <h4 id="pCardProTitle">⭐ عضویت پرو (PRO)</h4>
+                    <div class="p-amount" id="mainProPriceDisplay">40,000 تومان</div>
+                    <button onclick="openProfileModal()" id="btnBuyProCard">ارتقا حساب</button>
+                </div>
+                <div class="p-card">
+                    <h4 id="pCardWoTitle">🏋️ برنامه تمرین اختصاصی</h4>
+                    <div class="p-amount" id="mainWoPriceDisplay">100,000 تومان</div>
+                    <button onclick="selectTrainerForPlan('برنامه تمرین')" id="btnSelectTrainerWo">انتخاب مربی</button>
+                </div>
+                <div class="p-card">
+                    <h4 id="pCardNuTitle">🥗 برنامه تغذیه اختصاصی</h4>
+                    <div class="p-amount" id="mainNuPriceDisplay">100,000 تومان</div>
+                    <button onclick="selectTrainerForPlan('برنامه تغذیه')" id="btnSelectTrainerNu">انتخاب مربی</button>
+                </div>
+                <div class="p-card" style="border-color:var(--success);">
+                    <h4 id="pCardBunTitle" style="color:var(--success);">🎁 پکیج طلایی (هر دو)</h4>
+                    <div class="p-amount" id="mainBundlePriceDisplay" style="color:var(--accent);">150,000 تومان</div>
+                    <button style="background:var(--success); color:#000;" onclick="selectTrainerForPlan('پکیج کامل (تمرین + تغذیه)')" id="btnSelectTrainerBun">انتخاب مربی و سفارش</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DYNAMIC ADMIN TOP BROADCAST BANNER -->
+        <div id="adminTopBroadcastBox" class="admin-top-broadcast-box"></div>
 
         <!-- WIDGET TOP ROW (NEWS WIDGET + QUOTES ROTATOR) -->
         <div class="dashboard-top-grid">
@@ -1175,13 +1377,33 @@
         </div>
     </div>
 
-    <!-- USER PROFILE MODAL (Localized & Hidden Upgrade Section for Pro Users) -->
+    <!-- USER PROFILE & PRO UPGRADE MODAL -->
     <div id="profileModal" class="modal-overlay">
         <div class="modal">
             <button class="close-modal" onclick="closeProfileModal()">&times;</button>
             <h2 id="profileModalHeading">User Membership & Info</h2>
             <div id="profileDetails" style="margin: 10px 0; display:flex; flex-direction:column; gap:8px;"></div>
             
+            <!-- PRO UPGRADE & DIRECT PAYMENT OPTIONS -->
+            <div class="pro-locked-banner" id="proUpgradeContainer" style="margin-top:15px; display:block; text-align:left;">
+                <h3 style="color:var(--accent); margin-top:0;" id="proUpgradeTitle">Upgrade to PRO / ارتقا به پرو</h3>
+                <p id="proUpgradeSub" style="color:var(--text-main); font-size:13px; margin-bottom:12px;">Get full access to all professional guides, advanced databases, and routines for only <b id="proPriceDisplay">40,000</b> <b>Toman / Month</b>.</p>
+                
+                <!-- Gateway Payment Button -->
+                <button class="action-btn" style="background:var(--accent); color:#000; margin-bottom:12px;" onclick="startZarinPalPayment('pro')" id="payProBtn">💳 پرداخت آنلاین (زرین‌پال / ZarinPal)</button>
+
+                <!-- Direct Bank Card & WhatsApp Transfer Box -->
+                <div style="background:#16161c; border:1px solid var(--success); padding:12px; border-radius:8px; margin-top:10px;">
+                    <h4 style="color:var(--success); margin:0 0 6px 0; font-size:13px;" id="directPayHeading">✨ روش دوم: کارت‌به‌کارت و ارسال فیش در واتساپ</h4>
+                    <p style="font-size:12px; color:var(--text-muted); margin:0 0 8px 0;" id="directPayDesc">اگر امکان پرداخت از درگاه زرین‌پال را ندارید، مبلغ اشتراک را به کارت زیر واریز کرده و فیش آن را در واتساپ ارسال کنید تا اکانت شما پرو شود.</p>
+                    <div style="font-size:12px; line-height:1.6; color:#fff;">
+                        <div><b>شماره کارت:</b> <span style="color:var(--accent); font-family:monospace; font-size:14px;">5047 0610 5577 5783</span></div>
+                        <div><b>صاحب حساب:</b> سید محمد حسین حسینی (Seyed Mohammad Hosein Hoseini)</div>
+                        <div><b>واتساپ جهت ارسال فیش:</b> <a href="https://wa.me/989176001268?text=سلام،%20فیش%20واریزی%20جهت%20فعالسازی%20پرو%20را%20ارسال%20کردم." target="_blank" style="color:var(--success); font-weight:bold; text-decoration:none;">09176001268 💬</a></div>
+                    </div>
+                </div>
+            </div>
+
             <div style="margin-top:15px; padding:12px; background:#161616; border-radius:6px; border:1px solid var(--border);">
                 <h4 style="color:var(--accent); margin:0 0 6px 0;" id="appInfoTitle">About Fitness Persia</h4>
                 <p style="font-size:13px; color:var(--text-muted); line-height:1.4;" id="appInfoDesc">Fitness Persia is your all-in-one professional fitness hub featuring an extensive exercise database, expert encyclopedias, video guides, and advanced calculators.</p>
@@ -1196,13 +1418,6 @@
                 <input type="text" id="ownerSubject" placeholder="Subject / موضوع" style="margin-bottom:6px;">
                 <textarea id="ownerMessage" placeholder="Type your message here..." rows="3" style="resize:vertical;"></textarea>
                 <button class="action-btn" style="margin-top:4px;" onclick="sendOwnerEmail()" id="sendEmailBtn">Send Email to Mohammad</button>
-            </div>
-
-            <!-- UPGRADE TO PRO BANNER (Dynamically hidden if user is already PRO) -->
-            <div class="pro-locked-banner" id="proUpgradeContainer" style="margin-top:15px; display:none;">
-                <h3 style="color:var(--accent); margin-top:0;" id="proUpgradeTitle">Upgrade to PRO</h3>
-                <p id="proUpgradeSub">Get full access to all professional guides, advanced databases, and routines for only <b id="proPriceDisplay">40,000</b> <b>Toman / Month</b>.</p>
-                <button class="action-btn" style="background:var(--accent); color:#000;" onclick="startZarinPalPayment('pro')" id="payProBtn">Pay Pro Membership</button>
             </div>
 
             <button class="action-btn" style="background:var(--danger); margin-top:10px;" onclick="signOutUser()" id="signOutBtn">Sign Out</button>
@@ -1294,7 +1509,6 @@
             applyLanguageUI();
         };
 
-        // Instant Check on Load to Prevent Popup Flashing/Reappearing
         (function() {
             const savedLang = localStorage.getItem('app_lang');
             if (savedLang) {
@@ -1361,7 +1575,7 @@
             const isFa = window.currentLang === 'fa';
             
             if (isProActive) {
-                if(proContainer) proContainer.style.display = 'none'; // Hide upgrade button if already Pro
+                if(proContainer) proContainer.style.display = 'none';
             } else {
                 if(proContainer) proContainer.style.display = 'block';
             }
@@ -1439,6 +1653,11 @@
             document.getElementById('uiTitle').innerText = isFa ? 'فیتنس پرشیا' : 'Fitness Persia';
             document.getElementById('uiSub').innerText = isFa ? 'مرجع تمرینات و دانش' : 'Exercise & Knowledge Hub';
             document.getElementById('uiHeaderSub').innerText = isFa ? 'مرجع تخصصی تمرین و بدنسازی' : 'Professional Training Hub';
+            
+            const proVal = (window.pricingConfig.proPrice || 40000).toLocaleString();
+            document.getElementById('buyProTopBtn').innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
+            
+            document.getElementById('userAccountTopBtn').innerText = isFa ? '👤 حساب' : '👤 Account';
             document.getElementById('tabEx').innerText = isFa ? 'تمرینات' : 'Exercises';
             document.getElementById('tabEnc').innerText = isFa ? '📖 دایره‌المعارف' : '📖 Encyclopedia';
             
@@ -1452,6 +1671,7 @@
             document.getElementById('tabSteroidsNav').innerText = isFa ? '💉 استروئیدها (فارماکولوژی)' : '💉 Steroids (Pharmacology)';
             document.getElementById('tabContestNav').innerText = isFa ? '🥇 اسرار مسابقات' : '🥇 Contest Secrets';
             document.getElementById('tabVid').innerText = isFa ? '🎬 کتابخانه ویدیوها' : '🎬 Videos Hub';
+            document.getElementById('tabWomensHubNav').innerText = isFa ? '🌸 بخش تخصصی بانوان (Women\'s Hub)' : '🌸 Women\'s Hub';
             document.getElementById('tabTools').innerText = isFa ? '🛠️ ابزارها' : '🛠️ Tools';
             document.getElementById('tabFreePlans').innerText = isFa ? '📋 برنامه‌های تغذیه و تمرین' : '📋 Nutrition & Workout Plans';
             document.getElementById('tabAdvancedTools').innerText = isFa ? '⚡ ابزارهای پیشرفته' : '⚡ Advanced Tools';
@@ -1462,6 +1682,17 @@
             document.getElementById('tabAdmin').innerText = isFa ? '⚡ پنل ادمین' : '⚡ Admin Portal';
             document.getElementById('iosTutorialBtn').innerText = isFa ? 'راهنمای آیفون' : 'iOS Guide';
             
+            document.getElementById('pubPricingTitle').innerText = isFa ? '💳 تعرفه شفاف خدمات و پرو' : '💳 Transparent Tariffs & Services';
+            document.getElementById('pubPricingSub').innerText = isFa ? 'تمامی قیمت‌ها به‌صورت زنده از سیستم مدیریت فرستاده می‌شوند. سفارش برنامه‌های اختصاصی همراه با انتخاب مربی صورت می‌گیرد.' : 'All pricing updates live from Admin Panel. Ordering custom plans redirects to trainer marketplace.';
+            document.getElementById('pCardProTitle').innerText = isFa ? '⭐ عضویت پرو (PRO)' : '⭐ Pro Membership';
+            document.getElementById('btnBuyProCard').innerText = isFa ? 'ارتقا حساب' : 'Upgrade Account';
+            document.getElementById('pCardWoTitle').innerText = isFa ? '🏋️ برنامه تمرین اختصاصی' : '🏋️ Workout Plan';
+            document.getElementById('btnSelectTrainerWo').innerText = isFa ? 'انتخاب مربی' : 'Choose Trainer';
+            document.getElementById('pCardNuTitle').innerText = isFa ? '🥗 برنامه تغذیه اختصاصی' : '🥗 Nutrition Plan';
+            document.getElementById('btnSelectTrainerNu').innerText = isFa ? 'انتخاب مربی' : 'Choose Trainer';
+            document.getElementById('pCardBunTitle').innerText = isFa ? '🎁 پکیج طلایی (هر دو)' : '🎁 Full Bundle (Workout + Diet)';
+            document.getElementById('btnSelectTrainerBun').innerText = isFa ? 'انتخاب مربی و سفارش' : 'Choose Trainer & Order';
+
             document.getElementById('exSubAll').innerText = isFa ? 'همه' : 'All';
             document.getElementById('exSubChest').innerText = isFa ? 'سینه' : 'Chest';
             document.getElementById('exSubAbs').innerText = isFa ? 'شکم' : 'Abs';
@@ -1473,7 +1704,6 @@
             
             document.getElementById('newsWidgetLink').innerText = isFa ? 'مشاهده همه اخبار ←' : 'Read Full Article →';
 
-            // Profile Modal Localization
             document.getElementById('profileModalHeading').innerText = isFa ? 'اطلاعات و عضویت کاربر' : 'User Membership & Info';
             document.getElementById('appInfoTitle').innerText = isFa ? 'درباره فیتنس پرشیا' : 'About Fitness Persia';
             document.getElementById('appInfoDesc').innerText = isFa ? 'فیتنس پرشیا کامل‌ترین مرجع تخصصی بدنسازی همراه با بانک تمرینات، دایره‌المعارف و ابزارهای پیشرفته است.' : 'Fitness Persia is your all-in-one professional fitness hub featuring an extensive exercise database, expert encyclopedias, video guides, and advanced calculators.';
@@ -1481,9 +1711,12 @@
             document.getElementById('contactOwnerTitle').innerText = isFa ? 'تماس با مدیریت (محمد)' : 'Contact App Owner (Mohammad)';
             document.getElementById('contactOwnerSub').innerText = isFa ? 'بازخورد، گزارش خطا یا سوالات خود را مستقیماً ارسال کنید.' : 'Send your feedback, bug reports, or questions directly via Gmail.';
             document.getElementById('sendEmailBtn').innerText = isFa ? 'ارسال ایمیل به محمد' : 'Send Email to Mohammad';
+            
             document.getElementById('proUpgradeTitle').innerText = isFa ? 'ارتقا به حساب پرو (PRO)' : 'Upgrade to PRO';
-            document.getElementById('proUpgradeSub').innerHTML = isFa ? 'دسترسی کامل به تمامی بخش‌های تخصصی، دیتابیس‌ها و مقالات با پرداخت ماهیانه <b id="proPriceDisplay">۴۰,۰۰۰</b> <b>تومان</b>.' : 'Get full access to all professional guides, advanced databases, and routines for only <b id="proPriceDisplay">40,000</b> <b>Toman / Month</b>.';
-            document.getElementById('payProBtn').innerText = isFa ? 'پرداخت اشتراک پرو (زرین‌پال)' : 'Pay Pro Membership';
+            document.getElementById('payProBtn').innerText = isFa ? '💳 پرداخت آنلاین (زرین‌پال / ZarinPal)' : '💳 Online Payment (ZarinPal)';
+            document.getElementById('directPayHeading').innerText = isFa ? '✨ روش دوم: کارت‌به‌کارت و ارسال فیش در واتساپ' : '✨ Method 2: Card-to-Card & WhatsApp Receipt';
+            document.getElementById('directPayDesc').innerText = isFa ? 'اگر امکان پرداخت از درگاه زرین‌پال را ندارید، مبلغ اشتراک را به کارت زیر واریز کرده و فیش آن را در واتساپ ارسال کنید تا اکانت شما پرو شود.' : 'If you cannot use ZarinPal, transfer the amount to the card below and send your receipt via WhatsApp to get Pro access.';
+
             document.getElementById('signOutBtn').innerText = isFa ? 'خروج از حساب' : 'Sign Out';
 
             document.getElementById('legendsHeaderTitle').innerText = isFa ? '🏆 پایگاه داده اسطوره‌های المپیا' : '🏆 Olympia Legends Master Database';
@@ -1495,6 +1728,7 @@
             document.getElementById('contestHeaderTitle').innerText = isFa ? '🥇 اسرار مسابقات و پروتکل‌های هفته پایانی' : '🥇 Contest Secrets & Peak Week Protocols';
             document.getElementById('contestHeaderSub').innerText = isFa ? 'اسرار آماده‌سازی مسابقات حرفه‌ای، دستکاری آب، بارگیری سدیم و استراتژی‌های اوج‌گیری.' : 'Professional stage preparation secrets, water manipulation, sodium loading, and peak week strategies.';
 
+            updatePublicPricesDisplay();
             displayExercises(allExercises);
             renderLegends();
             renderSteroids();
@@ -1560,7 +1794,6 @@
 
                 initNewsWidgetRotator();
 
-                // Load Olympia Legends
                 try {
                     const rLeg = await fetch(DB_BASE + 'olympia_legends.json');
                     let dLeg = await rLeg.json();
@@ -1571,7 +1804,6 @@
                 } catch (e) { legendsData = []; }
                 renderLegends();
 
-                // Load Steroids / Pharmacology
                 try {
                     const rSteroids = await fetch(DB_BASE + 'steroids.json');
                     let dSteroids = await rSteroids.json();
@@ -1582,7 +1814,6 @@
                 } catch (e) { steroidsData = []; }
                 renderSteroids();
 
-                // Load Contest Secrets
                 try {
                     const rContest = await fetch(DB_BASE + 'contest_data.json');
                     let dContest = await rContest.json();
