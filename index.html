@@ -760,7 +760,8 @@
             RecaptchaVerifier, 
             signInWithPhoneNumber, 
             onAuthStateChanged, 
-            signOut 
+            signOut,
+            sendEmailVerification // <-- اضافه شده برای ارسال ایمیل تایید
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { 
             getFirestore, 
@@ -806,7 +807,6 @@
                     window.pricingConfig = pricingSnap.data();
                 }
 
-                // Update Public Pricing Banner & Top Pro Price Button
                 updatePublicPricesDisplay();
 
                 const bannerSnap = await getDoc(doc(db, "settings", "top_banner"));
@@ -945,6 +945,7 @@
             }
         });
 
+        // تابع ثبت‌نام و ورود با ایمیل به‌روزرسانی شده برای ارسال لینک تایید
         window.handleFirebaseEmailAuth = async (isSignUp) => {
             const email = document.getElementById('userEmail').value;
             const password = document.getElementById('userPassword').value;
@@ -952,8 +953,15 @@
 
             try {
                 if(isSignUp) {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                    alert(window.currentLang === 'fa' ? 'حساب کاربری با موفقیت ساخته شد و وارد شدید!' : 'Account created and signed in successfully!');
+                    // ایجاد کاربر جدید در فایربیس
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    
+                    // ارسال ایمیل تایید به ایمیل ثبت‌نام شده
+                    await sendEmailVerification(userCredential.user);
+                    
+                    alert(window.currentLang === 'fa' 
+                        ? 'حساب کاربری با موفقیت ساخته شد! لینک تایید به ایمیل شما ارسال شد. لطفاً صندوق ورودی (و اسپم) خود را بررسی کنید.' 
+                        : 'Account created successfully! A verification link has been sent to your email.');
                 } else {
                     await signInWithEmailAndPassword(auth, email, password);
                     alert(window.currentLang === 'fa' ? 'با موفقیت وارد شدید!' : 'Logged in successfully!');

@@ -482,6 +482,10 @@
         };
 
         window.openOrderModal = (trainerEmail, trainerName) => {
+            if(!currentUser) {
+                alert(currentLang === 'fa' ? 'لطفاً ابتدا وارد حساب کاربری خود شوید.' : 'Please sign in first to purchase a workout plan.');
+                return;
+            }
             selectedTrainerForOrder = { email: trainerEmail, name: trainerName };
             document.getElementById('modalTrainerName').innerText = trainerName;
             updateModalPriceDisplay();
@@ -561,7 +565,7 @@
                     if(cData.secure_url) clientImageUrl = cData.secure_url;
                 }
 
-                const clientEmail = currentUser ? (currentUser.email || currentUser.phoneNumber) : "guest_user@fitness.com";
+                const clientEmail = currentUser.email || currentUser.phoneNumber;
 
                 await setDoc(doc(collection(db, "trainer_orders")), {
                     trainerEmail: selectedTrainerForOrder.email,
