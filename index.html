@@ -216,48 +216,48 @@
             background: linear-gradient(135deg, #181820 0%, #111116 100%);
             border: 2px solid var(--accent);
             border-radius: 12px;
-            padding: 20px;
+            padding: 16px;
             margin-bottom: 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         .public-pricing-banner h3 {
             color: var(--accent);
-            margin: 0 0 6px 0;
-            font-size: 18px;
+            margin: 0 0 4px 0;
+            font-size: 16px;
         }
         .public-pricing-banner p {
             color: var(--text-muted);
-            font-size: 13px;
-            margin: 0 0 15px 0;
+            font-size: 12px;
+            margin: 0 0 12px 0;
         }
         .pricing-cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
         }
         .p-card {
             background: var(--card-inner);
             border: 1px solid var(--border);
-            padding: 14px;
+            padding: 10px 12px;
             border-radius: 8px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-        .p-card h4 { color: #fff; margin: 0 0 6px 0; font-size: 14px; }
-        .p-card .p-amount { font-size: 18px; font-weight: bold; color: var(--success); margin: 6px 0; }
+        .p-card h4 { color: #fff; margin: 0 0 4px 0; font-size: 13px; }
+        .p-card .p-amount { font-size: 14px; font-weight: bold; color: var(--success); margin: 4px 0; }
         .p-card button, .p-card a {
             background: var(--accent);
             color: #000;
             border: none;
-            padding: 8px;
+            padding: 6px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             text-decoration: none;
-            margin-top: 8px;
+            margin-top: 6px;
             display: block;
         }
 
@@ -792,12 +792,12 @@
 
         const ADMIN_EMAIL = "mohammad009999@gmail.com";
         
-        // مقادیر پیش‌فرض ایمن برای اینکه کاربر مهمان قبل از دریافت کامل از فایربیس معطل نشود
+        // حالت اولیه بارگذاری (Loading State)
         window.pricingConfig = { 
-            proPrice: 40000, 
-            workoutPrice: 100000, 
-            nutritionPrice: 100000, 
-            bundlePrice: 150000, 
+            proPrice: null, 
+            workoutPrice: null, 
+            nutritionPrice: null, 
+            bundlePrice: null, 
             discountPercent: 0, 
             transactionsStopped: false 
         };
@@ -817,9 +817,14 @@
                 if (docSnap.exists()) {
                     window.pricingConfig = docSnap.data();
                     updatePublicPricesDisplay();
+                } else {
+                    // مقدار پیش‌فرض اگر داکیومنت وجود نداشت
+                    window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000 };
+                    updatePublicPricesDisplay();
                 }
             }, (error) => {
-                console.log("Pricing listener fallback error (using defaults):", error);
+                console.log("Pricing listener error (using defaults):", error);
+                window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000 };
                 updatePublicPricesDisplay();
             });
 
@@ -854,9 +859,8 @@
             });
         }
 
-        // اجرای اولیه نمایش قیمت‌های پیش‌فرض
+        // اجرای اولیه نمایش وضعیت بارگذاری قیمت‌ها و سپس گوش‌به‌زنگ‌های ابری فایربیس
         updatePublicPricesDisplay();
-        // فعال‌سازی گوش‌به‌زنگ‌های ابری فایربیس
         initRealtimeListeners();
 
         function updatePublicPricesDisplay() {
@@ -880,35 +884,34 @@
 
             if (isGlobalFreeActive) {
                 if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ پرو رایگان موقت` : `⭐ Pro Free Time`;
-                if(mainProDisplay) mainProDisplay.innerHTML = `<span style="color:var(--success); font-size:15px;">رایگان موقت تا<br>${freeExpiryText}</span>`;
+                if(mainProDisplay) mainProDisplay.innerHTML = `<span style="color:var(--success); font-size:13px;">رایگان موقت تا<br>${freeExpiryText}</span>`;
             } else if (window.pricingConfig.proPrice !== null && window.pricingConfig.proPrice !== undefined) {
                 const proVal = Number(window.pricingConfig.proPrice).toLocaleString();
                 if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
                 if(mainProDisplay) mainProDisplay.innerText = `${proVal} ${isFa ? 'تومان' : 'Toman'}`;
             } else {
-                if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ خرید پرو` : `⭐ Buy Pro`;
-                if(mainProDisplay) mainProDisplay.innerText = '40,000 تومان';
+                if(mainProDisplay) mainProDisplay.innerHTML = `<span style="color:var(--text-muted); font-size:12px;">${isFa ? 'در حال دریافت اطلاعات...' : 'Loading data...'}</span>`;
             }
 
             if (window.pricingConfig.workoutPrice !== null && window.pricingConfig.workoutPrice !== undefined) {
                 const woVal = Number(window.pricingConfig.workoutPrice).toLocaleString();
                 if(mainWoDisplay) mainWoDisplay.innerText = `${woVal} ${isFa ? 'تومان' : 'Toman'}`;
-            } else {
-                if(mainWoDisplay) mainWoDisplay.innerText = '100,000 تومان';
+            } else if(mainWoDisplay) {
+                mainWoDisplay.innerHTML = `<span style="color:var(--text-muted); font-size:12px;">${isFa ? 'در حال دریافت...' : 'Loading...'}</span>`;
             }
 
             if (window.pricingConfig.nutritionPrice !== null && window.pricingConfig.nutritionPrice !== undefined) {
                 const nuVal = Number(window.pricingConfig.nutritionPrice).toLocaleString();
                 if(mainNuDisplay) mainNuDisplay.innerText = `${nuVal} ${isFa ? 'تومان' : 'Toman'}`;
-            } else {
-                if(mainNuDisplay) mainNuDisplay.innerText = '100,000 تومان';
+            } else if(mainNuDisplay) {
+                mainNuDisplay.innerHTML = `<span style="color:var(--text-muted); font-size:12px;">${isFa ? 'در حال دریافت...' : 'Loading...'}</span>`;
             }
 
             if (window.pricingConfig.bundlePrice !== null && window.pricingConfig.bundlePrice !== undefined) {
                 const bunVal = Number(window.pricingConfig.bundlePrice).toLocaleString();
                 if(mainBunDisplay) mainBunDisplay.innerText = `${bunVal} ${isFa ? 'تومان' : 'Toman'}`;
-            } else {
-                if(mainBunDisplay) mainBunDisplay.innerText = '150,000 تومان';
+            } else if(mainBunDisplay) {
+                mainBunDisplay.innerHTML = `<span style="color:var(--text-muted); font-size:12px;">${isFa ? 'در حال دریافت...' : 'Loading...'}</span>`;
             }
         }
 
@@ -1273,22 +1276,22 @@
             <div class="pricing-cards-grid">
                 <div class="p-card">
                     <h4 id="pCardProTitle">⭐ عضویت پرو (PRO)</h4>
-                    <div class="p-amount" id="mainProPriceDisplay">40,000 تومان</div>
+                    <div class="p-amount" id="mainProPriceDisplay">در حال دریافت...</div>
                     <button onclick="openProfileModal()" id="btnBuyProCard">ارتقا حساب</button>
                 </div>
                 <div class="p-card">
                     <h4 id="pCardWoTitle">🏋️ برنامه تمرین اختصاصی</h4>
-                    <div class="p-amount" id="mainWoPriceDisplay">100,000 تومان</div>
+                    <div class="p-amount" id="mainWoPriceDisplay">در حال دریافت...</div>
                     <button onclick="selectTrainerForPlan('برنامه تمرین')" id="btnSelectTrainerWo">انتخاب مربی</button>
                 </div>
                 <div class="p-card">
                     <h4 id="pCardNuTitle">🥗 برنامه تغذیه اختصاصی</h4>
-                    <div class="p-amount" id="mainNutritionPriceDisplay">100,000 تومان</div>
+                    <div class="p-amount" id="mainNutritionPriceDisplay">در حال دریافت...</div>
                     <button onclick="selectTrainerForPlan('برنامه تغذیه')" id="btnSelectTrainerNu">انتخاب مربی</button>
                 </div>
                 <div class="p-card" style="border-color:var(--success);">
                     <h4 id="pCardBunTitle" style="color:var(--success);">🎁 پکیج طلایی (هر دو)</h4>
-                    <div class="p-amount" id="mainBundlePriceDisplay" style="color:var(--accent);">150,000 تومان</div>
+                    <div class="p-amount" id="mainBundlePriceDisplay" style="color:var(--accent);">در حال دریافت...</div>
                     <button style="background:var(--success); color:#000;" onclick="selectTrainerForPlan('پکیج کامل (تمرین + تغذیه)')" id="btnSelectTrainerBun">انتخاب مربی و سفارش</button>
                 </div>
             </div>
@@ -1713,8 +1716,12 @@
             document.getElementById('uiSub').innerText = isFa ? 'مرجع تمرینات و دانش' : 'Exercise & Knowledge Hub';
             document.getElementById('uiHeaderSub').innerText = isFa ? 'مرجع تخصصی تمرین و بدنسازی' : 'Professional Training Hub';
             
-            const proVal = (window.pricingConfig.proPrice !== null && window.pricingConfig.proPrice !== undefined) ? Number(window.pricingConfig.proPrice).toLocaleString() : '40,000';
-            document.getElementById('buyProTopBtn').innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
+            const proVal = (window.pricingConfig.proPrice !== null && window.pricingConfig.proPrice !== undefined) ? Number(window.pricingConfig.proPrice).toLocaleString() : '';
+            if(proVal) {
+                document.getElementById('buyProTopBtn').innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
+            } else {
+                document.getElementById('buyProTopBtn').innerText = isFa ? '⭐ خرید پرو' : '⭐ Buy Pro';
+            }
             
             document.getElementById('userAccountTopBtn').innerText = isFa ? '👤 حساب' : '👤 Account';
             document.getElementById('tabEx').innerText = isFa ? 'تمرینات' : 'Exercises';
