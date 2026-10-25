@@ -790,7 +790,8 @@
         window.firebaseDb = db;
 
         const ADMIN_EMAIL = "mohammad009999@gmail.com";
-        window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000, discountPercent: 0, transactionsStopped: false };
+        // بدون مقادیر پیش‌فرض ثابت؛ همه قیمت‌ها از ادمین یا فایربیس دریافت می‌شوند
+        window.pricingConfig = { proPrice: null, workoutPrice: null, nutritionPrice: null, bundlePrice: null, discountPercent: 0, transactionsStopped: false };
         
         window.currentLang = localStorage.getItem('app_lang') || 'fa';
         window.accessConfig = JSON.parse(localStorage.getItem('cached_access_config') || '{}');
@@ -831,18 +832,16 @@
                 }
                 updateSidebarBadges();
             } catch (e) {
-                console.log("Using cached/default config values.");
+                console.log("Error loading app configs from Firebase.");
                 updatePublicPricesDisplay();
             }
         }
 
-        // بارگذاری اولیه و مستقل تنظیمات برای اینکه کاربران مهمان بدون نیاز به لاگین فوراً قیمت‌ها و وضعیت را ببینند
         loadAppConfigs();
 
         function updatePublicPricesDisplay() {
             const isFa = window.currentLang === 'fa';
             
-            // بررسی اینکه آیا حالت رایگان موقت (Global Free) فعال است یا خیر
             let isGlobalFreeActive = false;
             let freeExpiryText = '';
             if (window.accessConfig.globalFreeExpiry) {
@@ -862,19 +861,35 @@
             if (isGlobalFreeActive) {
                 if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ پرو رایگان موقت` : `⭐ Pro Free Time`;
                 if(mainProDisplay) mainProDisplay.innerHTML = `<span style="color:var(--success); font-size:15px;">رایگان موقت تا<br>${freeExpiryText}</span>`;
-            } else {
-                const proVal = (window.pricingConfig.proPrice || 40000).toLocaleString();
+            } else if (window.pricingConfig.proPrice !== null && window.pricingConfig.proPrice !== undefined) {
+                const proVal = Number(window.pricingConfig.proPrice).toLocaleString();
                 if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
                 if(mainProDisplay) mainProDisplay.innerText = `${proVal} ${isFa ? 'تومان' : 'Toman'}`;
+            } else {
+                if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ خرید پرو` : `⭐ Buy Pro`;
+                if(mainProDisplay) mainProDisplay.innerText = isFa ? 'در حال دریافت...' : 'Receiving...';
             }
 
-            const woVal = (window.pricingConfig.workoutPrice || 100000).toLocaleString();
-            const nuVal = (window.pricingConfig.nutritionPrice || 100000).toLocaleString();
-            const bunVal = (window.pricingConfig.bundlePrice || 150000).toLocaleString();
+            if (window.pricingConfig.workoutPrice !== null && window.pricingConfig.workoutPrice !== undefined) {
+                const woVal = Number(window.pricingConfig.workoutPrice).toLocaleString();
+                if(mainWoDisplay) mainWoDisplay.innerText = `${woVal} ${isFa ? 'تومان' : 'Toman'}`;
+            } else {
+                if(mainWoDisplay) mainWoDisplay.innerText = isFa ? 'در حال دریافت...' : 'Receiving...';
+            }
 
-            if(mainWoDisplay) mainWoDisplay.innerText = `${woVal} ${isFa ? 'تومان' : 'Toman'}`;
-            if(mainNuDisplay) mainNuDisplay.innerText = `${nuVal} ${isFa ? 'تومان' : 'Toman'}`;
-            if(mainBunDisplay) mainBunDisplay.innerText = `${bunVal} ${isFa ? 'تومان' : 'Toman'}`;
+            if (window.pricingConfig.nutritionPrice !== null && window.pricingConfig.nutritionPrice !== undefined) {
+                const nuVal = Number(window.pricingConfig.nutritionPrice).toLocaleString();
+                if(mainNuDisplay) mainNuDisplay.innerText = `${nuVal} ${isFa ? 'تومان' : 'Toman'}`;
+            } else {
+                if(mainNuDisplay) mainNuDisplay.innerText = isFa ? 'در حال دریافت...' : 'Receiving...';
+            }
+
+            if (window.pricingConfig.bundlePrice !== null && window.pricingConfig.bundlePrice !== undefined) {
+                const bunVal = Number(window.pricingConfig.bundlePrice).toLocaleString();
+                if(mainBunDisplay) mainBunDisplay.innerText = `${bunVal} ${isFa ? 'تومان' : 'Toman'}`;
+            } else {
+                if(mainBunDisplay) mainBunDisplay.innerText = isFa ? 'در حال دریافت...' : 'Receiving...';
+            }
         }
 
         function initAnnouncementRotator() {
@@ -1043,14 +1058,18 @@
                 return;
             }
 
-            // چک کردن اجباری لاگین بودن کاربر قبل از پرداخت
             if(!window.currentUser) {
                 alert(window.currentLang === 'fa' ? 'لطفاً ابتدا برای خرید اشتراک وارد حساب کاربری خود شوید.' : 'Please sign in first to complete purchase.');
                 openAuthModal();
                 return;
             }
+
+            if (window.pricingConfig.proPrice === null || window.pricingConfig.proPrice === undefined) {
+                alert(window.currentLang === 'fa' ? 'قیمت پرو هنوز از سرور دریافت نشده است. لطفاً چند لحظه صبر کنید.' : 'Pro price not loaded yet. Please wait.');
+                return;
+            }
             
-            let basePrice = window.pricingConfig.proPrice || 40000;
+            let basePrice = window.pricingConfig.proPrice;
             const discount = window.pricingConfig.discountPercent || 0;
             const finalPrice = discount > 0 ? Math.round(basePrice * (1 - discount / 100)) : basePrice;
             const amountRials = finalPrice * 10;
@@ -1068,7 +1087,6 @@
 
         window.selectTrainerForPlan = (planType) => {
             const isFa = window.currentLang === 'fa';
-            // بررسی لاگین برای سفارش برنامه‌ها
             if(!window.currentUser) {
                 alert(isFa ? 'لطفاً ابتدا برای سفارش برنامه اختصاصی وارد حساب کاربری خود شوید.' : 'Please sign in first to order custom plans.');
                 openAuthModal();
@@ -1251,7 +1269,7 @@
                 </div>
                 <div class="p-card">
                     <h4 id="pCardNuTitle">🥗 برنامه تغذیه اختصاصی</h4>
-                    <div class="p-amount" id="mainNuPriceDisplay">در حال دریافت...</div>
+                    <div class="p-amount" id="mainNutritionPriceDisplay">در حال دریافت...</div>
                     <button onclick="selectTrainerForPlan('برنامه تغذیه')" id="btnSelectTrainerNu">انتخاب مربی</button>
                 </div>
                 <div class="p-card" style="border-color:var(--success);">
@@ -1414,7 +1432,7 @@
             <!-- PRO UPGRADE & DIRECT PAYMENT OPTIONS -->
             <div class="pro-locked-banner" id="proUpgradeContainer" style="margin-top:15px; display:block; text-align:left;">
                 <h3 style="color:var(--accent); margin-top:0;" id="proUpgradeTitle">Upgrade to PRO / ارتقا به پرو</h3>
-                <p id="proUpgradeSub" style="color:var(--text-main); font-size:13px; margin-bottom:12px;">Get full access to all professional guides, advanced databases, and routines for only <b id="proPriceDisplay">40,000</b> <b>Toman / Month</b>.</p>
+                <p id="proUpgradeSub" style="color:var(--text-main); font-size:13px; margin-bottom:12px;">Get full access to all professional guides, advanced databases, and routines.</p>
                 
                 <!-- Gateway Payment Button -->
                 <button class="action-btn" style="background:var(--accent); color:#000; margin-bottom:12px;" onclick="startZarinPalPayment('pro')" id="payProBtn">💳 پرداخت آنلاین (زرین‌پال / ZarinPal)</button>
@@ -1681,8 +1699,8 @@
             document.getElementById('uiSub').innerText = isFa ? 'مرجع تمرینات و دانش' : 'Exercise & Knowledge Hub';
             document.getElementById('uiHeaderSub').innerText = isFa ? 'مرجع تخصصی تمرین و بدنسازی' : 'Professional Training Hub';
             
-            const proVal = (window.pricingConfig.proPrice || 40000).toLocaleString();
-            document.getElementById('buyProTopBtn').innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
+            const proVal = (window.pricingConfig.proPrice !== null && window.pricingConfig.proPrice !== undefined) ? Number(window.pricingConfig.proPrice).toLocaleString() : '';
+            document.getElementById('buyProTopBtn').innerText = isFa ? (proVal ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ خرید پرو`) : (proVal ? `⭐ Buy Pro (${proVal} Toman)` : `⭐ Buy Pro`);
             
             document.getElementById('userAccountTopBtn').innerText = isFa ? '👤 حساب' : '👤 Account';
             document.getElementById('tabEx').innerText = isFa ? 'تمرینات' : 'Exercises';
