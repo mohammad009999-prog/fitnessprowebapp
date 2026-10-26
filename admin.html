@@ -472,6 +472,17 @@
             }
         };
 
+        // HELPER TO AUTOMATICALLY DOWNLOAD CONFIG.JSON FOR GITHUB COMMIT
+        function downloadConfigJsonFile(configData) {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(configData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "config.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
         // MASTER SAVE ALL FUNCTION
         window.saveAllAdminSettings = async () => {
             try {
@@ -513,7 +524,21 @@
                 localStorage.removeItem('cached_access_config');
                 localStorage.setItem('cached_access_config', JSON.stringify(accessObj));
 
-                alert("✅ تمام تغییرات با موفقیت در فایربیس ذخیره شد!");
+                // Automatically trigger config.json download for GitHub commit
+                const fullConfigExport = {
+                    proPrice,
+                    workoutPrice,
+                    nutritionPrice,
+                    bundlePrice,
+                    discountPercent,
+                    transactionsStopped,
+                    banner: bannerObj,
+                    access: accessObj,
+                    updatedAt: new Date().toISOString()
+                };
+                downloadConfigJsonFile(fullConfigExport);
+
+                alert("✅ تمام تغییرات با موفقیت در فایربیس ذخیره شد و فایل config.json برای آپلود در گیت‌هاب دانلود گردید!");
             } catch(err) {
                 console.error("Error saving settings:", err);
                 alert("❌ خطا در ذخیره تنظیمات: " + err.message);
