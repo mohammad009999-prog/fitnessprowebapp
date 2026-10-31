@@ -211,7 +211,7 @@
             color: #000;
         }
 
-        /* PUBLIC PRICING BANNER CARD (PRO ONLY) */
+        /* PUBLIC PRICING BANNER CARD (HIDDEN ON MAIN PAGE AS REQUESTED) */
         .public-pricing-banner {
             background: linear-gradient(135deg, #181820 0%, #111116 100%);
             border: 2px solid var(--accent);
@@ -220,6 +220,7 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             text-align: center;
+            display: none; 
         }
         .public-pricing-banner h3 {
             color: var(--accent);
@@ -818,12 +819,12 @@
                     window.pricingConfig = docSnap.data();
                     updatePublicPricesDisplay();
                 } else {
-                    window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000 };
+                    window.pricingConfig = { proPrice: 50000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000 };
                     updatePublicPricesDisplay();
                 }
             }, (error) => {
                 console.log("Pricing listener error (using defaults):", error);
-                window.pricingConfig = { proPrice: 40000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000 };
+                window.pricingConfig = { proPrice: 50000, workoutPrice: 100000, nutritionPrice: 100000, bundlePrice: 150000 };
                 updatePublicPricesDisplay();
             });
 
@@ -881,7 +882,12 @@
             } else if (window.pricingConfig.proPrice !== null && window.pricingConfig.proPrice !== undefined) {
                 const proVal = Number(window.pricingConfig.proPrice).toLocaleString();
                 if(buyProBtn) buyProBtn.innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
-                if(mainProDisplay) mainProDisplay.innerText = `${proVal} ${isFa ? 'تومان' : 'Toman'}`;
+                if(mainProDisplay) {
+                    mainProDisplay.innerHTML = `
+                        <span style="text-decoration: line-through; color: var(--text-muted); font-size: 14px; display: block;">${proVal} تومان</span>
+                        <span style="color: var(--success); font-size: 16px; display: block; margin-top: 2px;">رایگان برای مدت محدود</span>
+                    `;
+                }
             } else {
                 if(mainProDisplay) mainProDisplay.innerHTML = `<span style="color:var(--text-muted); font-size:12px;">${isFa ? 'در حال دریافت اطلاعات...' : 'Loading data...'}</span>`;
             }
@@ -1058,19 +1064,13 @@
                 return;
             }
 
-            let basePrice = window.pricingConfig.proPrice || 40000;
-            const discount = window.pricingConfig.discountPercent || 0;
-            const finalPrice = discount > 0 ? Math.round(basePrice * (1 - discount / 100)) : basePrice;
-            const amountRials = finalPrice * 10;
-
-            alert(`Connecting to ZarinPal Gateway for ${finalPrice.toLocaleString()} Tomans (${amountRials} Rials)...`);
+            alert(window.currentLang === 'fa' ? 'اپلیکیشن برای مدت محدود رایگان است! حساب شما ارتقا یافت.' : 'App is free for a limited time! Account upgraded.');
             
             const userRef = doc(db, "users", window.currentUser.uid);
             let expires = new Date();
             expires.setMonth(expires.getMonth() + 1);
             
             await setDoc(userRef, { isPro: true, proExpiresAt: expires.toISOString() }, { merge: true });
-            alert(window.currentLang === 'fa' ? 'پرداخت موفقیت‌آمیز بود! حساب شما ارتقا یافت.' : 'Payment Successful! Your account has been upgraded.');
             window.location.reload();
         };
 
@@ -1229,8 +1229,8 @@
             </div>
         </header>
 
-        <!-- PUBLIC PRICING BANNER (PRO MEMBERSHIP ONLY) -->
-        <div class="public-pricing-banner" id="publicPricingBanner">
+        <!-- PUBLIC PRICING BANNER (HIDDEN ON MAIN INDEX PAGE AS REQUESTED) -->
+        <div class="public-pricing-banner" id="publicPricingBanner" style="display:none;">
             <h3 id="pubPricingTitle">💳 عضویت ویژه پرو (PRO)</h3>
             <p id="pubPricingSub">برای دسترسی نامحدود به تمامی بخش‌ها و دیتابیس‌های تخصصی، اشتراک پرو را فعال کنید.</p>
             
@@ -1664,7 +1664,7 @@
             
             const proVal = (window.pricingConfig.proPrice !== null && window.pricingConfig.proPrice !== undefined) ? Number(window.pricingConfig.proPrice).toLocaleString() : '';
             if(proVal) {
-                document.getElementById('buyProTopBtn').innerText = isFa ? `⭐ خرید پرو (${proVal} تومان)` : `⭐ Buy Pro (${proVal} Toman)`;
+                document.getElementById('buyProTopBtn').innerText = isFa ? `⭐ خرید پرو` : `⭐ Buy Pro`;
             } else {
                 document.getElementById('buyProTopBtn').innerText = isFa ? '⭐ خرید پرو' : '⭐ Buy Pro';
             }
